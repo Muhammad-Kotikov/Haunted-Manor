@@ -1,6 +1,7 @@
 import pygame
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
+# Danke Muha / 25.09.24
 
 TITLE = "Haunted Manor"
 
