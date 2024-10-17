@@ -1,4 +1,4 @@
-from entity import Entitiy
+from entity.entity import Entitiy
 from abc import abstractmethod
 
 class Creature(Entitiy):
@@ -20,5 +20,5 @@ class Creature(Entitiy):
 
 
     @abstractmethod
-    def draw(self):
+    def render(self, screen):
         pass
