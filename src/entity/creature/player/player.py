@@ -1,17 +1,19 @@
 import pygame
+import copy
+
 from collider import Collider
 from entity.creature.creature import Creature
 
-MAX_SPEED = 0.2
-ACCELERATION = MAX_SPEED / 5
-DECELERATION = MAX_SPEED / 3
+MAX_SPEED = 16
+ACCELERATION = MAX_SPEED / 6
+DECELERATION = MAX_SPEED / 4
+TURN_SPEED = DECELERATION
 
-
-# Keymappings (the ones from pygame break when converting into a list)
-LEFT = 4
-RIGHT = 7
-UP = 26
-DOWN = 22
+# Keymapping
+LEFT = pygame.K_a
+RIGHT = pygame.K_d
+UP = pygame.K_w
+DOWN = pygame.K_s
 
 # Movement states
 SLIDING = 0
@@ -20,40 +22,38 @@ TURNING = 2
 
 class Player(Creature):
 
-    def __init__(self, world):
+    def __init__(self, world, *args, **kwargs):
 
-        Creature.__init__(self)
+        super().__init__(*args, **kwargs)
 
         self.world = world
 
+        # needs to be initialized with something because the update methods expect values
         self.target_direction_x = 0
         self.target_direction_y = 0
-
         self.velocity_x = 0
         self.velocity_y = 0
+        self.keys_pressed = pygame.key.get_pressed()
 
         self.collider = Collider()
+        
 
-        ### TEST ###
-        self.image = pygame.Surface((16, 16))
-        self.image.fill((255, 255, 255))
-        self.rect = self.image.get_rect()
-        ############
-
-        # needs to be initialized with something to avoid errors with empty lists in update_keys()
-        self.keys_pressed = list(pygame.key.get_pressed())
+    def pressed(self, key: pygame.key):
+        return self.keys_pressed[key]
+    
+    def just_pressed(self, key: pygame.key):
+        return self.keys_pressed[key] and not self.keys_last[key]
+    
+    def just_released(self, key: pygame.key):
+        return not self.keys_pressed[key] and self.keys_last[key]
 
     def update_keys(self):
         """
         Gets the current key states, compares them to the states of the last frame and updates corresponding lists accordingly
         """
 
-        self.keys_last = self.keys_pressed.copy()
-        self.keys_pressed = list(pygame.key.get_pressed())
-        self.keys_just_pressed = []
-
-        for key_pressed, key_last_pressed in zip(self.keys_pressed, self.keys_last):
-            self.keys_just_pressed.append(key_pressed and not key_last_pressed)
+        self.keys_last = copy.deepcopy(self.keys_pressed)
+        self.keys_pressed = pygame.key.get_pressed()
 
 
     def get_target_direction(self):
@@ -61,12 +61,12 @@ class Player(Creature):
         Determines the direction the player wants to move to, by interpreting current and past inputs
         """
 
-        def get_target_direction_for_axis(direction, complementary_direction, old_target):
-            if not self.keys_pressed[direction] and not self.keys_pressed[complementary_direction]:    
+        def get_target_direction_for_axis(negative, positive, old_target):
+            if not self.pressed(negative) and not self.pressed(positive):    
                 return 0
-            if self.keys_just_pressed[direction]:
+            if self.just_pressed(negative):
                 return -1
-            if self.keys_just_pressed[complementary_direction]:
+            if self.just_pressed(positive):
                 return 1
             return old_target
         
@@ -78,6 +78,7 @@ class Player(Creature):
         """
         Determines where the player is currently moving towards
         """
+
         self.currect_direction_x = (self.velocity_x > 0) - (self.velocity_x < 0)
         self.currect_direction_y = (self.velocity_y > 0) - (self.velocity_y < 0)
         self.currect_speed_x = abs(self.velocity_x)
@@ -88,7 +89,7 @@ class Player(Creature):
         """
         Determines what to do, in the player case interpret all the input
         """
-        
+
         self.update_keys()
         self.get_target_direction()
         self.get_current_direction()
@@ -103,28 +104,37 @@ class Player(Creature):
                 return min(current_speed + ACCELERATION, MAX_SPEED) * target_direction     
             elif target_direction != 0 and current_direction != target_direction:
                 # turning
-                return max((current_speed - DECELERATION - ACCELERATION) * current_direction, 0)
+                return max((current_speed - TURN_SPEED) * current_direction, 0)
             # sliding/decelerating
             return max(current_speed - DECELERATION, 0) * current_direction
 
         self.control()
 
-        self.velocity_x = calculate_velocity_for_axis(self.currect_direction_x, self.target_direction_x, self.currect_speed_x)
-        self.velocity_y = calculate_velocity_for_axis(self.currect_direction_y, self.target_direction_y, self.currect_speed_y)
-        # TODO: SCHRÄGES MOVEMENT
+        # TODO: get FRAMERATE from main.py in here, can't import because that results in a deadlock of importing each other
+        self.velocity_x = calculate_velocity_for_axis(self.currect_direction_x, self.target_direction_x, self.currect_speed_x) * delta_time * 60 * 0.001
+        self.velocity_y = calculate_velocity_for_axis(self.currect_direction_y, self.target_direction_y, self.currect_speed_y) * delta_time * 60 * 0.001
 
         for tile in self.world:
             if abs((self.rect.x + self.width / 2) - (tile.rect.x + tile.width / 2)) < 64 and abs((self.rect.y + self.width / 2) - (tile.rect.y + tile.width / 2)) < 64:
-                print("close", end=" ")
-                if self.collider.DynamicRectVsRect(self.rect, pygame.math.Vector2(self.velocity_x, self.velocity_y), tile.rect):
-                    print("hit", end=" ")
-                self.velocity_x, self.velocity_y = self.collider.ResolveDynamicRectVsRect(pygame.math.Vector2(self.velocity_x, self.velocity_y), self.collider.contact_time, self.collider.contact_normal)
-                print("")
-            else:
-                print("far")
 
-        self.rect.x += self.velocity_x * delta_time 
-        self.rect.y += self.velocity_y * delta_time 
+                if self.collider.DynamicRectVsRect(self.rect, pygame.math.Vector2(self.velocity_x, self.velocity_y), tile.rect):
+
+                    self.velocity_x , self.velocity_y = self.collider.ResolveDynamicRectVsRect(pygame.math.Vector2(self.velocity_x, self.velocity_y), self.collider.contact_time, self.collider.contact_normal)
+
+                    # fixes corner collision (when hitting a corner we don't get a proper contact_normal whichs screws up the resoluve dynamic rect call)
+                    if self.collider.contact_normal == [0, 0]:
+                        
+                        if self.velocity_x < self.velocity_y:
+                            self.velocity_x = 0
+                        else:
+                            self.velocity_y = 0
+
+        self.rect.x += self.velocity_x
+        self.rect.y += self.velocity_y
+
+        # the velocity gets multiplied with delta before being mutated by the collision method call, so we revert it
+        self.velocity_x /= delta_time
+        self.velocity_y /= delta_time
 
     def render(self, screen):
-        screen.blit(self.image, self.rect)
+        screen.blit(self.sprite, self.rect)

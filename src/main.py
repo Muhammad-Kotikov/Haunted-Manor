@@ -13,7 +13,7 @@ vec = pygame.math.Vector2
 TITLE = "Haunted Manor"
 
 # TILE_SIZE ist die Pixelgröße eines Feldes im Spiel
-TILE_SIZE = 16
+TILE_SIZE = 32
 
 # WIDTH und HEIGHT geben an wie viele Felder in vertikel und horizontal in den Bildschirm reinpassen
 WIDTH = 20
@@ -28,14 +28,23 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.SCALED)
 pygame.display.set_caption(TITLE)
 
-# Elternorder kriegen
-gamefolder = os.path.dirname(os.path.dirname(__file__))
+
 
 creatures = []
 tiles = []
 
-def get_rsc(path):
-    return os.path.join(gamefolder, f'rsc/{path}')
+def get_rsc():
+    """
+    Returns the Gamefolder
+    """
+    # os.path.dirname() is weird
+    return os.path.dirname(os.path.dirname(__file__))
+
+def get_sprite(filename: str):
+    return os.path.join(get_rsc(), f'rsc/sprites/{filename}')
+
+def get_map(filename: str):
+    return os.path.join(get_rsc(), f'rsc/maps/{filename}')
 
 def init():
     pygame.init()
@@ -63,11 +72,13 @@ def render():
 
 init()
 
-brick = Tile(get_rsc("brick.png"), 32, 32, 16, 16)
-player = Player(world=[brick])
+brick1 = Tile(get_sprite("brick.png"), 128, 128, 16, 16)
+brick2 = Tile(get_sprite("brick.png"), 128, 112, 16, 16)
+brick3 = Tile(get_sprite("brick.png"), 112, 112, 16, 16)
+tiles = [brick1, brick2, brick3]
+player = Player(sprite=get_sprite("pumpkin.png"), position_x= 32, position_y= 32, width= 16, height= 16, hitpoints=1, world=tiles)
 
 creatures.append(player)
-tiles.append(brick)
 delta = 1
 
 while running:
