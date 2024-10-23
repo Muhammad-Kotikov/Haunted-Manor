@@ -1,9 +1,10 @@
 import pygame
+from collider import Collider
 from entity.creature.creature import Creature
 
-MAX_SPEED = 3
-ACCELERATION = MAX_SPEED / 6
-DECELERATION = MAX_SPEED / 4
+MAX_SPEED = 0.2
+ACCELERATION = MAX_SPEED / 5
+DECELERATION = MAX_SPEED / 3
 
 
 # Keymappings (the ones from pygame break when converting into a list)
@@ -19,13 +20,19 @@ TURNING = 2
 
 class Player(Creature):
 
-    def __init__(self):
+    def __init__(self, world):
+
+        Creature.__init__(self)
+
+        self.world = world
 
         self.target_direction_x = 0
         self.target_direction_y = 0
 
         self.velocity_x = 0
         self.velocity_y = 0
+
+        self.collider = Collider()
 
         ### TEST ###
         self.image = pygame.Surface((16, 16))
@@ -87,11 +94,11 @@ class Player(Creature):
         self.get_current_direction()
 
 
-    def update(self, delta_scale):
+    def update(self, delta_time):
 
         def calculate_velocity_for_axis(current_direction, target_direction, current_speed):
 
-            if current_direction == 0 and target_direction != 0 or target_direction != 0 and current_direction == target_direction:
+            if (current_direction == 0 and target_direction != 0) or (target_direction != 0 and current_direction == target_direction):
                 # accelerating
                 return min(current_speed + ACCELERATION, MAX_SPEED) * target_direction     
             elif target_direction != 0 and current_direction != target_direction:
@@ -104,12 +111,20 @@ class Player(Creature):
 
         self.velocity_x = calculate_velocity_for_axis(self.currect_direction_x, self.target_direction_x, self.currect_speed_x)
         self.velocity_y = calculate_velocity_for_axis(self.currect_direction_y, self.target_direction_y, self.currect_speed_y)
-  
         # TODO: SCHRÄGES MOVEMENT
 
-        self.rect.x += self.velocity_x * delta_scale 
-        self.rect.y += self.velocity_y * delta_scale 
-        
+        for tile in self.world:
+            if abs((self.rect.x + self.width / 2) - (tile.rect.x + tile.width / 2)) < 64 and abs((self.rect.y + self.width / 2) - (tile.rect.y + tile.width / 2)) < 64:
+                print("close", end=" ")
+                if self.collider.DynamicRectVsRect(self.rect, pygame.math.Vector2(self.velocity_x, self.velocity_y), tile.rect):
+                    print("hit", end=" ")
+                self.velocity_x, self.velocity_y = self.collider.ResolveDynamicRectVsRect(pygame.math.Vector2(self.velocity_x, self.velocity_y), self.collider.contact_time, self.collider.contact_normal)
+                print("")
+            else:
+                print("far")
+
+        self.rect.x += self.velocity_x * delta_time 
+        self.rect.y += self.velocity_y * delta_time 
 
     def render(self, screen):
         screen.blit(self.image, self.rect)

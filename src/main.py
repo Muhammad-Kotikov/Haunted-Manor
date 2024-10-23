@@ -1,5 +1,10 @@
 import pygame
+import os
+
 from entity.creature.player.player import Player
+from entity.tile.tile import Tile
+
+vec = pygame.math.Vector2
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
@@ -23,21 +28,31 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.SCALED)
 pygame.display.set_caption(TITLE)
 
+# Elternorder kriegen
+gamefolder = os.path.dirname(os.path.dirname(__file__))
+
 creatures = []
+tiles = []
+
+def get_rsc(path):
+    return os.path.join(gamefolder, f'rsc/{path}')
 
 def init():
     pygame.init()
     pygame.mixer.init()
     
 
-def update(delta_time):
+def update(delta):
 
     for creature in creatures:
-        creature.update(delta_time)
+        creature.update(delta)
 
 def render():
     # Malfläche zurücksetzen
     screen.fill((0, 0, 0))
+
+    for tile in tiles:
+        tile.render(screen)
 
     for creature in creatures:
         creature.render(screen)
@@ -47,9 +62,13 @@ def render():
 
 
 init()
-player = Player()
+
+brick = Tile(get_rsc("brick.png"), 32, 32, 16, 16)
+player = Player(world=[brick])
+
 creatures.append(player)
-delta_scale = 1
+tiles.append(brick)
+delta = 1
 
 while running:
 
@@ -59,10 +78,10 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    update(delta_scale)
+    update(delta)
     render()
-
+        
     # Warten paar Millisekunden damit das Spiel nicht unendlich schnell läuft
-    delta_scale = FRAMERATE * 0.001 * clock.tick(FRAMERATE)
+    delta = clock.tick(FRAMERATE)
     
 pygame.quit()
