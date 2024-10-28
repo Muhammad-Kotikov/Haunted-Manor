@@ -12,7 +12,7 @@ from world import World
 TITLE = "Haunted Manor"
 
 # TILE_SIZE ist die Pixelgröße eines Feldes im Spiel
-TILE_SIZE = 32
+TILE_SIZE = 16
 
 # WIDTH und HEIGHT geben an wie viele Felder in vertikel und horizontal in den Bildschirm reinpassen
 WIDTH = 20
