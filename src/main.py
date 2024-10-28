@@ -13,7 +13,7 @@ vec = pygame.math.Vector2
 TITLE = "Haunted Manor"
 
 # TILE_SIZE ist die Pixelgröße eines Feldes im Spiel
-TILE_SIZE = 32
+TILE_SIZE = 16
 
 # WIDTH und HEIGHT geben an wie viele Felder in vertikel und horizontal in den Bildschirm reinpassen
 WIDTH = 20
@@ -76,7 +76,7 @@ brick1 = Tile(get_sprite("brick.png"), 128, 128, 16, 16)
 brick2 = Tile(get_sprite("brick.png"), 128, 112, 16, 16)
 brick3 = Tile(get_sprite("brick.png"), 112, 112, 16, 16)
 tiles = [brick1, brick2, brick3]
-player = Player(sprite=get_sprite("pumpkin.png"), position_x= 32, position_y= 32, width= 16, height= 16, hitpoints=1, world=tiles)
+player = Player(sprite=get_sprite("heart_animation_7.png"), position_x= 32, position_y= 32, width= 13, height= 11, hitpoints=1, world=tiles)
 
 creatures.append(player)
 delta = 1
