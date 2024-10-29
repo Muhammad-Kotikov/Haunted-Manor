@@ -3,6 +3,7 @@ import pygame
 class Entity:
 
     def __init__(self, sprite : str = "", position_x : int = 0, position_y : int = 0, width : int = 16, height : int = 16):
+
         self.position_x = position_x
         self.position_y = position_y
         self.width = width

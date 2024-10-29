@@ -3,8 +3,7 @@ import os
 
 from entity.creature.player.player import Player
 from entity.tile.tile import Tile
-
-vec = pygame.math.Vector2
+from world import World
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
@@ -28,11 +27,6 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.SCALED)
 pygame.display.set_caption(TITLE)
 
-
-
-creatures = []
-tiles = []
-
 def get_rsc():
     """
     Returns the Gamefolder
@@ -53,17 +47,17 @@ def init():
 
 def update(delta):
 
-    for creature in creatures:
+    for creature in world.creatures:
         creature.update(delta)
 
 def render():
     # Malfläche zurücksetzen
     screen.fill((0, 0, 0))
 
-    for tile in tiles:
+    for tile in world.tiles:
         tile.render(screen)
 
-    for creature in creatures:
+    for creature in world.creatures:
         creature.render(screen)
 
     # Malfläche anzeigen
@@ -75,10 +69,9 @@ init()
 brick1 = Tile(get_sprite("brick.png"), 128, 128, 16, 16)
 brick2 = Tile(get_sprite("brick.png"), 128, 112, 16, 16)
 brick3 = Tile(get_sprite("brick.png"), 112, 112, 16, 16)
-tiles = [brick1, brick2, brick3]
-player = Player(sprite=get_sprite("pumpkin.png"), position_x= 32, position_y= 32, width= 16, height= 16, hitpoints=1, world=tiles)
+world = World((0, 0, 32, 32), [brick1, brick2, brick3])
+player = Player(world, 10, get_sprite("sabrina.png"), 0, 0, 23, 36)
 
-creatures.append(player)
 delta = 1
 
 while running:

@@ -22,11 +22,9 @@ TURNING = 2
 
 class Player(Creature):
 
-    def __init__(self, world, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-
-        self.world = world
 
         # needs to be initialized with something because the update methods expect values
         self.target_direction_x = 0
@@ -114,7 +112,7 @@ class Player(Creature):
         self.velocity_x = calculate_velocity_for_axis(self.currect_direction_x, self.target_direction_x, self.currect_speed_x) * delta_time * 60 * 0.001
         self.velocity_y = calculate_velocity_for_axis(self.currect_direction_y, self.target_direction_y, self.currect_speed_y) * delta_time * 60 * 0.001
 
-        for tile in self.world:
+        for tile in self.world.tiles:
             if abs((self.rect.x + self.width / 2) - (tile.rect.x + tile.width / 2)) < 64 and abs((self.rect.y + self.width / 2) - (tile.rect.y + tile.width / 2)) < 64:
 
                 if self.collider.DynamicRectVsRect(self.rect, pygame.math.Vector2(self.velocity_x, self.velocity_y), tile.rect):
