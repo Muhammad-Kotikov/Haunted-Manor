@@ -1,26 +1,13 @@
 import pygame
 import os
 
-from entity.creature.player.player import Player
+from settings import *
+from entity.creature.player.player import *
 from entity.tile.tile import Tile
 from world import World
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
-
-# Titel wird über dem Fenster angezeigt
-TITLE = "Haunted Manor"
-
-# TILE_SIZE ist die Pixelgröße eines Feldes im Spiel
-TILE_SIZE = 16
-
-# WIDTH und HEIGHT geben an wie viele Felder in vertikel und horizontal in den Bildschirm reinpassen
-WIDTH = 20
-HEIGHT = 15
-
-# So oft läuft die Spielschleife pro Sekunde, das heißt es wird FRAMERATE oft bspw. die Kollision gecheckt,
-# so viele Bilder werden angezeigt und so oft kann sich etwas auf dem Bildschirm bewegen
-FRAMERATE = 60
 
 running = True
 clock = pygame.time.Clock()
@@ -31,14 +18,30 @@ def get_rsc():
     """
     Returns the Gamefolder
     """
+
     # os.path.dirname() is weird
     return os.path.dirname(os.path.dirname(__file__))
 
 def get_sprite(filename: str):
-    return os.path.join(get_rsc(), f'rsc/sprites/{filename}')
+
+    try:
+        # das ".convert" sorgTilet für bessere Performanz laut Tutorial und Pygame docs
+        # muss man nicht verstehen xD, ".convert_alpha für Bilder mit Alpha Kanal (Tranzparenz für normal Sterbliche)
+        sprite = pygame.image.load(os.path.join(get_rsc(), f'rsc/sprites/{filename}')).convert_alpha()
+        return sprite
+            
+    except:
+        print("ERROR Loading sprite", filename)
+
+
 
 def get_map(filename: str):
-    return os.path.join(get_rsc(), f'rsc/maps/{filename}')
+
+    try:
+        return open(os.path.join(get_rsc(), f'rsc/maps/{filename}'), "rt")
+    
+    except:
+        print("ERROR: Loading map ", filename)
 
 def init():
     pygame.init()
@@ -47,18 +50,15 @@ def init():
 
 def update(delta):
 
-    for creature in world.creatures:
-        creature.update(delta)
+    world.update(delta)
+
+
 
 def render():
     # Malfläche zurücksetzen
     screen.fill((0, 0, 0))
 
-    for tile in world.tiles:
-        tile.render(screen)
-
-    for creature in world.creatures:
-        creature.render(screen)
+    world.render(screen)
 
     # Malfläche anzeigen
     pygame.display.flip()
@@ -66,10 +66,14 @@ def render():
 
 init()
 
+brick = Tile(get_sprite("brick.png"), 0, 0, 16, 16)
+"""
 brick1 = Tile(get_sprite("brick.png"), 128, 128, 16, 16)
 brick2 = Tile(get_sprite("brick.png"), 128, 112, 16, 16)
 brick3 = Tile(get_sprite("brick.png"), 112, 112, 16, 16)
 world = World((0, 0, 32, 32), [brick1, brick2, brick3])
+"""
+world = World(get_map("test_tilemap.tmx"), [None, brick])
 player = Player(world, 10, get_sprite("sabrina.png"), 0, 0, 23, 36)
 
 delta = 1

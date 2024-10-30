@@ -1,6 +1,7 @@
 import pygame
 import copy
 
+from settings import *
 from collider import Collider
 from entity.creature.creature import Creature
 
@@ -109,11 +110,37 @@ class Player(Creature):
         self.control()
 
         # TODO: get FRAMERATE from main.py in here, can't import because that results in a deadlock of importing each other
-        self.velocity_x = calculate_velocity_for_axis(self.currect_direction_x, self.target_direction_x, self.currect_speed_x) * delta_time * 60 * 0.001
-        self.velocity_y = calculate_velocity_for_axis(self.currect_direction_y, self.target_direction_y, self.currect_speed_y) * delta_time * 60 * 0.001
+        self.velocity_x = calculate_velocity_for_axis(self.currect_direction_x, self.target_direction_x, self.currect_speed_x) * delta_time * FRAMERATE * 0.001
+        self.velocity_y = calculate_velocity_for_axis(self.currect_direction_y, self.target_direction_y, self.currect_speed_y) * delta_time * FRAMERATE * 0.001
 
-        for tile in self.world.tiles:
-            if abs((self.rect.x + self.width / 2) - (tile.rect.x + tile.width / 2)) < 64 and abs((self.rect.y + self.width / 2) - (tile.rect.y + tile.width / 2)) < 64:
+        # Spielerkoordinate in tiles
+        player_tile_x = self.rect.x // TILE_SIZE
+        player_tile_y = self.rect.y // TILE_SIZE
+
+        def limit(min_v, v, max_v):
+            return max(min_v, min(max_v, v))
+        
+        #print(len(self.world.map[0]), "   ", len(self.world.map))
+
+        # Der Koordinateninvervall in der nach Kollision gecheckt werden soll
+        collision_range_x = (limit(0, player_tile_x - 2, len(self.world.map[0])), limit(0, player_tile_x + 2, len(self.world.map[0])))
+        collision_range_y = (limit(0, player_tile_y - 2, len(self.world.map)), limit(0, player_tile_x + 2, len(self.world.map)))
+
+        print(collision_range_x, "   ", collision_range_y)
+
+        for tile_y in collision_range_y:
+            for tile_x in collision_range_x:
+
+                # Tile "holen" der nach Collision überprüft werden muss
+                tile_id = self.world.map[tile_y][tile_x]
+                
+                if tile_id == 0:
+                    continue
+
+                tile = self.world.tilemap[tile_id]
+
+                tile.rect.x = tile_x * TILE_SIZE
+                tile.rect.y = tile_y * TILE_SIZE
 
                 if self.collider.DynamicRectVsRect(self.rect, pygame.math.Vector2(self.velocity_x, self.velocity_y), tile.rect):
 
@@ -126,6 +153,25 @@ class Player(Creature):
                             self.velocity_x = 0
                         else:
                             self.velocity_y = 0
+
+
+
+        """
+        for tile in self.world.tiles:
+            if abs((self.rect.x + self.width / 2) - (tile.rect.x + tile.width / 2)) < TILE_SIZE * 2 and abs((self.rect.y + self.width / 2) - (tile.rect.y + tile.width / 2)) < TILE_SIZE * 2:
+
+                if self.collider.DynamicRectVsRect(self.rect, pygame.math.Vector2(self.velocity_x, self.velocity_y), tile.rect):
+
+                    self.velocity_x , self.velocity_y = self.collider.ResolveDynamicRectVsRect(pygame.math.Vector2(self.velocity_x, self.velocity_y), self.collider.contact_time, self.collider.contact_normal)
+
+                    # fixes corner collision (when hitting a corner we don't get a proper contact_normal whichs screws up the resoluve dynamic rect call)
+                    if self.collider.contact_normal == [0, 0]:
+                        
+                        if self.velocity_x < self.velocity_y:
+                            self.velocity_x = 0
+                        else:
+                            self.velocity_y = 0
+        """
 
         self.rect.x += self.velocity_x
         self.rect.y += self.velocity_y

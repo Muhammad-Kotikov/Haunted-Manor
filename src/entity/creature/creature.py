@@ -13,6 +13,7 @@ class Creature(Entity):
         self.health = hitpoints
         world.register_creature(self)
 
+
     @abstractmethod
     def control(self):
         pass
@@ -26,6 +27,7 @@ class Creature(Entity):
     @abstractmethod
     def render(self, screen):
         pass
+
 
     def die(self):
         self.world.creatures.remove(self)
