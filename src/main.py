@@ -1,84 +1,76 @@
 import pygame
 import os
 
-from entity.creature.player.player import Player
+from settings import *
+from entity.creature.player.player import *
 from entity.tile.tile import Tile
-
-vec = pygame.math.Vector2
+from world import World
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
 
-# Titel wird über dem Fenster angezeigt
-TITLE = "Haunted Manor"
-
-# TILE_SIZE ist die Pixelgröße eines Feldes im Spiel
-TILE_SIZE = 16
-
-# WIDTH und HEIGHT geben an wie viele Felder in vertikel und horizontal in den Bildschirm reinpassen
-WIDTH = 20
-HEIGHT = 15
-
-# So oft läuft die Spielschleife pro Sekunde, das heißt es wird FRAMERATE oft bspw. die Kollision gecheckt,
-# so viele Bilder werden angezeigt und so oft kann sich etwas auf dem Bildschirm bewegen
-FRAMERATE = 60
-
-running = True
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.SCALED)
-pygame.display.set_caption(TITLE)
+def init():
+    pygame.init()
+    pygame.mixer.init()
 
 
-
-creatures = []
-tiles = []
-
-def get_rsc():
+def get_game_folder():
     """
     Returns the Gamefolder
     """
     # os.path.dirname() is weird
     return os.path.dirname(os.path.dirname(__file__))
 
+
 def get_sprite(filename: str):
-    return os.path.join(get_rsc(), f'rsc/sprites/{filename}')
+
+    try:
+        # das ".convert" sorgTilet für bessere Performanz laut Tutorial und Pygame docs
+        # muss man nicht verstehen xD, ".convert_alpha für Bilder mit Alpha Kanal (Tranzparenz für normal Sterbliche)
+        sprite = pygame.image.load(os.path.join(get_game_folder(), f'rsc/sprites/{filename}')).convert_alpha()
+        return sprite
+            
+    except:
+        print("ERROR Loading sprite", filename)
+
 
 def get_map(filename: str):
-    return os.path.join(get_rsc(), f'rsc/maps/{filename}')
 
-def init():
-    pygame.init()
-    pygame.mixer.init()
+    try:
+        return open(os.path.join(get_game_folder(), f'rsc/maps/{filename}'), "rt")
     
+    except:
+        print("ERROR: Loading map ", filename)
+
 
 def update(delta):
+    world.update(delta)
 
-    for creature in creatures:
-        creature.update(delta)
 
 def render():
     # Malfläche zurücksetzen
     screen.fill((0, 0, 0))
 
-    for tile in tiles:
-        tile.render(screen)
-
-    for creature in creatures:
-        creature.render(screen)
+    world.render(screen)
 
     # Malfläche anzeigen
     pygame.display.flip()
 
 
+running = True
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.SCALED)
+pygame.display.set_caption(TITLE)
+
 init()
 
-brick1 = Tile(get_sprite("brick.png"), 128, 128, 16, 16)
-brick2 = Tile(get_sprite("brick.png"), 128, 112, 16, 16)
-brick3 = Tile(get_sprite("brick.png"), 112, 112, 16, 16)
-tiles = [brick1, brick2, brick3]
-player = Player(sprite=get_sprite("heart_animation_7.png"), position_x= 32, position_y= 32, width= 13, height= 11, hitpoints=1, world=tiles)
+brick_sprite = get_sprite("brick.png")
+#wbrick_sprite.has_collision = True
+test_sprite_sheet = [None, brick_sprite]
 
-creatures.append(player)
+world = World(get_map("test_tilemap.tmx"), test_sprite_sheet)
+player = Player(world, 10, get_sprite("pumpkin.png"), 200, 32, 16, 16)
+
 delta = 1
 
 while running:
@@ -94,5 +86,6 @@ while running:
         
     # Warten paar Millisekunden damit das Spiel nicht unendlich schnell läuft
     delta = clock.tick(FRAMERATE)
+    #print(delta)
     
 pygame.quit()

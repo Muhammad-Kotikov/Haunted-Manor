@@ -2,8 +2,8 @@ from entity.entity import Entity
 
 class Tile(Entity):
 
-    def update(delta):
-        pass
+    def __init__(self, has_collision : bool = False, *args, **kwargs):
 
-    def render(self, screen):
-        screen.blit(self.sprite, (self.position_x, self.position_y))
+        self.has_collision = has_collision
+
+        super().__init__(*args, **kwargs)
