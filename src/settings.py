@@ -11,3 +11,5 @@ HEIGHT = 15
 # So oft läuft die Spielschleife pro Sekunde, das heißt es wird FRAMERATE oft bspw. die Kollision gecheckt,
 # so viele Bilder werden angezeigt und so oft kann sich etwas auf dem Bildschirm bewegen
 FRAMERATE = 60
+
+DEBUGGING = True

@@ -1,5 +1,6 @@
 import pygame
 from settings import TILE_SIZE
+from abc import abstractmethod
 
 vec = pygame.math.Vector2
 
@@ -9,6 +10,7 @@ class Entity:
 
         self.position = vec(x, y)
         self.sprite = sprite
+        self.original = self.sprite.copy()
         self.rect = pygame.Rect(x, y, width, height)
 
 
@@ -16,8 +18,19 @@ class Entity:
         pass
 
 
-    def render(self, screen):
-        screen.blit(self.sprite, (self.rect.x, self.rect.y))
+    def render(self, screen, camera):
+        screen.blit(self.sprite, (self.rect.x - camera.rect.x, self.rect.y - camera.rect.y))
+    
 
+    def tint(self, color):
+
+        # https://stackoverflow.com/questions/57962130/how-can-i-change-the-brightness-of-an-image-in-pygame
+        self.sprite = self.original.copy()
+        self.sprite.fill(color, special_flags=pygame.BLEND_RGBA_ADD)
+        
+    
+    def untint(self):
+        
+        self.sprite = self.original
 
 

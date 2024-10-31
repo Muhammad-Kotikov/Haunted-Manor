@@ -24,10 +24,8 @@ class Creature(Entity):
         pass
 
 
-    @abstractmethod
-    def render(self, screen):
-        pass
-
+    def render(self, screen, camera):
+        super().render(screen, camera)
 
     def die(self):
         self.world.creatures.remove(self)

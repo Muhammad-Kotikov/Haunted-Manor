@@ -7,3 +7,5 @@ class Tile(Entity):
         self.has_collision = has_collision
 
         super().__init__(*args, **kwargs)
+    
+    

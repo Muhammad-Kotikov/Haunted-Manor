@@ -43,14 +43,14 @@ class World:
         -> tile_map
     """
 
-    def __init__(self, file, spritesheet):
+    def __init__(self, file, tile_properties):
 
         tile_id_map = self.read_map(file)
         self.width = len(tile_id_map[0])
         self.height = len(tile_id_map)
         self.creatures = []
 
-        self.tile_map = self.to_tiles(tile_id_map, spritesheet)
+        self.tile_map = self.to_tiles(tile_id_map, tile_properties)
 
 
     def read_map(self, file):
@@ -78,7 +78,7 @@ class World:
     
 
     @staticmethod
-    def to_tiles(tile_id_map, spritesheet):
+    def to_tiles(tile_id_map, tile_properties):
         """
         Turns a map of tile_ids into a map of Tile Class Objects
         """
@@ -91,7 +91,7 @@ class World:
         for y, row in enumerate(tile_id_map):
             for x, tile_id in enumerate(row):
                 if tile_id != 0:
-                    tile_map[y][x] = Tile(True, spritesheet[tile_id], x * TILE_SIZE, y * TILE_SIZE)
+                    tile_map[y][x] = Tile(*tile_properties[tile_id], x * TILE_SIZE, y * TILE_SIZE)
         
         return tile_map
 
@@ -163,15 +163,16 @@ class World:
         return tiles
 
 
-    def render(self, screen):
+    def render(self, screen, camera):
 
-        for tile_row in self.tile_map:
-            for tile in tile_row:
+        for tile_row in self.tile_map[camera.rect.y // TILE_SIZE: (camera.rect.y + camera.rect.height) // TILE_SIZE + 1]:
+            for tile in tile_row[camera.rect.x // TILE_SIZE: (camera.rect.x + camera.rect.width) // TILE_SIZE + 1]:
                 if tile is not None:
-                    tile.render(screen)
+                    tile.render(screen, camera)
+
                     
         for creature in self.creatures:
-            creature.render(screen)
+            creature.render(screen, camera)
 
 
     def update(self, delta):

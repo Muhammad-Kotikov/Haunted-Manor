@@ -1,9 +1,9 @@
 import pygame
 import os
 
+from camera import Camera
 from settings import *
 from entity.creature.player.player import *
-from entity.tile.tile import Tile
 from world import World
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
@@ -44,6 +44,7 @@ def get_map(filename: str):
 
 
 def update(delta):
+    camera.update()
     world.update(delta)
 
 
@@ -51,11 +52,11 @@ def render():
     # Malfläche zurücksetzen
     screen.fill((0, 0, 0))
 
-    world.render(screen)
+    world.render(screen, camera)
+    camera.render(screen)
 
     # Malfläche anzeigen
     pygame.display.flip()
-
 
 running = True
 clock = pygame.time.Clock()
@@ -65,11 +66,11 @@ pygame.display.set_caption(TITLE)
 init()
 
 brick_sprite = get_sprite("brick.png")
-#wbrick_sprite.has_collision = True
-test_sprite_sheet = [None, brick_sprite]
+tile_properties = [None, (True, brick_sprite)]
 
-world = World(get_map("test_tilemap.tmx"), test_sprite_sheet)
-player = Player(world, 10, get_sprite("pumpkin.png"), 200, 32, 16, 16)
+world = World(get_map("test_tilemap.tmx"), tile_properties)
+player = Player(world, 10, get_sprite("pumpkin.png"), 6 * TILE_SIZE, 2 * TILE_SIZE, 16, 16)
+camera = Camera(pygame.Rect(0, 0, WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.Rect(0.0, 0.0, world.width * TILE_SIZE, world.height * TILE_SIZE), player)
 
 delta = 1
 
@@ -77,7 +78,7 @@ while running:
 
     for event in pygame.event.get():
 
-        # Fenster schließbar machen
+        #Fenster schließbar machen
         if event.type == pygame.QUIT:
             running = False
 
@@ -86,6 +87,5 @@ while running:
         
     # Warten paar Millisekunden damit das Spiel nicht unendlich schnell läuft
     delta = clock.tick(FRAMERATE)
-    #print(delta)
     
 pygame.quit()
