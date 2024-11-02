@@ -22,25 +22,17 @@ class Camera:
 
         if self.target:
 
+            offset = vec(0, 0)
+
             if self.target.velocity:
-                offset_x = self.target.velocity.x * 30
-                offset_y = self.target.velocity.y * 30
-                weight = 0.15
-            
-            else:
-                offset_x = 0
-                offset_y = 0
-                weight = 0.1
+                offset.x = self.target.velocity.x * 30
+                offset.y = self.target.velocity.y * 30
             
             
-            self.camera_target_x = self.target.rect.centerx + offset_x
-            self.camera_target_y = self.target.rect.centery + offset_y
+            self.camera_target = self.target.rect.center + offset
 
-            #distance_from_target_x = abs(self.rect.centerx - self.camera_target_x)
-            #distance_from_target_y = abs(self.rect.centery - self.camera_target_y)
-
-            self.position.x = pygame.math.lerp(self.position.x, self.camera_target_x, weight)
-            self.position.y = pygame.math.lerp(self.position.y, self.camera_target_y, weight)
+            self.position.x = pygame.math.lerp(self.position.x, self.camera_target.x, 0.05)
+            self.position.y = pygame.math.lerp(self.position.y, self.camera_target.y, 0.05)
 
             self.rect.centerx = round(self.position.x)
             self.rect.centery = round(self.position.y)
@@ -51,5 +43,6 @@ class Camera:
 
     def render(self, screen):
 
-        if DEBUGGING:
-            pygame.draw.line(screen, (255, 255, 255), (self.rect.width / 2, self.rect.height / 2), (self.camera_target_x - self.rect.x, self.camera_target_y - self.rect.y))
+        pass
+        #if DEBUGGING:
+        #    pygame.draw.line(screen, (255, 255, 255), (self.rect.width / 2, self.rect.height / 2), (self.camera_target.x - self.rect.x, self.camera_target.y - self.rect.y))

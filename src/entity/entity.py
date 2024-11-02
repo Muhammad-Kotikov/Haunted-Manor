@@ -22,11 +22,11 @@ class Entity:
         screen.blit(self.sprite, (self.rect.x - camera.rect.x, self.rect.y - camera.rect.y))
     
 
-    def tint(self, color):
+    def tint(self, color, flag):
 
         # https://stackoverflow.com/questions/57962130/how-can-i-change-the-brightness-of-an-image-in-pygame
         self.sprite = self.original.copy()
-        self.sprite.fill(color, special_flags=pygame.BLEND_RGBA_ADD)
+        self.sprite.fill(color, special_flags=flag)
         
     
     def untint(self):
