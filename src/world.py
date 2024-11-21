@@ -99,10 +99,9 @@ class World:
                 if entity_id != 0:
                     if type(spawnsheet[entity_id]) == Player:
                         creatures.append(spawnsheet[entity_id])
+                        spawnsheet[entity_id].position = vec(x * TILE_SIZE, y * TILE_SIZE)
                     else:   
                         tile_map[y][x] = spawnsheet[entity_id].copy(x * TILE_SIZE, y * TILE_SIZE)
-
-                        Creature()
                         
         
         return tile_map, creatures
