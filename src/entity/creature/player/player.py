@@ -246,6 +246,13 @@ class Player(Creature):
         # move, collide and slide the character
         self.move_and_slide()
 
+        if self.invunerable:
+            self.i_frames_left -= 1
+
+        if self.i_frames_left <= 0:
+            self.invunerable = False
+            self.untint()
+
 
 
     def render(self, screen, camera):
@@ -261,3 +268,4 @@ class Player(Creature):
 
             pygame.draw.line(screen, (0, 0, 255), relative_position_to_camera, relative_position_to_camera + self.target_direction * 30)
             pygame.draw.line(screen, (255, 0, 0), relative_position_to_camera, relative_position_to_camera + velocity_normalized * 30)
+    

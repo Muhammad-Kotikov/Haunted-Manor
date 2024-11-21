@@ -6,6 +6,8 @@ from settings import *
 from entity.creature.player.player import *
 from world import World
 from entity.tile.tile import Tile
+from entity.tile.trap.trap import *
+from hud import *
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
@@ -56,25 +58,28 @@ def render():
     world.render(screen, camera)
     camera.render(screen)
 
+    hud.render(screen)
+
     # Malfläche anzeigen
     pygame.display.flip()
 
 running = True
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.SCALED)
+screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.SCALED + pygame.FULLSCREEN)
 pygame.display.set_caption(TITLE)
 
 init()
 
 brick = Tile(True, get_sprite("brick.png"), 0, 0, 16, 16)
 
-brick_sprite = get_sprite("brick.png")
-player = Player(10, get_sprite("pumpkin.png"), 6 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-tile_properties = [None, brick, player]
+player = Player(3, get_sprite("pumpkin.png"), 0, 0, TILE_SIZE, TILE_SIZE)
+saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (0, 0, TILE_SIZE - 8, TILE_SIZE - 8, 30), (8, 8, TILE_SIZE - 8, TILE_SIZE - 8, 30)], False, get_sprite("skull_trap.png"), 0, 0, TILE_SIZE, TILE_SIZE)
+spawn_table = [None, brick, player, saw]
 
-world = World(get_map("test_tilemap.tmx"), tile_properties)
+world = World(get_map("test_tilemap.tmx"), spawn_table)
 camera = Camera(pygame.Rect(0, 0, WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.Rect(0.0, 0.0, world.width * TILE_SIZE, world.height * TILE_SIZE), player)
 
+hud = HUD(player, get_sprite("heart.png"), get_sprite("empty_heart.png"))
 delta = 1
 
 while running:
@@ -82,7 +87,7 @@ while running:
     for event in pygame.event.get():
 
         #Fenster schließbar machen
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
 
     update(delta)
