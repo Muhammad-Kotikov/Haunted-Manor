@@ -8,4 +8,9 @@ class Tile(Entity):
 
         super().__init__(*args, **kwargs)
     
+
+    def copy(self, x, y):
+
+        return Tile(self.has_collision, self.sprite, x, y, self.rect.width, self.rect.height)
+    
     

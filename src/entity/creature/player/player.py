@@ -1,16 +1,8 @@
 import pygame
 import copy
 from settings import *
-from collider import Collider
 from entity.creature.creature import Creature
-
-MAX_SPEED = 3
-ACCELERATION = MAX_SPEED / 5
-DECELERATION = MAX_SPEED / 3
-HARD_DECELERATION = MAX_SPEED / 2.5
-
-# smaller values equal more smooth but thus slower turn (I think this can go above 1.0 ?)
-TURN_FACTOR = 0.3
+from testcollider import * 
 
 # Keymapping
 LEFT = pygame.K_a
@@ -18,12 +10,13 @@ RIGHT = pygame.K_d
 UP = pygame.K_w
 DOWN = pygame.K_s
 
-# Movement states
-STOPPED = 0
-ACCELERATING = 1
-DECELERATING = 2
-TURNING = 3
+IDLE = 0
+RUNNING = 1
+STOPPING = 2
 
+MAX_SPEED = 1.5
+ACCELERATION = MAX_SPEED / 6
+DECELERATION = MAX_SPEED / 4
 
 COLLISION_DETECTION_RANGE = 2
 
@@ -35,7 +28,14 @@ class Player(Creature):
 
         super().__init__(*args, **kwargs)
 
-        self.movement_state = 0
+        self.collider = SimpleCollider()
+
+        self.last_left = 0
+        self.last_right = 0
+        self.last_up = 0
+        self.last_down = 0
+
+        self.movement_state = -1
 
         self.pressed_direction = vec(0, 0)
         self.current_direction = vec(0, 0)
@@ -44,7 +44,7 @@ class Player(Creature):
         self.velocity = vec(0, 0)
 
         self.keys_pressed = pygame.key.get_pressed()
-        self.collider = Collider()
+
         self.collision_objects = []
         
 
@@ -71,34 +71,53 @@ class Player(Creature):
         Determines the direction the player wants to move to, by interpreting current and past inputs
         """
 
-        def get_target_direction_for_axis(negative, positive, old):
-            if not self.pressed(negative) and not self.pressed(positive):    
+        def get_target_direction_for_axis(neg, pos, last_neg, last_pos):
+            """
+            Given two buttons and the frame length since they were last pressed, determines the direction the player intents to move
+            """
+
+            # nothing pressed
+            if not self.pressed(neg) and not self.pressed(pos):
                 return 0
-            if self.just_pressed(negative):
+            
+            # only negative pressed
+            if self.pressed(neg) and not self.pressed(pos):
                 return -1
-            if self.just_pressed(positive):
+            
+            # only positive pressed
+            if not self.pressed(neg) and self.pressed(pos):
                 return 1
-            return old
+            
+            # both pressed but negative was pressed later
+            elif last_neg < last_pos:
+                return -1
+            
+            # both pressed at same time or positive later
+            else:
+                return 1
+            
+        def count_last(button, counter):
+            # if the button was just pressed, the last press is 0 frames ago
+            if self.just_pressed(button):
+                return 0
+            else:
+                # else just count up
+                return counter + 1
+            
+        pressed_direction = vec(0, 0)
+            
+        self.last_left = count_last(LEFT, self.last_left)
+        self.last_right = count_last(RIGHT, self.last_right)
+        self.last_up = count_last(UP, self.last_up)
+        self.last_down = count_last(DOWN, self.last_down)
         
-        self.pressed_direction.x = get_target_direction_for_axis(LEFT, RIGHT, self.pressed_direction.x)
-        self.pressed_direction.y = get_target_direction_for_axis(UP, DOWN, self.pressed_direction.y)
+        pressed_direction.x = get_target_direction_for_axis(LEFT, RIGHT, self.last_left, self.last_right)
+        pressed_direction.y = get_target_direction_for_axis(UP, DOWN, self.last_left, self.last_right)
 
         if self.pressed_direction.length() != 0:
-            self.target_direction = self.pressed_direction.normalize()
-        else:
-            self.target_direction = vec(0, 0)
-            
-    
-    def get_current_direction_and_speed(self):
-        """
-        Determines where the player is currently moving towards
-        """
-        if self.velocity.length() != 0:
-            self.current_direction = self.velocity.normalize()
-        else:
-            self.current_direction = vec(0, 0)
-
-        self.current_speed = self.velocity.length()
+            pressed_direction.normalize()
+        
+        self.target_direction = pressed_direction
         
 
     def control(self):
@@ -108,46 +127,58 @@ class Player(Creature):
 
         self.update_keys()
         self.get_target_direction()
-        self.get_current_direction_and_speed()
 
 
-    def update(self, delta):
+    def move(self):
+
 
         # https://www.youtube.com/watch?v=YJB1QnEmlTs (An In-Depth look at Lerp, Smoothstep, and Shaping Functions)
         def smoothstep(t : float):
             v1 = t ** 2
             v2 = 1.0 - (1.0 - t) ** 2
             return pygame.math.lerp(v1, v2, t)
-
-        self.control()
-
-        new_direction = self.target_direction * TURN_FACTOR + self.current_direction * (1 - TURN_FACTOR)
         
-        if new_direction.length() == 0:
-            new_direction = self.target_direction
+
+        if self.target_direction != vec(0, 0):
+            self.movement_state = RUNNING
+            new_speed = min((self.velocity.length() + ACCELERATION * self.delta_time), MAX_SPEED)
+            direction = self.target_direction
+        
+
+        elif self.target_direction == vec(0, 0) and self.velocity.length() > 0:
+            self.movement_state = STOPPING
+            new_speed = max((self.velocity.length() - DECELERATION * self.delta_time), 0)
+            direction = self.velocity.normalize()
+
+
         else:
-            new_direction.normalize_ip()
+            self.movement_state = IDLE
+            new_speed = 0
+            direction = vec(0, 0)
 
-        if self.target_direction == -1 * self.current_direction:
-            new_speed = max((self.current_speed - HARD_DECELERATION), 0)
-            self.velocity = pygame.math.lerp(0, MAX_SPEED, smoothstep(new_speed / MAX_SPEED)) * self.current_direction
+
+        """ uncomment when player ignores max speed, math.lerp "soft clamps" it anyway so not really needed """
+        if self.velocity.length() > 0:
+            self.velocity.clamp_magnitude_ip(MAX_SPEED)
         
-        elif self.target_direction.length() != 0 and new_direction.length() != 0:
-            new_speed = min((self.current_speed + ACCELERATION), MAX_SPEED)
-            self.velocity = pygame.math.lerp(0, MAX_SPEED, smoothstep(new_speed / MAX_SPEED)) * new_direction
-        else:
-            new_speed = max((self.current_speed - DECELERATION), 0)
-            self.velocity = pygame.math.lerp(0, MAX_SPEED, smoothstep(new_speed / MAX_SPEED)) * self.current_direction
+
+        self.velocity = pygame.math.lerp(0, MAX_SPEED, smoothstep(new_speed / MAX_SPEED)) * direction
+
+
+      
+
+    def slide(self):
+
         
-        # Spielerkoordinate in tiles, + 0.5 um aus der Mitte des Charakters zu berechnen
-        player_tile_x = round(self.position.x / TILE_SIZE + 0.5)
-        player_tile_y = round(self.position.y / TILE_SIZE + 0.5)
+        # Spielerkoordinate in tiles, (aus der Mitte des Charakters) zu berechnen
+        player_tile_x = round(self.rect.centerx / TILE_SIZE)
+        player_tile_y = round(self.rect.centery / TILE_SIZE)
 
         # Der Koordinateninvervall in der nach Kollision gecheckt werden soll
         collision_range_x = (pygame.math.clamp(player_tile_x - COLLISION_DETECTION_RANGE, 0, self.world.width - 1), pygame.math.clamp(player_tile_x + COLLISION_DETECTION_RANGE, 0, self.world.width - 1))
         collision_range_y = (pygame.math.clamp(player_tile_y - COLLISION_DETECTION_RANGE, 0, self.world.height - 1), pygame.math.clamp(player_tile_y + COLLISION_DETECTION_RANGE, 0,  self.world.height - 1))
 
-        if DEBUGGING:
+        if DEBUGGING and SHOW_COLLISION_RANGE:
             for tile in self.collision_objects:
                 if tile == None:
                     continue
@@ -155,7 +186,53 @@ class Player(Creature):
 
         self.collision_objects = []
 
-        """
+        # "*tuple" unpacks the values inside the tuple and uses them as paremeters for a function
+        for tile_y in range(*collision_range_y):
+            for tile_x in range(*collision_range_x):
+
+                if self.world.tile_map[tile_y][tile_x] != None and self.world.tile_map[tile_y][tile_x].has_collision == True:
+
+                    self.collision_objects.append(self.world.tile_map[tile_y][tile_x])
+
+      
+        for tile in self.collision_objects:
+            
+            if DEBUGGING and SHOW_COLLISION_RANGE:
+                tile.tint((100, 100, 100, 255), pygame.BLEND_RGBA_MULT)
+
+        self.position += self.velocity
+
+        self.collider.collide_with_wall(self, self.collision_objects)
+        
+
+
+            
+        
+
+    
+    def move_and_slide(self):
+
+        # calculate velocity (without collision) based on player intent
+        self.move()
+
+        # check collision and slide character along walls
+        self.slide()
+
+        # change player position vector
+        
+
+        # move the player rectangle (used for sprite and collisoin, integer)
+        #self.rect.x = round(self.position.x)
+        #self.rect.y = round(self.position.y)
+    
+
+
+    def update(self, delta):
+
+
+        self.delta_time = delta
+
+        """ tint all tiles in the map
         for tile_row in self.world.tile_map:
             for tile in tile_row:
                 if tile == None:
@@ -163,61 +240,24 @@ class Player(Creature):
                 tile.tint((255, 255, 255, 50), pygame.BLEND_RGBA_MULT)
         """
 
-        # *tuple unpacks the values inside the tuple and uses them as paremeters for a function
-        for tile_y in range(*collision_range_y):
-            for tile_x in range(*collision_range_x):
-                self.collision_objects.append(self.world.tile_map[tile_y][tile_x])
+        # get player intent
+        self.control()
 
-      
-        for tile in self.collision_objects:
+        # move, collide and slide the character
+        self.move_and_slide()
 
-            if tile == None:
-                continue
-
-            if tile.has_collision == False:
-                continue
-
-            """
-            if DEBUGGING:
-                tile.tint((100, 100, 100, 255), pygame.BLEND_RGBA_MULT)
-            """
-                
-            collisions = 0
-
-            while self.collider.DynamicRectVsRect(self.rect, self.velocity, tile.rect) and collisions < 10:
-
-                # TODO: A proper solution
-                if self.collider.contact_normal == [0, 0]:
-                    self.velocity.x *= 2
-                    self.velocity.scale_to_length(MAX_SPEED)
-                    self.collider.DynamicRectVsRect(self.rect, self.velocity, tile.rect)
-
-
-                self.velocity = self.collider.ResolveDynamicRectVsRect(self.velocity, self.collider.contact_time, self.collider.contact_normal)
-                collisions += 1
-
-
-        #if self.velocity.length() != 0:
-        #    self.velocity.clamp_magnitude_ip(0, MAX_SPEED)
-        
-        self.position += self.velocity
-
-        self.rect.x = round(self.position.x)
-        self.rect.y = round(self.position.y)
 
 
     def render(self, screen, camera):
         super().render(screen, camera)
 
         
-        if DEBUGGING:
+        if DEBUGGING and SHOW_MOVEMENT_VECTORS:
 
-            color = (255, 0, 0)
-            if self.movement_state == ACCELERATING:
-                color = (0, 255, 0)
-            
             relative_position_to_camera = (self.rect.centerx - camera.rect.x, self.rect.centery - camera.rect.y)
 
-            pygame.draw.line(screen, color, relative_position_to_camera, relative_position_to_camera + self.velocity * 10)
-            pygame.draw.line(screen, (0, 0, 255), relative_position_to_camera, relative_position_to_camera + self.target_direction * 10)
-        
+            velocity_normalized = vec(0, 0) if self.velocity.length() == 0 else self.velocity.normalize()
+
+
+            pygame.draw.line(screen, (0, 0, 255), relative_position_to_camera, relative_position_to_camera + self.target_direction * 30)
+            pygame.draw.line(screen, (255, 0, 0), relative_position_to_camera, relative_position_to_camera + velocity_normalized * 30)

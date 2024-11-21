@@ -5,6 +5,7 @@ from camera import Camera
 from settings import *
 from entity.creature.player.player import *
 from world import World
+from entity.tile.tile import Tile
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
@@ -65,11 +66,13 @@ pygame.display.set_caption(TITLE)
 
 init()
 
+brick = Tile(True, get_sprite("brick.png"), 0, 0, 16, 16)
+
 brick_sprite = get_sprite("brick.png")
-tile_properties = [None, (True, brick_sprite)]
+player = Player(10, get_sprite("pumpkin.png"), 6 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+tile_properties = [None, brick, player]
 
 world = World(get_map("test_tilemap.tmx"), tile_properties)
-player = Player(world, 10, get_sprite("pumpkin.png"), 6 * TILE_SIZE, 2 * TILE_SIZE, 16, 16)
 camera = Camera(pygame.Rect(0, 0, WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.Rect(0.0, 0.0, world.width * TILE_SIZE, world.height * TILE_SIZE), player)
 
 delta = 1

@@ -1,5 +1,6 @@
 from settings import *
 from entity.tile.tile import *
+from entity.creature.player.player import *
 
 CHUNK_SIZE = 16
 
@@ -43,14 +44,17 @@ class World:
         -> tile_map
     """
 
-    def __init__(self, file, tile_properties):
+    def __init__(self, file, spawnsheet):
 
         tile_id_map = self.read_map(file)
         self.width = len(tile_id_map[0])
         self.height = len(tile_id_map)
         self.creatures = []
 
-        self.tile_map = self.to_tiles(tile_id_map, tile_properties)
+        self.tile_map, creatures = self.spawn_entities(tile_id_map, spawnsheet)
+
+        for creature in creatures:
+            self.register_creature(creature)
 
 
     def read_map(self, file):
@@ -78,22 +82,30 @@ class World:
     
 
     @staticmethod
-    def to_tiles(tile_id_map, tile_properties):
+    def spawn_entities(entity_id_map, spawnsheet):
         """
         Turns a map of tile_ids into a map of Tile Class Objects
         """
 
-        width = len(tile_id_map[0])
-        height = len(tile_id_map)
+        width = len(entity_id_map[0])
+        height = len(entity_id_map)
 
         tile_map = [[None for _ in range(width)] for _ in range(height)]
 
-        for y, row in enumerate(tile_id_map):
-            for x, tile_id in enumerate(row):
-                if tile_id != 0:
-                    tile_map[y][x] = Tile(*tile_properties[tile_id], x * TILE_SIZE, y * TILE_SIZE)
+        creatures = []
+
+        for y, row in enumerate(entity_id_map):
+            for x, entity_id in enumerate(row):
+                if entity_id != 0:
+                    if type(spawnsheet[entity_id]) == Player:
+                        creatures.append(spawnsheet[entity_id])
+                    else:   
+                        tile_map[y][x] = spawnsheet[entity_id].copy(x * TILE_SIZE, y * TILE_SIZE)
+
+                        Creature()
+                        
         
-        return tile_map
+        return tile_map, creatures
 
 
     @staticmethod
@@ -182,6 +194,7 @@ class World:
 
     def register_creature(self, creature):
         self.creatures.append(creature)
+        creature.world = self
     
 
     def unregister_creature(self, creature):
