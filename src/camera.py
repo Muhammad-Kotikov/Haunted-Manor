@@ -1,5 +1,6 @@
 import pygame
 from settings import DEBUGGING
+import math
 
 vec = pygame.Vector2
 
@@ -23,16 +24,11 @@ class Camera:
         if self.target:
 
             offset = vec(0, 0)
-
-            if self.target.velocity:
-                offset.x = self.target.velocity.x * 30
-                offset.y = self.target.velocity.y * 30
-            
             
             self.camera_target = self.target.rect.center + offset
 
-            self.position.x = pygame.math.lerp(self.position.x, self.camera_target.x, 0.05)
-            self.position.y = pygame.math.lerp(self.position.y, self.camera_target.y, 0.05)
+            self.position.x = pygame.math.lerp(self.position.x, self.camera_target.x, 0.04)
+            self.position.y = pygame.math.lerp(self.position.y, self.camera_target.y, 0.04)
 
             self.rect.centerx = round(self.position.x)
             self.rect.centery = round(self.position.y)

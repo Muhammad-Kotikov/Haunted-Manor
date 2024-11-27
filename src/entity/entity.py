@@ -19,7 +19,7 @@ class Entity:
 
 
     def render(self, screen, camera):
-        screen.blit(self.sprite, (self.rect.x - camera.rect.x, self.rect.y - camera.rect.y))
+        screen.blit(self.sprite, (round(self.rect.x - camera.rect.x), round(self.rect.y - camera.rect.y)))
     
 
     def tint(self, color, flag):
@@ -32,5 +32,3 @@ class Entity:
     def untint(self):
         
         self.sprite = self.original
-
-

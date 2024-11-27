@@ -1,5 +1,7 @@
 from settings import *
 from entity.tile.tile import *
+from entity.creature.player.player import *
+from entity.tile.trap.trap import *
 
 CHUNK_SIZE = 16
 
@@ -43,14 +45,22 @@ class World:
         -> tile_map
     """
 
-    def __init__(self, file, tile_properties):
+    def __init__(self, file, spawnsheet):
 
         tile_id_map = self.read_map(file)
         self.width = len(tile_id_map[0])
         self.height = len(tile_id_map)
         self.creatures = []
+        self.traps = []
 
-        self.tile_map = self.to_tiles(tile_id_map, tile_properties)
+        self.tile_map, creatures, traps = self.spawn_entities(tile_id_map, spawnsheet)
+
+        for creature in creatures:
+            self.register_creature(creature)
+
+        for trap in traps:
+            trap.world = self
+            self.traps.append(trap)
 
 
     def read_map(self, file):
@@ -78,22 +88,37 @@ class World:
     
 
     @staticmethod
-    def to_tiles(tile_id_map, tile_properties):
+    def spawn_entities(entity_id_map, spawnsheet):
         """
         Turns a map of tile_ids into a map of Tile Class Objects
         """
 
-        width = len(tile_id_map[0])
-        height = len(tile_id_map)
+        width = len(entity_id_map[0])
+        height = len(entity_id_map)
 
         tile_map = [[None for _ in range(width)] for _ in range(height)]
 
-        for y, row in enumerate(tile_id_map):
-            for x, tile_id in enumerate(row):
-                if tile_id != 0:
-                    tile_map[y][x] = Tile(*tile_properties[tile_id], x * TILE_SIZE, y * TILE_SIZE)
-        
-        return tile_map
+        creatures = []
+        traps = []
+
+        for y, row in enumerate(entity_id_map):
+            for x, entity_id in enumerate(row):
+                if entity_id != 0:
+                    entity = spawnsheet[entity_id]
+                    xx = x * TILE_SIZE
+                    yy = y * TILE_SIZE
+                    if type(entity) == Player:
+                        creatures.append(entity)
+                        entity.position = vec(xx, yy)
+                    elif type(entity) == Creature:
+                        creatures.append(entity)
+                        entity.position = vec(xx, yy)
+                    elif type(entity) == Trap:
+                        traps.append(entity.copy(xx, yy))
+                    elif type(entity) == Tile:   
+                        tile_map[y][x] = entity.copy(xx, yy)
+    
+        return tile_map, creatures, traps
 
 
     @staticmethod
@@ -171,18 +196,33 @@ class World:
                     tile.render(screen, camera)
 
                     
+
+        
+        for trap in self.traps:
+            trap.render(screen, camera)
+
         for creature in self.creatures:
             creature.render(screen, camera)
 
 
     def update(self, delta):
+
+        for trap in self.traps:
+            trap.update()
+
         for creature in self.creatures:
             creature.update(delta)
 
 
+
     def register_creature(self, creature):
+        if type(creature) == Player:
+            self.player = creature
         self.creatures.append(creature)
+        creature.world = self
     
 
     def unregister_creature(self, creature):
+        if type(creature) == Player:
+            self.player = None       
         self.creatures.remove(creature)
