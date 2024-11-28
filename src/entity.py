@@ -1,6 +1,5 @@
 import pygame
 from settings import TILE_SIZE
-from abc import abstractmethod
 
 vec = pygame.math.Vector2
 

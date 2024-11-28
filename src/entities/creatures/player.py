@@ -1,8 +1,8 @@
 import pygame
 import copy
 from settings import *
-from entity.creature.creature import Creature
-from testcollider import * 
+from entities.creature import Creature
+from collider import * 
 
 # Keymapping
 LEFT = pygame.K_a

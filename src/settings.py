@@ -12,6 +12,7 @@ HEIGHT = 15
 # so viele Bilder werden angezeigt und so oft kann sich etwas auf dem Bildschirm bewegen
 FRAMERATE = 60
 
+# Debug
 DEBUGGING = True
 SHOW_COLLISION_RANGE = True
 SHOW_MOVEMENT_VECTORS = True

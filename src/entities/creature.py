@@ -1,4 +1,4 @@
-from entity.entity import Entity
+from entity import Entity
 from abc import abstractmethod
 import pygame
 

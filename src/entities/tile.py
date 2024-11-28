@@ -1,4 +1,4 @@
-from entity.entity import Entity
+from entity import Entity
 
 class Tile(Entity):
 

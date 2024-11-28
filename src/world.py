@@ -1,7 +1,7 @@
 from settings import *
-from entity.tile.tile import *
-from entity.creature.player.player import *
-from entity.tile.trap.trap import *
+from entities.creatures.player import *
+from entities.tile import *
+from entities.tiles.trap import *
 
 CHUNK_SIZE = 16
 
