@@ -27,6 +27,7 @@ class Creature(Entity):
 
     @abstractmethod
     def update(self, dt):
+        super().update()
         pass
 
 

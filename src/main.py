@@ -9,6 +9,7 @@ from hud import *
 from entities.creatures.player import *
 from entities.tile import *
 from entities.tiles.trap import *
+from entities.creatures.enemy import *
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
@@ -55,14 +56,16 @@ sprites = {'brick' : get_sprite('brick.png'), 'pumpkin' : get_sprite('pumpkin.pn
 brick = Tile(True, sprites['brick'])
 
 player = Player(3, sprites['pumpkin'])
+enemy = Enemy(10, get_sprite("anna.png"),15* TILE_SIZE, 5 * TILE_SIZE,16,16)
 #saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 30)], False, get_sprite("skull_trap.png"), 0, 0, TILE_SIZE, TILE_SIZE)
 smart_saw = Trap(DETECTING, [(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), (0, 0, 0, 0, 1), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 999999)], False, get_sprite("skull_trap.png"))
-spawn_table = [None, brick, player, None, smart_saw]
+spawn_table = [None, brick, player, enemy, smart_saw]
 
 world = World(get_map("test_tilemap.tmx"), spawn_table)
 camera = Camera(pygame.Rect(0, 0, WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.Rect(0.0, 0.0, world.width * TILE_SIZE, world.height * TILE_SIZE), player)
 
 hud = HUD(player, sprites['heart'], sprites['empty_heart'])
+
 delta = 1
 ##########################################################################################################################
 

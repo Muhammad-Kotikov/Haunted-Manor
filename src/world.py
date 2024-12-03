@@ -2,6 +2,7 @@ from settings import *
 from entities.creatures.player import *
 from entities.tile import *
 from entities.tiles.trap import *
+from entities.creatures.enemy import *
 
 CHUNK_SIZE = 16
 
@@ -110,6 +111,9 @@ class World:
                     if type(entity) == Player:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
+                    elif type(entity) == Enemy:
+                        creatures.append(entity)
+                        entity.position = vec(xx, yy)
                     elif type(entity) == Creature:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
@@ -117,6 +121,7 @@ class World:
                         traps.append(entity.copy(xx, yy))
                     elif type(entity) == Tile:   
                         tile_map[y][x] = entity.copy(xx, yy)
+
     
         return tile_map, creatures, traps
 
