@@ -35,6 +35,8 @@ class Player(Creature):
         self.last_up = 0
         self.last_down = 0
 
+        self.interactables = []
+
         self.movement_state = -1
 
         self.pressed_direction = vec(0, 0)
@@ -212,6 +214,8 @@ class Player(Creature):
     
     def move_and_slide(self):
 
+
+
         # calculate velocity (without collision) based on player intent
         self.move()
 
@@ -252,6 +256,10 @@ class Player(Creature):
         if self.i_frames_left <= 0:
             self.invunerable = False
             self.untint()
+
+        if self.just_pressed(pygame.K_e) and len(self.interactables) > 0:
+            self.interactables[0].interact()
+        self.interactables.clear()
 
 
 

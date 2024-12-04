@@ -14,8 +14,6 @@ class Entity:
 
 
     def update(self):
-        self.rect.x = round(self.position.x)
-        self.rect.y = round(self.position.y)
         pass
 
 

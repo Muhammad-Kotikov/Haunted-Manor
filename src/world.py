@@ -2,7 +2,7 @@ from settings import *
 from entities.creatures.player import *
 from entities.tile import *
 from entities.tiles.trap import *
-from entities.creatures.enemy import *
+from entities.tiles.itile import *
 
 CHUNK_SIZE = 16
 
@@ -52,16 +52,16 @@ class World:
         self.width = len(tile_id_map[0])
         self.height = len(tile_id_map)
         self.creatures = []
-        self.traps = []
+        self.special_tiles = []
 
-        self.tile_map, creatures, traps = self.spawn_entities(tile_id_map, spawnsheet)
+        self.tile_map, creatures, special_tiles = self.spawn_entities(tile_id_map, spawnsheet)
 
         for creature in creatures:
             self.register_creature(creature)
 
-        for trap in traps:
-            trap.world = self
-            self.traps.append(trap)
+        for tile in special_tiles:
+            tile.world = self
+            self.special_tiles.append(tile)
 
 
     def read_map(self, file):
@@ -111,17 +111,13 @@ class World:
                     if type(entity) == Player:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
-                    elif type(entity) == Enemy:
-                        creatures.append(entity)
-                        entity.position = vec(xx, yy)
                     elif type(entity) == Creature:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
-                    elif type(entity) == Trap:
+                    elif type(entity) == Trap or type(entity) == ITile:
                         traps.append(entity.copy(xx, yy))
                     elif type(entity) == Tile:   
                         tile_map[y][x] = entity.copy(xx, yy)
-
     
         return tile_map, creatures, traps
 
@@ -203,8 +199,8 @@ class World:
                     
 
         
-        for trap in self.traps:
-            trap.render(screen, camera)
+        for tile in self.special_tiles:
+            tile.render(screen, camera)
 
         for creature in self.creatures:
             creature.render(screen, camera)
@@ -212,8 +208,8 @@ class World:
 
     def update(self, delta):
 
-        for trap in self.traps:
-            trap.update()
+        for tile in self.special_tiles:
+            tile.update()
 
         for creature in self.creatures:
             creature.update(delta)
