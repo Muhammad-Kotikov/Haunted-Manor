@@ -27,7 +27,7 @@ class Creature(Entity):
 
     @abstractmethod
     def update(self, dt):
-        pass
+        super().update()
 
 
     def render(self, screen, camera):

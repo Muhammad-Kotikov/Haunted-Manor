@@ -14,7 +14,8 @@ class Entity:
 
 
     def update(self):
-        pass
+        self.rect.x = round(self.position.x)
+        self.rect.y = round(self.position.y)
 
 
     def render(self, screen, camera):

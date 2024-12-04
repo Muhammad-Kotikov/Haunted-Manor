@@ -1,5 +1,6 @@
 from settings import *
 from entities.creatures.player import *
+from entities.creatures.enemy import *
 from entities.tile import *
 from entities.tiles.trap import *
 from entities.tiles.itile import *
@@ -109,11 +110,12 @@ class World:
                     entity = spawnsheet[entity_id]
                     xx = x * TILE_SIZE
                     yy = y * TILE_SIZE
-                    if type(entity) == Player:
+                    t = type(entity)
+                    if t == Player:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
-                    elif type(entity) == Creature:
-                        creatures.append(entity)
+                    elif t == Enemy or t == Creature:
+                        creatures.append(entity.copy(xx, yy))
                         entity.position = vec(xx, yy)
                     elif type(entity) == Trap or type(entity) == ITile or type(entity) == Door:
                         interactables.append(entity.copy(xx, yy))
