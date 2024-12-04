@@ -10,9 +10,12 @@ from entities.creatures.player import *
 from entities.tile import *
 from entities.tiles.trap import *
 from entities.tiles.itile import *
+from entities.tiles.door import *
 
 # https://www.youtube.com/watch?v=AY9MnQ4x3zk / Mua / 23.09.24
 # Danke Muha / 25.09.24
+
+rect = pygame.Rect
 
 def init():
     pygame.init()
@@ -57,22 +60,28 @@ def start_piano(screen):
 
 ########################################## BESSEREN CODE ZUM LADEN VON OBJEKTEN ##########################################
 
+sprites = {}
+
+for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door']:
+    sprites[sprite] = get_sprite(sprite + ".png")
+"""
 sprites = {'brick' : get_sprite('brick.png'),
            'pumpkin' : get_sprite('pumpkin.png'),
            'heart' : get_sprite('heart.png'),
            'empty_heart' : get_sprite('empty_heart.png'),
-           'piano' : get_sprite('piano.png')
+           'piano' : get_sprite('piano.png'),
+           'door' : get_sprite('door.png')
            }
-
+"""
 brick = Tile(True, sprites['brick'])
 piano = ITile(pygame.Rect(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), start_piano, screen, True, sprites['piano'])
 
 player = Player(3, sprites['pumpkin'])
 #saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 30)], False, get_sprite("skull_trap.png"), 0, 0, TILE_SIZE, TILE_SIZE)
 #smart_saw = Trap(DETECTING, [(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), (0, 0, 0, 0, 1), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 999999)], False, get_sprite("skull_trap.png"))
+door = Door(rect(-TILE_SIZE / 2, - TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE * 2), True, sprites['door'])
 
-
-spawn_table = [None, brick, player, piano, None]
+spawn_table = [None, brick, player, piano, door]
 
 world = World(get_map("test_tilemap.tmx"), spawn_table)
 camera = Camera(pygame.Rect(0, 0, WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame.Rect(0.0, 0.0, world.width * TILE_SIZE, world.height * TILE_SIZE), player)

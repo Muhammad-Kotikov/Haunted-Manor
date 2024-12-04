@@ -3,6 +3,7 @@ from entities.creatures.player import *
 from entities.tile import *
 from entities.tiles.trap import *
 from entities.tiles.itile import *
+from entities.tiles.door import *
 
 CHUNK_SIZE = 16
 
@@ -100,7 +101,7 @@ class World:
         tile_map = [[None for _ in range(width)] for _ in range(height)]
 
         creatures = []
-        traps = []
+        interactables = []
 
         for y, row in enumerate(entity_id_map):
             for x, entity_id in enumerate(row):
@@ -114,12 +115,12 @@ class World:
                     elif type(entity) == Creature:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
-                    elif type(entity) == Trap or type(entity) == ITile:
-                        traps.append(entity.copy(xx, yy))
+                    elif type(entity) == Trap or type(entity) == ITile or type(entity) == Door:
+                        interactables.append(entity.copy(xx, yy))
                     elif type(entity) == Tile:   
                         tile_map[y][x] = entity.copy(xx, yy)
     
-        return tile_map, creatures, traps
+        return tile_map, creatures, interactables
 
 
     @staticmethod
@@ -196,9 +197,6 @@ class World:
                 if tile is not None:
                     tile.render(screen, camera)
 
-                    
-
-        
         for tile in self.special_tiles:
             tile.render(screen, camera)
 

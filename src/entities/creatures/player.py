@@ -28,6 +28,8 @@ class Player(Creature):
 
         super().__init__(*args, **kwargs)
 
+        self.small_font = pygame.font.Font("/home/muha/Workspace/Haunted-Manor/rsc/fonts/minecraft_font.ttf", 7)
+
         self.collider = SimpleCollider()
 
         self.last_left = 0
@@ -191,15 +193,15 @@ class Player(Creature):
         # "*tuple" unpacks the values inside the tuple and uses them as paremeters for a function
         for tile_y in range(*collision_range_y):
             for tile_x in range(*collision_range_x):
-
                 if self.world.tile_map[tile_y][tile_x] != None and self.world.tile_map[tile_y][tile_x].has_collision == True:
-
                     self.collision_objects.append(self.world.tile_map[tile_y][tile_x])
+        
+        for interactable in self.interactables:
+            if interactable.has_collision:
+                self.collision_objects.append(interactable)
 
-      
-        for tile in self.collision_objects:
-            
-            if DEBUGGING and SHOW_COLLISION_RANGE:
+        if DEBUGGING and SHOW_COLLISION_RANGE:
+            for tile in self.collision_objects:
                 tile.tint((100, 100, 100, 255), pygame.BLEND_RGBA_MULT)
 
         self.position += self.velocity
@@ -233,7 +235,6 @@ class Player(Creature):
 
     def update(self, delta):
 
-
         self.delta_time = delta
 
         """ tint all tiles in the map
@@ -257,6 +258,8 @@ class Player(Creature):
             self.invunerable = False
             self.untint()
 
+        self.show_label = len(self.interactables) > 0
+
         if self.just_pressed(pygame.K_e) and len(self.interactables) > 0:
             self.interactables[0].interact()
         self.interactables.clear()
@@ -265,6 +268,10 @@ class Player(Creature):
 
     def render(self, screen, camera):
         super().render(screen, camera)
+
+        if self.show_label:
+            label = self.small_font.render("Press E to interact", 0, (255, 255, 255))
+            screen.blit(label, (screen.get_width() / 2 - label.get_width() / 2, screen.get_height() * 0.8))
 
         
         if DEBUGGING and SHOW_MOVEMENT_VECTORS:
