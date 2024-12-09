@@ -7,6 +7,13 @@ from collider import *
 
 vec = pygame.math.Vector2
 
+from patterns import Command
+
+class CommandDirection(Command):
+
+    def execute(self, direction : vec):
+        self.receiver.target_direction = direction
+
 class Creature(Entity):
 
     INVUNERABLE_FRAMES = 60

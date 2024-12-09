@@ -12,7 +12,7 @@ class Player(Creature):
 
         super().__init__(*args, **kwargs)
 
-        self.input = input.InputHander()
+        self.input = input.InputHander(self)
         self.interactables = []
         self.SMALL_FONT = pygame.font.Font("./rsc/fonts/minecraft_font.ttf", 7)
         self.tint_objects = []
@@ -24,7 +24,7 @@ class Player(Creature):
         """
 
         self.input.update_keys()
-        self.target_direction = self.input.get_target_direction()
+        #self.target_direction = self.input.get_target_direction()
 
     
     def update(self, delta):

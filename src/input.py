@@ -3,9 +3,14 @@ from copy import deepcopy
 from settings import key_map
 
 
+from entities.creature import CommandDirection
+
 class InputHander():
 
-    def __init__(self):
+    def __init__(self, player):
+
+        self.cmd = CommandDirection(player)
+
         self.pressed_direction = Vector2(0, 0)
         self.last_left = 0
         self.last_right = 0
@@ -30,6 +35,7 @@ class InputHander():
 
         self.keys_last = deepcopy(self.keys_pressed)
         self.keys_pressed = key.get_pressed()
+        self.get_target_direction()
 
 
     def get_target_direction(self):
@@ -83,4 +89,4 @@ class InputHander():
         if pressed_direction.length() != 0:
             pressed_direction.normalize()
         
-        return pressed_direction
+        self.cmd.execute(pressed_direction)
