@@ -1,3 +1,5 @@
+import pygame
+
 # Titel wird über dem Fenster angezeigt
 TITLE = "Haunted Manor"
 
@@ -16,3 +18,12 @@ FRAMERATE = 60
 DEBUGGING = True
 SHOW_COLLISION_RANGE = True
 SHOW_MOVEMENT_VECTORS = True
+
+# Keymapping
+key_map = {
+    "left" : pygame.K_a,
+    "right" : pygame.K_d,
+    "up" : pygame.K_w,
+    "down" : pygame.K_s,
+    "interact" : pygame.K_e
+}

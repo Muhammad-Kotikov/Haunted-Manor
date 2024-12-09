@@ -13,8 +13,7 @@ class ITile(Tile):
         self.params = params
 
     def update(self):
-        if self.range.colliderect(self.world.player.rect):
-            self.world.player.interactables.append(self)
+        super().update()
 
     def render(self, screen, camera):
         super().render(screen, camera)

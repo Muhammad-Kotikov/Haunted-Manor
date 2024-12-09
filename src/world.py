@@ -194,6 +194,14 @@ class World:
 
     def render(self, screen, camera):
 
+        """ tint all tiles in the map (moved from player, so probably broken)
+        for tile_row in self.world.tile_map:
+            for tile in tile_row:
+                if tile == None:
+                    continue
+                tile.tint((255, 255, 255, 50), pygame.BLEND_RGBA_MULT)
+        """
+
         for tile_row in self.tile_map[camera.rect.y // TILE_SIZE: (camera.rect.y + camera.rect.height) // TILE_SIZE + 1]:
             for tile in tile_row[camera.rect.x // TILE_SIZE: (camera.rect.x + camera.rect.width) // TILE_SIZE + 1]:
                 if tile is not None:
