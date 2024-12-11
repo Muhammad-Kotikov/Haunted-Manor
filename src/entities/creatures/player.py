@@ -14,7 +14,6 @@ class Player(Creature):
 
         self.input = input.InputHander(self)
         self.interactables = []
-        self.SMALL_FONT = pygame.font.Font("./rsc/fonts/minecraft_font.ttf", 7)
         self.tint_objects = []
 
     
@@ -44,10 +43,6 @@ class Player(Creature):
     def render(self, screen, camera):
         super().render(screen, camera)
 
-        if len(self.interactables) > 0:
-            label = self.SMALL_FONT.render("Press E to interact", 0, (255, 255, 255))
-            screen.blit(label, (screen.get_width() / 2 - label.get_width() / 2, screen.get_height() * 0.8))
-
         
         if DEBUGGING and SHOW_MOVEMENT_VECTORS:
 
@@ -56,8 +51,8 @@ class Player(Creature):
             velocity_normalized = vec(0, 0) if self.velocity.length() == 0 else self.velocity.normalize()
 
 
-            pygame.draw.line(screen, (0, 0, 255), relative_position_to_camera, relative_position_to_camera + self.target_direction * 30)
-            pygame.draw.line(screen, (255, 0, 0), relative_position_to_camera, relative_position_to_camera + velocity_normalized * 30)
+            pygame.draw.line(screen, (0, 0, 255), relative_position_to_camera, relative_position_to_camera + self.target_direction.normalize() * 10)
+            pygame.draw.line(screen, (255, 0, 0), relative_position_to_camera, relative_position_to_camera + velocity_normalized * 20)
 
         if DEBUGGING and SHOW_COLLISION_RANGE:
 

@@ -1,4 +1,5 @@
 import pygame
+import shader
 
 from tools import *
 from camera import *
@@ -33,11 +34,17 @@ def update(delta):
 
 def render():
     # Malfläche zurücksetzen
-    screen.fill((50, 50, 50))
+    screen.fill((255, 255, 255))
 
     world.render(screen, camera)
     camera.render(screen)
+
+    rel_player_pos_cam = world.player.rect.center - camera.position
+    shader.add_light_source(rel_player_pos_cam, 50)
+    shader.lightning()
     hud.render(screen)
+
+
 
     # Malfläche anzeigen
     pygame.display.flip()
@@ -54,6 +61,8 @@ screen = pygame.display.set_mode((WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), pygame
 pygame.display.set_caption(TITLE)
 
 init()
+
+shader.init(screen)
 
 ########################################## BESSEREN CODE ZUM LADEN VON OBJEKTEN ##########################################
 
@@ -77,8 +86,9 @@ world = World(get_map("test_tilemap.tmx"), spawn_table)
 camera = Camera(rect(0, 0, WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE), rect(0.0, 0.0, world.width * TILE_SIZE, world.height * TILE_SIZE), player)
 
 hud = HUD(player, sprites['heart'], sprites['empty_heart'])
-delta = 1
 ##########################################################################################################################
+
+delta = 1
 
 while running:
 
