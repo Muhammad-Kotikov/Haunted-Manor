@@ -17,8 +17,9 @@ def get_sprite(filename: str):
         sprite = pygame.image.load(os.path.join(get_game_folder(), f'rsc/sprites/{filename}')).convert_alpha()
         return sprite
             
-    except:
+    except Exception as e:
         print("ERROR Loading sprite", filename)
+        print(e)
 
 
 def get_map(filename: str):
@@ -28,3 +29,8 @@ def get_map(filename: str):
     
     except:
         print("ERROR: Loading map ", filename)
+
+
+def get_full_path(relative_path: str):
+
+    return os.path.join(get_game_folder(), f'rsc/{relative_path}')

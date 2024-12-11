@@ -1,4 +1,5 @@
 import pygame
+from tools import get_full_path
 
 class HUD:
 
@@ -7,7 +8,7 @@ class HUD:
         self.target = target
         self.health_sprite = health_sprite
         self.empty_health_sprite = empty_health_sprite
-        self.SMALL_FONT = pygame.font.Font("./rsc/fonts/minecraft_font.ttf", 7)
+        self.SMALL_FONT = pygame.font.Font(get_full_path("fonts/minecraft_font.ttf"), 7)
 
     
 
