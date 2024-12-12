@@ -112,6 +112,7 @@ class InGame(GameState):
         shader.add_light_source(rel_player_pos_cam, 50)
         shader.lightning()
         self.hud.render(self.context.screen)
+        shader.crt()
 
 
     def enter(self):

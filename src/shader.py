@@ -6,7 +6,7 @@ h = 0
 w = 0
 
 light_map = None
-ambient_light = 0.15
+ambient_light = 0.1
 
 def init(screen : Surface):
 
@@ -35,8 +35,8 @@ def lightning():
 
     ### Farben dunkel färben (numpy magie)
     r = (r * light_map).astype(np.uint8)
-    g = (g * light_map).astype(np.uint8)
-    b = (b * light_map * 0.9).astype(np.uint8)
+    g = (g * light_map * 0.75).astype(np.uint8)
+    b = (b * light_map * 0.75).astype(np.uint8)
 
     # Array mit neuen Farben updaten
     p[:, :, 0] = r
@@ -76,6 +76,29 @@ def add_light_source(point : Vector2, radius : int):
     light_map = 1.0 - ds
 
 
-def get_light_map():
+def crt():
 
-    return light_map
+    f = 0.975
+
+    # Pixel (Refferenzen) holen
+    # 3D = 3 Dimensionen (Breite, Höhe, Farbkanal [Rot, Grün, Blau])
+    # 3D > 2D weil 2D müssen wir Dec Farbwerte -> Hex Farbwerte
+    p = surfarray.pixels3d(s)
+
+    # Farben trennen
+    r = p[:, :, 0]
+    g = p[:, :, 1]
+    b = p[:, :, 2]
+
+    # Scanlines
+    r[:, 0::3] = (r[:, 0::3] * f).astype(np.uint8)
+    r[:, 1::3] = (r[:, 1::3] * f).astype(np.uint8)
+    g[:, 1::3] = (g[:, 1::3] * f).astype(np.uint8)
+    g[:, 2::3] = (g[:, 2::3] * f).astype(np.uint8)
+    b[:, 2::3] = (b[:, 2::3] * f).astype(np.uint8)
+    b[:, 3::3] = (b[:, 3::3] * f).astype(np.uint8)
+
+    # Zwischenarray mit neuen Farben updaten
+    p[:, :, 0] = r
+    p[:, :, 1] = g
+    p[:, :, 2] = b
