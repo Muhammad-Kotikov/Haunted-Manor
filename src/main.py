@@ -8,13 +8,16 @@ pygame.display.set_mode()
 
 m = MainMenu()
 i = InGame()
+d = InDialogue()
 
-game = Game(m)
+game = Game(d)
 game.menu = m
 game.ingame = i
+game.indialogue = d
 
 while game.running:
 
+    game.screen.fill((0, 0, 0))
     game.update()
     game.render()
     pygame.display.update()

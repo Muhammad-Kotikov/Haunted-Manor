@@ -1,6 +1,7 @@
 import pygame
 import shader
 import menu
+import dialogue
 
 from patterns import State, Context
 from settings import *
@@ -158,3 +159,39 @@ class MainMenu(GameState):
 
         self.menu.start = False
         self.menu.main_menu = True
+
+
+class InDialogue(GameState):
+
+    def __init__(self):
+        Resolution.WIDTH = 400
+        Resolution.HEIGHT = 400
+
+        bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+        txt = ["ha" * 50, "have fun" * 5]
+
+        self.dialogue = dialogue.Dialogue(txt, bgs)
+
+    def update(self):
+        self.dialogue.update()
+        if self.dialogue.done:
+            self.context._next_state = self.context.ingame
+
+
+    def render(self):
+        self.dialogue.render()
+        pass
+
+
+    def enter(self):
+        Resolution.WIDTH = 400
+        Resolution.HEIGHT = 400
+        self.context.screen = pygame.display.set_mode((Resolution.WIDTH, Resolution.HEIGHT), pygame.SCALED + pygame.FULLSCREEN)
+        self.dialogue.screen = self.context.screen
+
+        self.dialogue.exit = False
+        self.dialogue.phase = 0
+
+
+    def exit(self):
+        pass
