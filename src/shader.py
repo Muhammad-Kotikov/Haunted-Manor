@@ -2,103 +2,118 @@ from pygame import Surface, surfarray, Vector2
 import numpy as np
 
 s = None
+r = None
+g = None
+b = None
 h = 0
 w = 0
 
+RED_CHANNEL = 0
+GREEN_CHANNEL = 1
+BLUE_CHANNEL = 2
+
+COLOR_CHANNELS = [RED_CHANNEL, GREEN_CHANNEL, BLUE_CHANNEL]
+
 light_map = None
-ambient_light = 0.1
+ambient_color = None
+light_sources = []
 
-def init(screen : Surface):
+class LightSource():
 
-    global s
-    global w
-    global h
+    def __init__(self, position : Vector2, offset : Vector2, radius : int, color : tuple):
+
+        self.position = position
+        self.radius = radius
+        self.color = color
+        self.offset = offset
+        light_sources.append(self)
+
+
+    def update(self, radius = None, color = None):
+        self.x = round(self.position.x - camera.position.x + self.offset.x)
+        self.y = round(self.position.y - camera.position.y + self.offset.y)
+
+        if radius != None:
+            self.radius = radius
+        
+        if color != None:
+            self.color = color
+
+
+def init(screen : Surface, c, a = (25, 10, 10)):
+
+    global camera
+    global s, p
+    global w, h
     global light_map
+    global r, g, b
+    global ambient_color
+
+    camera = c
+    ambient_color = a
 
     s = screen
     h = screen.get_height()
     w = screen.get_width()
-    light_map = np.zeros(shape=(w, h)).astype(np.float16)
 
-# Mit Hilfe von ChatGPT, allerdings stark überarbeitet
+    light_map = np.zeros(shape=(w, h, 3)).astype(np.uint8)
+
+
 def lightning():
-    
+
     # Pixel (Refferenzen) holen
     # 3D = 3 Dimensionen (Breite, Höhe, Farbkanal [Rot, Grün, Blau])
     # 3D > 2D weil 2D müssen wir Dec Farbwerte -> Hex Farbwerte
     p = surfarray.pixels3d(s)
-
-    # Farben trennen
-    r = p[:, :, 0]
-    g = p[:, :, 1]
-    b = p[:, :, 2]
-
-    ### Farben dunkel färben (numpy magie)
-    r = (r * light_map).astype(np.uint8)
-    g = (g * light_map * 0.75).astype(np.uint8)
-    b = (b * light_map * 0.75).astype(np.uint8)
-
-    # Array mit neuen Farben updaten
-    p[:, :, 0] = r
-    p[:, :, 1] = g
-    p[:, :, 2] = b
+    reset()
+    apply_light_sources()
+    apply_light_map(p)
 
 
-def add_light_source(point : Vector2, radius : int):
+# Mit Hilfe von ChatGPT, allerdings stark überarbeitet
+def reset():
+
+    for channel in COLOR_CHANNELS:
+        light_map[:, :, channel] = ambient_color[channel]
+
+
+def apply_light_sources():
 
     # https://stackoverflow.com/questions/61628380/calculate-distance-from-all-points-in-numpy-array-to-a-single-point-on-the-basis
     def dist_map(a, index):
         i,j = np.indices(a.shape, sparse=True)
         return np.sqrt((i-index[0])**2 + (j-index[1])**2)
 
-    point_array = [point.x, point.y]
+    for source in light_sources:
+        source.update()
+        point_array = [source.x, source.y]
 
-    # Grenzen der Lichtberechnung zur Optimierung
-    min_x = int(max(0, point.x - radius))
-    max_x = int(min(point.x + radius, w))
-    min_y = int(max(0, point.y - radius))
-    max_y = int(min(point.y + radius, h))
+        # leeres array erstellen (ds = distance-shadow ...
+        # because its the distance and shadow and whatever)
+        ds = np.zeros(light_map[:, :, 0].shape)
+        # distanzen berechnen (danke stack overflow)
+        ds = dist_map(ds, point_array)
+        # (relevanten) werte auf 0.0 - 1.0 skalieren
+        # (manche sind über 1.0, werden nächste zeile gefiltert)
+        ds[:, :] = ds[:, :] / source.radius
+        # licht beschränken
+        ds = np.clip(ds, a_min=0, a_max=1)
+        # invertieren (kleinere distanz = hellere farbe)
+        ds = 1 - ds
+
+        for color_channel in COLOR_CHANNELS:
+            light_map[:, :, color_channel] = np.maximum(light_map[:, :, color_channel], np.astype(source.color[color_channel] * ds, np.uint8))
+
+
+def apply_light_map(p):
     
-
-    global light_map
-
-    # leeres array erstellen (ds = distance-shadow ...
-    # because its the distance and shadow and whatever)
-    ds = np.zeros(light_map.shape)
-    # distanzen berechnen (danke stack overflow)
-    ds = dist_map(ds, point_array)
-    # (relevanten) werte auf 0.0 - 1.0 skalieren
-    # (manche sind über 1.0, werden nächste zeile gefiltert)
-    ds = ds / radius
-    # licht beschränken
-    ds = np.clip(ds, a_min=0, a_max=1 - ambient_light)
-    # invertieren (kleinere distanz = hellere farbe)
-    light_map = 1.0 - ds
+    p[:, :, :] = np.astype(p[:, :, :] * (light_map[:, :, :] / 255), np.uint8)
 
 
-def crt():
+def crt(f=0.96):
 
-    f = 0.975
-
-    # Pixel (Refferenzen) holen
-    # 3D = 3 Dimensionen (Breite, Höhe, Farbkanal [Rot, Grün, Blau])
-    # 3D > 2D weil 2D müssen wir Dec Farbwerte -> Hex Farbwerte
     p = surfarray.pixels3d(s)
 
-    # Farben trennen
-    r = p[:, :, 0]
-    g = p[:, :, 1]
-    b = p[:, :, 2]
-
-    # Scanlines
-    r[:, 0::3] = (r[:, 0::3] * f).astype(np.uint8)
-    r[:, 1::3] = (r[:, 1::3] * f).astype(np.uint8)
-    g[:, 1::3] = (g[:, 1::3] * f).astype(np.uint8)
-    g[:, 2::3] = (g[:, 2::3] * f).astype(np.uint8)
-    b[:, 2::3] = (b[:, 2::3] * f).astype(np.uint8)
-    b[:, 3::3] = (b[:, 3::3] * f).astype(np.uint8)
-
-    # Zwischenarray mit neuen Farben updaten
-    p[:, :, 0] = r
-    p[:, :, 1] = g
-    p[:, :, 2] = b
+    for index, channel in enumerate(COLOR_CHANNELS):
+        p[:, index    ::3, channel] = np.astype(p[:, index    ::3, channel] * f, np.uint8)
+        p[:, index + 1::3, channel] = np.astype(p[:, index + 1::3, channel] * f, np.uint8)

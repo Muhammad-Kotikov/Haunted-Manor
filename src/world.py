@@ -6,6 +6,8 @@ from entities.tiles.trap import *
 from entities.tiles.itile import *
 from entities.tiles.door import *
 
+import shader
+
 CHUNK_SIZE = 16
 
 class World:
@@ -111,6 +113,8 @@ class World:
                     xx = x * TILE_SIZE
                     yy = y * TILE_SIZE
                     t = type(entity)
+                    if entity_id == 8:
+                        shader.LightSource(vec(xx, yy), vec(8, 8), 50, (125, 125, 75))
                     if t == Player:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)

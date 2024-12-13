@@ -61,7 +61,7 @@ class InGame(GameState):
 
         sprites = {}
 
-        for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door']:
+        for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door', 'torch']:
             sprites[sprite] = get_sprite(sprite + ".png")
 
         brick = Tile(True, sprites['brick'])
@@ -72,14 +72,16 @@ class InGame(GameState):
         saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 30)], False, get_sprite("skull_trap.png"), 0, 0, TILE_SIZE, TILE_SIZE)
         smart_saw = Trap(DETECTING, [(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), (0, 0, 0, 0, 1), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 999999)], False, get_sprite("skull_trap.png"))
         door = Door(pygame.Rect(-TILE_SIZE / 2, - TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE * 2), True, sprites['door'])
+        torch = Tile(False, sprites["torch"])
 
-        spawn_table = [None, brick, player, piano, door, saw, smart_saw, enemy]
+        spawn_table = [None, brick, player, piano, door, saw, smart_saw, enemy, torch]
 
         self.world = World(get_map("test_tilemap.tmx"), spawn_table)
 
         self.camera = Camera(pygame.Rect(0, 0, Resolution.WIDTH, Resolution.HEIGHT), pygame.Rect(0.0, 0.0, self.world.width * TILE_SIZE, self.world.height * TILE_SIZE), player)
         self.hud = HUD(player, sprites['heart'], sprites['empty_heart'])
 
+        shader.LightSource(player.position, vec(player.rect.width // 2, player.rect.height // 2), 100, (175, 125, 125))
         ###
 
     def update(self):
@@ -110,7 +112,6 @@ class InGame(GameState):
         self.camera.render(self.context.screen)
 
         rel_player_pos_cam = self.world.player.rect.center - self.camera.position
-        shader.add_light_source(rel_player_pos_cam, 50)
         shader.lightning()
         self.hud.render(self.context.screen)
         shader.crt()
@@ -121,7 +122,7 @@ class InGame(GameState):
         Resolution.WIDTH = 20 * TILE_SIZE
         Resolution.HEIGHT = 15 * TILE_SIZE
         self.context.screen = pygame.display.set_mode((Resolution.WIDTH, Resolution.HEIGHT), pygame.SCALED + pygame.FULLSCREEN)
-        shader.init(self.context.screen)
+        shader.init(self.context.screen, self.camera)
     
 
     def exit(self):

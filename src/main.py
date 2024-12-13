@@ -26,5 +26,4 @@ while game.running:
 
     if game._state != game._next_state:
         game.transition_to(game._next_state)
-
-quit()
+ 
