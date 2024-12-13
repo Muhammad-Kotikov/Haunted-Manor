@@ -1,25 +1,36 @@
 from game import *
 import pygame
+from settings import Display, Resolution
+
 
 # einzelne funktionen müssen hier schon initialisiert werden weil sonst die Bilder nicht laden
 pygame.init()
 pygame.mixer.init()
-pygame.display.set_mode()
+pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+display_info = pygame.display.Info()
+Display.WIDTH = display_info.current_w
+Display.HEIGHT = display_info.current_h
+
+display = pygame.display.set_mode((Display.WIDTH, Display.HEIGHT), pygame.FULLSCREEN)
 
 m = MainMenu()
 i = InGame()
-d = InDialogue()
+#d = InDialogue()
 
-game = Game(d)
+game = Game(m)
 game.menu = m
 game.ingame = i
-game.indialogue = d
+#game.indialogue = d
 
 while game.running:
 
-    game.screen.fill((0, 0, 0))
+    display.fill((0, 0, 0))
     game.update()
     game.render()
+    display.blit(pygame.transform.scale_by(game.screen, Resolution.SCALE), (Resolution.X_OFFSET, Resolution.Y_OFFSET))
+    #display.blit(game.screen, (0, 0))
+    #display.blit(pygame.transform.scale(game.screen, display.get_rect().size), (0, 0))
     pygame.display.update()
 
     game.delta = game.clock.tick(FRAMERATE)

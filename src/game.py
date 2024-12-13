@@ -28,7 +28,7 @@ class Game(Context):
 
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-        self.screen  = pygame.display.set_mode((Resolution.WIDTH, Resolution.HEIGHT), pygame.SCALED + pygame.FULLSCREEN)
+        #self.screen = set_resolution(Display.WIDTH, Display.HEIGHT)
         self._next_state = state
         self.running = True
         self.delta = 0
@@ -55,8 +55,7 @@ class GameState(State):
 class InGame(GameState):
 
     def __init__(self):
-        Resolution.WIDTH = 20 * TILE_SIZE
-        Resolution.HEIGHT = 15 * TILE_SIZE
+        _ = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
 
         self.paused = False
 
@@ -134,9 +133,7 @@ class InGame(GameState):
 
     def enter(self):
         self.context.paused = False
-        Resolution.WIDTH = 20 * TILE_SIZE
-        Resolution.HEIGHT = 15 * TILE_SIZE
-        self.context.screen = pygame.display.set_mode((Resolution.WIDTH, Resolution.HEIGHT), pygame.SCALED + pygame.FULLSCREEN)
+        self.context.screen = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
         shader.init(self.context.screen, self.camera)
     
 
@@ -147,8 +144,7 @@ class InGame(GameState):
 class MainMenu(GameState):
 
     def __init__(self):
-        Resolution.WIDTH = 1200
-        Resolution.HEIGHT = 800
+        self.screen = set_resolution(1200, 800)
         self.menu = menu.Menu()
 
     
@@ -167,10 +163,8 @@ class MainMenu(GameState):
 
 
     def enter(self):
-        Resolution.WIDTH = 1200
-        Resolution.HEIGHT = 800
-        
-        self.context.screen = pygame.display.set_mode((Resolution.WIDTH, Resolution.HEIGHT), pygame.SCALED + pygame.FULLSCREEN)
+
+        self.context.screen = set_resolution(1200, 800)
         self.menu.screen = self.context.screen
 
         self.menu.start = False
@@ -180,8 +174,8 @@ class MainMenu(GameState):
 class InDialogue(GameState):
 
     def __init__(self):
-        Resolution.WIDTH = 400
-        Resolution.HEIGHT = 400
+        self.screen = set_resolution(400, 400)
+        self.dialogue.screen = pygame.Surface((400, 400))
 
         bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
         txt = ["ha" * 50, "have fun" * 5]
@@ -200,9 +194,7 @@ class InDialogue(GameState):
 
 
     def enter(self):
-        Resolution.WIDTH = 400
-        Resolution.HEIGHT = 400
-        self.context.screen = pygame.display.set_mode((Resolution.WIDTH, Resolution.HEIGHT), pygame.SCALED + pygame.FULLSCREEN)
+        self.context.screen = set_resolution(400, 400)
         self.dialogue.screen = self.context.screen
 
         self.dialogue.exit = False

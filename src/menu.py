@@ -65,8 +65,7 @@ class Menu():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-
+                    mouse_x, mouse_y = self.get_mp()
                     if self.main_menu:
                         for button in self.buttons:
                             if button["rect"].collidepoint(mouse_x, mouse_y):
@@ -94,6 +93,8 @@ class Menu():
 
     def render(self):
 
+        self.screen.fill((0, 0, 0))
+
         if self.main_menu:
             self.screen.blit(self.background_image, (0, 0))
             self.draw_menu()
@@ -115,7 +116,7 @@ class Menu():
         title_shadow_rect   = title_shadow.get_rect(center=(Resolution.WIDTH // 2 + 5, 150 + 5))
         self.screen.blit(title_shadow, title_shadow_rect)
 
-        mouse_pos = pygame.mouse.get_pos()
+        mouse_pos = self.get_mp()
 
         for button in self.buttons:
             if button["clicked"]:
@@ -133,7 +134,7 @@ class Menu():
 
     ####Zurück-Button darstellen
     def draw_backbtn(self):
-        mouse_pos = pygame.mouse.get_pos()
+        mouse_pos = self.get_mp()
         if self.back_button_rect.collidepoint(mouse_pos):
             color = self.RED
         else:
@@ -171,6 +172,14 @@ class Menu():
         options_text = self.font.render("Options", True, self.WHITE)
         options_text_rect = options_text.get_rect(center=(Resolution.WIDTH // 2, Resolution.HEIGHT // 2))
         self.screen.blit(options_text, options_text_rect)
+
+
+    def get_mp(self):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        mouse_x = int(mouse_x / Resolution.SCALE - Resolution.X_OFFSET)
+        mouse_y = int(mouse_y / Resolution.SCALE - Resolution.Y_OFFSET)
+
+        return mouse_x, mouse_y
 
 """
     ####Game darstellen

@@ -1,8 +1,16 @@
 import pygame
 
 class Resolution:
-    WIDTH = 1200
-    HEIGHT = 800
+    WIDTH = 1280
+    HEIGHT = 720
+    X_OFFSET = 0
+    Y_OFFSET = 0
+    SCALE = 0
+
+class Display:
+    WIDTH = 1280
+    HEIGHT = 720
+
 
 # Titel wird über dem Fenster angezeigt
 TITLE = "Haunted Manor"
@@ -28,3 +36,19 @@ key_map = {
     "interact" : pygame.K_e,
     "dialogue_next" : pygame.K_SPACE
 }
+
+def set_resolution(width, height):
+
+    rs = min(Display.WIDTH // width, Display.HEIGHT // height)
+
+    if rs <= 0:
+        print("Display too small to display target resolution")
+        return
+
+    Resolution.WIDTH = width
+    Resolution.HEIGHT = height
+    Resolution.SCALE = rs
+    Resolution.X_OFFSET = (Display.WIDTH - Resolution.WIDTH * Resolution.SCALE) // 2
+    Resolution.Y_OFFSET = (Display.HEIGHT - Resolution.HEIGHT * Resolution.SCALE) // 2
+
+    return pygame.Surface((Resolution.WIDTH, Resolution.HEIGHT))
