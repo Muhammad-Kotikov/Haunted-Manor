@@ -2,7 +2,6 @@ from game import *
 import pygame
 from settings import Display, Resolution
 
-
 # einzelne funktionen müssen hier schon initialisiert werden weil sonst die Bilder nicht laden
 pygame.init()
 pygame.mixer.init()
@@ -16,12 +15,12 @@ display = pygame.display.set_mode((Display.WIDTH, Display.HEIGHT), pygame.FULLSC
 
 m = MainMenu()
 i = InGame()
-#d = InDialogue()
+d = InDialogue()
 
 game = Game(m)
 game.menu = m
 game.ingame = i
-#game.indialogue = d
+game.indialogue = d
 
 while game.running:
 

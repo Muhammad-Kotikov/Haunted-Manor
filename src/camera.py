@@ -1,5 +1,4 @@
 import pygame
-from settings import DEBUGGING
 import math
 from entity import Entity
 

@@ -22,11 +22,6 @@ TILE_SIZE = 16
 # so viele Bilder werden angezeigt und so oft kann sich etwas auf dem Bildschirm bewegen
 FRAMERATE = 60
 
-# Debug
-DEBUGGING = False
-SHOW_COLLISION_RANGE = True
-SHOW_MOVEMENT_VECTORS = True
-
 # Keymapping
 key_map = {
     "left" : pygame.K_a,
@@ -52,3 +47,15 @@ def set_resolution(width, height):
     Resolution.Y_OFFSET = (Display.HEIGHT - Resolution.HEIGHT * Resolution.SCALE) // 2
 
     return pygame.Surface((Resolution.WIDTH, Resolution.HEIGHT))
+
+
+options = {
+    'debugging' : False,
+    'collision_range' : False,
+    'movement_vectors' : False 
+    }
+
+def toggle(option):
+    options[option] = not options[option]
+
+

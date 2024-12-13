@@ -19,8 +19,6 @@ from entities.tiles.trap import *
 from entities.tiles.itile import *
 from entities.tiles.door import *
 from entities.powerup import *
-
-
 class Game(Context):
 
     def __init__(self, state: State):
@@ -106,7 +104,7 @@ class InGame(GameState):
             if event.type == pygame.QUIT:
                 self.context.running = False
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                self.context._next_state = self.context.menu
+                self.context._next_state = self.context.indialogue
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE):
                 self.paused = not self.paused
 
@@ -174,8 +172,8 @@ class MainMenu(GameState):
 class InDialogue(GameState):
 
     def __init__(self):
-        self.screen = set_resolution(400, 400)
-        self.dialogue.screen = pygame.Surface((400, 400))
+        _ = set_resolution(400, 400)
+        #self.dialogue.screen = pygame.Surface((400, 400))
 
         bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
         txt = ["ha" * 50, "have fun" * 5]
@@ -202,4 +200,54 @@ class InDialogue(GameState):
 
 
     def exit(self):
+        self.dialogue.phase = 0
+        self.dialogue.text_amount = 0
+        self.dialogue.text_frame = 0
+        self.dialogue.done = False
+
+class INPause(GameState):
+    def __init__(self):
+        _ = set_resolution(400, 400)
+
+    def update(self):
         pass
+
+
+    def render(self):
+        pass
+
+
+    def enter(self):
+        self.context.screen = set_resolution(400, 400)
+
+    def exit(self):
+        pass
+
+class InIntro(GameState):
+    def __init__(self):
+        self.screen = pygame.display.set_mode((400, 400))
+        pygame.display.set_caption("Intro Video")
+        self.video = None
+        self.clock = pygame.time.Clock()
+
+        self.video = VideoFileClip("path_to_your_video.mp4")
+        self.video.preview()
+
+    def update(self):
+        pass
+
+    def render(self):
+        if self.video:
+            frame = self.video.get_frame(self.clock.get_time() / 1000.0)
+            frame_surface = pygame.image.frombuffer(frame.tobytes(), frame.shape[1::-1], "RGB")
+            self.screen.blit(frame_surface, (0, 0))
+            pygame.display.flip()
+            self.clock.tick(FRAMERATE) 
+
+    def enter(self):
+        # Lade das Video
+        pass
+
+    def exit(self):
+        self.video.close()
+        pygame.quit()

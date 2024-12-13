@@ -53,19 +53,19 @@ class Player(Creature):
 
     def render(self, screen, camera):
         super().render(screen, camera)
-
         
-        if DEBUGGING and SHOW_MOVEMENT_VECTORS:
+        if options['debugging'] and options['movement_vectors']:
 
             relative_position_to_camera = (self.rect.centerx - camera.rect.x, self.rect.centery - camera.rect.y)
 
             velocity_normalized = vec(0, 0) if self.velocity.length() == 0 else self.velocity.normalize()
 
-
-            pygame.draw.line(screen, (0, 0, 255), relative_position_to_camera, relative_position_to_camera + self.target_direction.normalize() * 10)
+            if self.target_direction.length() > 0 :
+                pygame.draw.line(screen, (0, 0, 255), relative_position_to_camera, relative_position_to_camera + self.target_direction.normalize() * 10)
+            
             pygame.draw.line(screen, (255, 0, 0), relative_position_to_camera, relative_position_to_camera + velocity_normalized * 20)
 
-        if DEBUGGING and SHOW_COLLISION_RANGE:
+        if options['debugging'] and options['collision_range']:
 
             for tinted_object in self.tint_objects:
                 tinted_object.untint()
