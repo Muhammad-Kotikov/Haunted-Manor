@@ -44,6 +44,9 @@ class Creature(Entity):
         self.invunerable = False
         self.i_frames_left = 0
 
+        self.acc_fac = 1
+        self.spd_fac = 1
+
     @abstractmethod
     def control(self):
         pass
@@ -97,13 +100,13 @@ class Creature(Entity):
 
         if self.target_direction != vec(0, 0):
             self.movement_state = self.RUNNING
-            new_speed = min((self.velocity.length() + self.ACCELERATION * self.delta_time), self.MAX_SPEED)
+            new_speed = min((self.velocity.length() + self.ACCELERATION * self.acc_fac * self.delta_time), self.MAX_SPEED * self.spd_fac)
             direction = self.target_direction
         
 
         elif self.target_direction == vec(0, 0) and self.velocity.length() > 0:
             self.movement_state = self.STOPPING
-            new_speed = max((self.velocity.length() - self.DECELERATION * self.delta_time), 0)
+            new_speed = max((self.velocity.length() - self.DECELERATION * self.acc_fac * self.delta_time), 0)
             direction = self.velocity.normalize()
 
 
@@ -115,10 +118,10 @@ class Creature(Entity):
 
         """ uncomment when player ignores max speed, math.lerp "soft clamps" it anyway so not really needed """
         if self.velocity.length() > 0:
-            self.velocity.clamp_magnitude_ip(self.MAX_SPEED)
+            self.velocity.clamp_magnitude_ip(self.MAX_SPEED * self.spd_fac)
         
 
-        self.velocity = pygame.math.lerp(0, self.MAX_SPEED, smoothstep(new_speed / self.MAX_SPEED)) * direction
+        self.velocity = pygame.math.lerp(0, self.MAX_SPEED * self.spd_fac, smoothstep(new_speed / (self.MAX_SPEED * self.spd_fac))) * direction
 
 
       

@@ -18,6 +18,7 @@ from entities.tile import *
 from entities.tiles.trap import *
 from entities.tiles.itile import *
 from entities.tiles.door import *
+from entities.powerup import *
 
 
 class Game(Context):
@@ -61,7 +62,7 @@ class InGame(GameState):
 
         sprites = {}
 
-        for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door', 'torch']:
+        for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door', 'torch', 'health_pickup', 'speed_pickup', 'nv_pickup']:
             sprites[sprite] = get_sprite(sprite + ".png")
 
         brick = Tile(True, sprites['brick'])
@@ -69,12 +70,26 @@ class InGame(GameState):
 
         player = Player(3, sprites['pumpkin'])
         enemy = Enemy(10, get_sprite("anna.png"),15* TILE_SIZE, 5 * TILE_SIZE,16,16)
-        saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 30)], False, get_sprite("skull_trap.png"), 0, 0, TILE_SIZE, TILE_SIZE)
+        saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 30)], False, get_sprite("skull_trap.png"))
         smart_saw = Trap(DETECTING, [(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), (0, 0, 0, 0, 1), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 999999)], False, get_sprite("skull_trap.png"))
-        door = Door(pygame.Rect(-TILE_SIZE / 2, - TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE * 2), True, sprites['door'])
+        door = Door(pygame.Rect(-TILE_SIZE, - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), True, sprites['door'])
         torch = Tile(False, sprites["torch"])
 
-        spawn_table = [None, brick, player, piano, door, saw, smart_saw, enemy, torch]
+
+        def heal():
+            self.world.player.health = min(self.world.player.health + 1, self.world.player.hitpoints)
+        
+        def speed():
+            self.world.player.speed_boost_duration = 60 * 5
+
+        def night_vision():
+            shader.nv_duration = 60 * 5
+
+        health_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), heal, sprite=sprites["health_pickup"])
+        speed_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), speed, sprite=sprites["speed_pickup"])
+        nv_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), night_vision, sprite=sprites["nv_pickup"])
+
+        spawn_table = [None, brick, player, piano, door, saw, smart_saw, enemy, torch, health_pickup, speed_pickup, nv_pickup]
 
         self.world = World(get_map("test_tilemap.tmx"), spawn_table)
 

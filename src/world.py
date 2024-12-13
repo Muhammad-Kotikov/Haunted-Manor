@@ -5,6 +5,7 @@ from entities.tile import *
 from entities.tiles.trap import *
 from entities.tiles.itile import *
 from entities.tiles.door import *
+from entities.powerup import *
 
 import shader
 
@@ -56,20 +57,25 @@ class World:
         self.width = len(tile_id_map[0])
         self.height = len(tile_id_map)
         self.creatures = []
-        self.special_tiles = []
+        self.interactables = []
+        self.other = []
 
-        self.tile_map, creatures, special_tiles = self.spawn_entities(tile_id_map, spawnsheet)
+        self.tile_map, creatures, interactables, other = self.spawn_entities(tile_id_map, spawnsheet)
 
         for creature in creatures:
             self.register_creature(creature)
 
-        for tile in special_tiles:
+        for tile in interactables:
             tile.world = self
-            self.special_tiles.append(tile)
+            self.interactables.append(tile)
+        
+        for entity in other:
+            entity.world = self
+            self.other.append(entity)
 
 
     def read_map(self, file):
-        """
+        """self
         Wichter Kontext um diesen Code zu verstehen:
         .tmx Dateien sind wie folgt aufgebaut:
         5 Zeilen mit Informationen und Einstellungen zur GESAMTEN Karte
@@ -105,6 +111,7 @@ class World:
 
         creatures = []
         interactables = []
+        active_tiles = []
 
         for y, row in enumerate(entity_id_map):
             for x, entity_id in enumerate(row):
@@ -123,10 +130,12 @@ class World:
                         entity.position = vec(xx, yy)
                     elif type(entity) == Trap or type(entity) == ITile or type(entity) == Door:
                         interactables.append(entity.copy(xx, yy))
+                    elif type(entity) == Powerup:
+                        active_tiles.append(entity.copy(xx, yy))
                     elif type(entity) == Tile:   
                         tile_map[y][x] = entity.copy(xx, yy)
     
-        return tile_map, creatures, interactables
+        return tile_map, creatures, interactables, active_tiles
 
 
     @staticmethod
@@ -211,8 +220,11 @@ class World:
                 if tile is not None:
                     tile.render(screen, camera)
 
-        for tile in self.special_tiles:
+        for tile in self.interactables:
             tile.render(screen, camera)
+
+        for entity in self.other:
+            entity.render(screen, camera)
 
         for creature in self.creatures:
             creature.render(screen, camera)
@@ -220,11 +232,14 @@ class World:
 
     def update(self, delta):
 
-        for tile in self.special_tiles:
+        for tile in self.interactables:
             tile.update()
 
         for creature in self.creatures:
             creature.update(delta)
+
+        for entity in self.other:
+            entity.update()
 
 
 

@@ -18,6 +18,8 @@ light_map = None
 ambient_color = None
 light_sources = []
 
+nv_duration = 0
+
 class LightSource():
 
     def __init__(self, position : Vector2, offset : Vector2, radius : int, color : tuple):
@@ -30,6 +32,7 @@ class LightSource():
 
 
     def update(self, radius = None, color = None):
+
         self.x = round(self.position.x - camera.position.x + self.offset.x)
         self.y = round(self.position.y - camera.position.y + self.offset.y)
 
@@ -61,20 +64,28 @@ def init(screen : Surface, c, a = (25, 10, 10)):
 
 def lightning():
 
+    global nv_duration
+
+    if nv_duration > 0:
+        ac = (200, 200, 200)
+    else:
+        ac = ambient_color
+
     # Pixel (Refferenzen) holen
     # 3D = 3 Dimensionen (Breite, Höhe, Farbkanal [Rot, Grün, Blau])
     # 3D > 2D weil 2D müssen wir Dec Farbwerte -> Hex Farbwerte
     p = surfarray.pixels3d(s)
-    reset()
+    reset(ac)
     apply_light_sources()
     apply_light_map(p)
+    nv_duration -= 1
 
 
 # Mit Hilfe von ChatGPT, allerdings stark überarbeitet
-def reset():
+def reset(ac = ambient_color):
 
     for channel in COLOR_CHANNELS:
-        light_map[:, :, channel] = ambient_color[channel]
+        light_map[:, :, channel] = ac[channel]
 
 
 def apply_light_sources():

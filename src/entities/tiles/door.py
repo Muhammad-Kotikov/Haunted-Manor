@@ -23,7 +23,7 @@ class Door(Tile):
             self.has_collision = not self.has_collision
         
         # toggle neighboring doors collision
-        for tile in self.world.special_tiles:
+        for tile in self.world.interactables:
             if type(tile) == Door and self.range.colliderect(tile.rect):
                 tile.has_collision = self.has_collision
     

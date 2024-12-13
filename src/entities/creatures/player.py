@@ -15,6 +15,7 @@ class Player(Creature):
         self.input = input.InputHander(self)
         self.interactables = []
         self.tint_objects = []
+        self.speed_boost_duration = 0
 
     
     def control(self):
@@ -27,16 +28,26 @@ class Player(Creature):
 
     
     def update(self, delta):
+
+        if self.speed_boost_duration > 0:
+            self.acc_factor = 2
+            self.spd_fac = 3
+        else:
+            self.acc_fac = 1
+            self.spd_fac = 1
+
         super().update(delta)
 
         self.interactables.clear()
-        for interactable in self.world.special_tiles:
-            if self.rect.colliderect(interactable.range):
+        for interactable in self.world.interactables:
+            if hasattr(interactable, "range") and self.rect.colliderect(interactable.range):
                 self.interactables.append(interactable)
 
 
         if self.input.just_pressed(key_map["interact"]) and len(self.interactables) > 0:
             self.interactables[0].interact()
+        
+        self.speed_boost_duration -= 1
 
 
 
