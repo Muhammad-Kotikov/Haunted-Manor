@@ -55,13 +55,14 @@ class GameState(State):
 class InGame(GameState):
 
     def __init__(self):
-        _ = set_resolution(20 * TILE_SIZE, 16 * TILE_SIZE)
+        _ = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
 
         self.paused = False
 
         sprites = {}
 
-        for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door', 'torch', 'health_pickup', 'speed_pickup', 'nv_pickup']:
+        for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door', 'torch', 'health_pickup', 'speed_pickup', 'nv_pickup', 'ball', 'kryptex',
+                       'memory', 'clock']:
             sprites[sprite] = get_sprite(sprite + ".png")
 
         brick = Tile(True, sprites['brick'])
@@ -74,10 +75,16 @@ class InGame(GameState):
 
         def start_memory():
             self.context._next_state = self.context.inmemory
+        
+        def start_piano():
+            self.context._next_state = self.context.inpiano
 
-        piano = ITile(pygame.Rect(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), start_memory, None, False, sprites['piano'])
+        piano = ITile(pygame.Rect(-8, -8, 32, 32), start_piano , None, False, sprites['piano'])
+        memory = ITile(pygame.Rect(-8, -8, 32, 32), start_memory , None, False, sprites['memory'])
+        kryptex = ITile(pygame.Rect(-8, -8, 32, 32), start_kryptex , None, False, sprites['kryptex'])
+        clock = ITile(pygame.Rect(-8, -8, 32, 32), start_clock , None, False, sprites['clock'])
 
-        player = Player(3, sprites['pumpkin'])
+        player = Player(3, sprites['ball'], width = 14, height = 14)
         enemy = Enemy(10, get_sprite("anna.png"),15* TILE_SIZE, 5 * TILE_SIZE,16,16)
         saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 30)], False, get_sprite("skull_trap.png"))
         smart_saw = Trap(DETECTING, [(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), (0, 0, 0, 0, 1), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 999999)], False, get_sprite("skull_trap.png"))
@@ -98,9 +105,9 @@ class InGame(GameState):
         speed_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), speed, sprite=sprites["speed_pickup"])
         nv_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), night_vision, sprite=sprites["nv_pickup"])
 
-        spawn_table = [None, brick, player, piano, door, saw, smart_saw, enemy, torch, health_pickup, speed_pickup, nv_pickup]
+        spawn_table = [None, brick, player, piano, memory, kryptex, clock]
 
-        self.world = World(get_map("test_tilemap.tmx"), spawn_table)
+        self.world = World(get_map("maze.tmx"), spawn_table)
 
         self.camera = Camera(pygame.Rect(0, 0, Resolution.WIDTH, Resolution.HEIGHT), pygame.Rect(0.0, 0.0, self.world.width * TILE_SIZE, self.world.height * TILE_SIZE), player)
         self.hud = HUD(player, sprites['heart'], sprites['empty_heart'])
@@ -128,7 +135,7 @@ class InGame(GameState):
 
 
     def render(self):
-        self.context.screen.fill((255, 255, 255))
+        self.context.screen.fill((0, 0, 0))
         self.world.render(self.context.screen, self.camera)
         self.camera.render(self.context.screen)
         shader.lightning()
@@ -138,7 +145,7 @@ class InGame(GameState):
 
     def enter(self):
         self.context.paused = False
-        self.context.screen = set_resolution(20 * TILE_SIZE, 16 * TILE_SIZE)
+        self.context.screen = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
         shader.init(self.context.screen, self.camera)
     
 
@@ -239,6 +246,7 @@ class InKryptex(GameState):
         if self.puzzle.won and not self.rewarded:
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
+            self.context.ingame.world.interactables.remove(self.context.ingame.world.player.interactables[0])
 
 
 class InClock(GameState):
@@ -268,6 +276,7 @@ class InClock(GameState):
         if self.puzzle.won and not self.rewarded:
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
+            self.context.ingame.world.interactables.remove(self.context.ingame.world.player.interactables[0])
 
 
 class InMemory(GameState):
@@ -290,7 +299,6 @@ class InMemory(GameState):
 
     
     def enter(self):
-        self.tile = self.context.ingame.world.piano
         self.context.screen = set_resolution(800, 875)
         self.puzzle.screen = self.context.screen
         self.puzzle.enter()
@@ -300,11 +308,12 @@ class InMemory(GameState):
         if self.puzzle.won and not self.rewarded:
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
+            self.context.ingame.world.interactables.remove(self.context.ingame.world.player.interactables[0])
         if self.puzzle.lost:
             self.puzzle.reset()
 
 
-class InKryptexx(GameState):
+class InPiano(GameState):
 
     def __init__(self):
         pass

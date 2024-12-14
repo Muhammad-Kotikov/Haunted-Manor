@@ -19,14 +19,16 @@ d = InDialogue()
 k = InKryptex()
 o = InClock()
 m = InMemory()
+p = InPiano()
 
-game = Game(mm)
+game = Game(d)
 game.inmenu = mm
 game.ingame = i
 game.indialogue = d
 game.inkryptex = k
 game.inclock = o
 game.inmemory = m
+game.inpiano = p
 
 while game.running:
 

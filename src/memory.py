@@ -126,7 +126,6 @@ class Memory():
 
 
     def reset(self):
-        print("reset")
         self.won                 = False
         self.won_timer           = FRAMERATE * 1
         self.congrats_timer      = FRAMERATE * 3
