@@ -38,6 +38,8 @@ COLS            = 6
 piece_width     = WIDTH // COLS
 piece_height    = (HEIGHT - 75) // ROWS
 
+print(piece_width, piece_height)
+
 options_list    = []
 spaces_list     = []
 used_pieces     = []
@@ -175,7 +177,7 @@ while running:
             reveal_timer = current_time
 
     # Karten ausblenden nach 5 sek
-        if current_time - reveal_timer > 500:
+        if current_time - reveal_timer > 2000:
             if check_guesses(first_guess_number, second_guess_number):
                 matches += 1
             first_guess = False

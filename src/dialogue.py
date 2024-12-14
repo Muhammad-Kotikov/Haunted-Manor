@@ -45,6 +45,8 @@ class Dialogue:
 
     def render(self):
 
+        self.screen.fill((0, 0, 0))
+
         if self.phase < len(self.sprites):
             self.screen.blit(self.sprites[self.phase], (Resolution.WIDTH // 2 - self.sprites[self.phase].get_width() // 2, 50))
             label = self.SMALL_FONT.render(self.text[self.phase][:self.text_amount], False, (255, 255, 255))

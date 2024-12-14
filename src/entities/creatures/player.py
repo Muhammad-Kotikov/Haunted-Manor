@@ -16,6 +16,7 @@ class Player(Creature):
         self.interactables = []
         self.tint_objects = []
         self.speed_boost_duration = 0
+        self.keys = 0
 
     
     def control(self):

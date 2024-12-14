@@ -13,14 +13,20 @@ Display.HEIGHT = display_info.current_h
 
 display = pygame.display.set_mode((Display.WIDTH, Display.HEIGHT), pygame.FULLSCREEN)
 
-m = MainMenu()
+mm = MainMenu()
 i = InGame()
 d = InDialogue()
+k = InKryptex()
+o = InClock()
+m = InMemory()
 
-game = Game(m)
-game.menu = m
+game = Game(mm)
+game.inmenu = mm
 game.ingame = i
 game.indialogue = d
+game.inkryptex = k
+game.inclock = o
+game.inmemory = m
 
 while game.running:
 
@@ -28,8 +34,6 @@ while game.running:
     game.update()
     game.render()
     display.blit(pygame.transform.scale_by(game.screen, Resolution.SCALE), (Resolution.X_OFFSET, Resolution.Y_OFFSET))
-    #display.blit(game.screen, (0, 0))
-    #display.blit(pygame.transform.scale(game.screen, display.get_rect().size), (0, 0))
     pygame.display.update()
 
     game.delta = game.clock.tick(FRAMERATE)
