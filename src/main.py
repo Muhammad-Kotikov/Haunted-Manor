@@ -13,23 +13,19 @@ Display.HEIGHT = display_info.current_h
 
 display = pygame.display.set_mode((Display.WIDTH, Display.HEIGHT), pygame.FULLSCREEN)
 
-mm = MainMenu()
 i = InGame()
-d = InDialogue()
 k = InKryptex()
 o = InClock()
 m = InMemory()
 p = InPiano()
 
-game = Game(d)
-game.inmenu = mm
+game = Game(MainMenu())
 game.ingame = i
-game.indialogue = d
 game.inkryptex = k
 game.inclock = o
 game.inmemory = m
 game.inpiano = p
-
+  
 while game.running:
 
     display.fill((0, 0, 0))

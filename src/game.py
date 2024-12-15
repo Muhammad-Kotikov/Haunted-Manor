@@ -32,6 +32,7 @@ class Game(Context):
         self._next_state = state
         self.running = True
         self.delta = 0
+        self.won = False
 
 
     def update(self):
@@ -59,14 +60,18 @@ class InGame(GameState):
 
         self.paused = False
 
-        sprites = {}
+        self.final_key = False
 
-        for sprite in ['brick', 'pumpkin', 'heart', 'empty_heart', 'piano', 'door', 'torch', 'health_pickup', 'speed_pickup', 'nv_pickup', 'ball', 'kryptex',
-                       'memory', 'clock']:
+        sprites = {}
+        for sprite in ['brick', 'heart', 'empty_heart', 'piano', 'kryptex', 'memory', 'clock', 'powerup_heal', 'powerup_speed', 'powerup_nightvision',
+                       'notes', 'door', 'bloody_door', 'bloody_brick']:
             sprites[sprite] = get_sprite(sprite + ".png")
 
-        brick = Tile(True, sprites['brick'])
+        # player
+        player = Player(3, get_sprite("player_idle_0.png"), width = 14, height = 14)
 
+
+        # puzzle tiles
         def start_kryptex():
             self.context._next_state = self.context.inkryptex
 
@@ -79,43 +84,103 @@ class InGame(GameState):
         def start_piano():
             self.context._next_state = self.context.inpiano
 
+        def show_dialogue(puzzle):
+
+            if puzzle == 'piano':
+                txt = ["pi" * 4, "pa" * 5]
+                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+            elif puzzle == 'memory':
+                txt = ["me" * 4, "mo" * 5]
+                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+            elif puzzle == 'kryptex':
+                txt = ["kry" * 4, "tex" * 5]
+                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+            elif puzzle == 'clock':
+                txt = ["clo" * 4, "ock" * 5]
+                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+            else:
+                return
+
+            self.context._next_state = InDialogue(txt, bgs)
+
         piano = ITile(pygame.Rect(-8, -8, 32, 32), start_piano , None, False, sprites['piano'])
         memory = ITile(pygame.Rect(-8, -8, 32, 32), start_memory , None, False, sprites['memory'])
         kryptex = ITile(pygame.Rect(-8, -8, 32, 32), start_kryptex , None, False, sprites['kryptex'])
         clock = ITile(pygame.Rect(-8, -8, 32, 32), start_clock , None, False, sprites['clock'])
 
-        player = Player(3, sprites['ball'], width = 14, height = 14)
-        enemy = Enemy(10, get_sprite("anna.png"),15* TILE_SIZE, 5 * TILE_SIZE,16,16)
-        saw = Trap(CYCLING, [(0, 0, 0, 0, 120), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 30)], False, get_sprite("skull_trap.png"))
-        smart_saw = Trap(DETECTING, [(-TILE_SIZE, -TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), (0, 0, 0, 0, 1), (2, 2, TILE_SIZE - 4, TILE_SIZE - 4, 999999)], False, get_sprite("skull_trap.png"))
+        notes_piano = ITile(pygame.Rect(-8, -8, 32, 32), show_dialogue, 'piano', False, sprites['notes'])
+        notes_memory = ITile(pygame.Rect(-8, -8, 32, 32), show_dialogue, 'memory', False, sprites['notes'])
+        notes_kryptex = ITile(pygame.Rect(-8, -8, 32, 32), show_dialogue, 'kryptex', False, sprites['notes'])
+        notes_clock = ITile(pygame.Rect(-8, -8, 32, 32), show_dialogue, 'clock', False, sprites['notes'])
+
+        # static tiles
+        brick = Tile(False, sprites['brick'])
+        bloody_brick = Tile(True, sprites['bloody_brick'])
+
+        # door tiles
         door = Door(pygame.Rect(-TILE_SIZE, - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), True, sprites['door'])
-        torch = Tile(False, sprites["torch"])
 
+        def game_won():
 
+            if self.world.player.key_final:
+                self.context.won = True
+                self.context._next_state = InDialogue(['You\'re free..........................', "..."], [get_sprite("free_0.png"), get_sprite("free_0.png")])
+            else:
+                self.context._next_state = InDialogue(["You dream of freedom"], [get_sprite("closed.png")])
+
+        # game over tile
+        bloody_door = ITile(pygame.Rect(-8, -8, 32, 32), game_won, None, True, sprites['bloody_door'])
+
+        # trap tiles
+        spikes = Trap(DETECTING, [(0, 0, 16, 16), (0, 0, 0, 0, 1), (0, 0, 0, 0, 30), (2, 2, 12, 12, 9999999)], False, get_sprite("spike_0.png"))
+        spikes.sprites = {} # quick and dirty
+        for i, sprite in enumerate([f'spike_{i}' for i in range(3)]):
+            spikes.sprites[i] = get_sprite(sprite + ".png")
+
+        fire_trap = Trap(CYCLING, [(0, 0, 0, 0, 30), (0, 0, 0, 0, 15), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5)], False, get_sprite("fire_trap_0.png"))
+        fire_trap.sprites = {} # quick and dirty
+        for i, sprite in enumerate([f'fire_trap_{i}' for i in range(7)]):
+            fire_trap.sprites[i] = get_sprite(sprite + ".png")
+
+        # powerups
         def heal():
             self.world.player.health = min(self.world.player.health + 1, self.world.player.hitpoints)
         
         def speed():
-            self.world.player.speed_boost_duration = 60 * 5
+            self.world.player.speed_boost_duration = FRAMERATE * 5
 
         def night_vision():
-            shader.nv_duration = 60 * 5
+            shader.nv_duration = FRAMERATE * 5
+        
+        powerup_heal = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), heal, FRAMERATE * 2, sprite=sprites["powerup_heal"])
+        powerup_speed = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), speed, FRAMERATE * 2, sprite=sprites["powerup_speed"])
+        powerup_nightvision = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), night_vision, FRAMERATE * 2, sprite=sprites["powerup_nightvision"])
 
-        health_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), heal, sprite=sprites["health_pickup"])
-        speed_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), speed, sprite=sprites["speed_pickup"])
-        nv_pickup = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), night_vision, sprite=sprites["nv_pickup"])
+        
+        #torch = Tile(False, sprites["torch"])
 
-        spawn_table = [None, brick, player, piano, memory, kryptex, clock]
-
+        # world
+        spawn_table = [None, brick, player, piano, memory, kryptex, clock, spikes, fire_trap, powerup_heal, powerup_speed, powerup_nightvision,
+                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door]
         self.world = World(get_map("maze.tmx"), spawn_table)
 
+        # misc
         self.camera = Camera(pygame.Rect(0, 0, Resolution.WIDTH, Resolution.HEIGHT), pygame.Rect(0.0, 0.0, self.world.width * TILE_SIZE, self.world.height * TILE_SIZE), player)
         self.hud = HUD(player, sprites['heart'], sprites['empty_heart'])
 
-        shader.LightSource(player.position, vec(player.rect.width // 2, player.rect.height // 2), 100, (175, 125, 125))
-        ###
+        shader.LightSource(player.position, vec(player.rect.width // 2, player.rect.height // 2), 100, (175, 125, 125)) # quick and dirty
 
     def update(self):
+
+        if not self.world.player or self.context.won == True:
+            m = MainMenu()
+            m.resetgame = True
+            self.context._next_state = m
+            return
+        elif self.world.player.keys >= 3 and not self.world.player.key_final:
+            self.world.player.key_final = True
+            self.context.transition_to(InDialogue(['The key fragments violently merge into one.'], [get_sprite("key_final.png")]))
+
 
         for event in pygame.event.get():
 
@@ -147,7 +212,7 @@ class InGame(GameState):
         self.context.paused = False
         self.context.screen = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
         shader.init(self.context.screen, self.camera)
-    
+
 
     def exit(self):
         self.context.paused = True
@@ -158,6 +223,7 @@ class MainMenu(GameState):
     def __init__(self):
         self.screen = set_resolution(1200, 800)
         self.menu = menu.Menu()
+        self.resetgame = False
 
     
     def update(self):
@@ -176,6 +242,9 @@ class MainMenu(GameState):
 
     def enter(self):
 
+        if self.resetgame:
+            self.context.ingame = InGame()
+
         self.context.screen = set_resolution(1200, 800)
         self.menu.screen = self.context.screen
 
@@ -185,12 +254,10 @@ class MainMenu(GameState):
 
 class InDialogue(GameState):
 
-    def __init__(self):
+    def __init__(self, txt, bgs):
         _ = set_resolution(400, 400)
-        #self.dialogue.screen = pygame.Surface((400, 400))
 
-        bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
-        txt = ["ha" * 50, "have fun" * 5]
+        #self.dialogue.screen = pygame.Surface((400, 400))
 
         self.dialogue = dialogue.Dialogue(txt, bgs)
 
@@ -247,6 +314,10 @@ class InKryptex(GameState):
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
             self.context.ingame.world.interactables.remove(self.context.ingame.world.player.interactables[0])
+            self.context._next_state = InDialogue(['You\'ve finished the puzzle, the computer disappears in front of your eyes.\n' +
+                                                   'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
+                                                   'It\'s a key fragment. You have no use for this yet...'],
+                                                   [get_sprite("key_appear.png")])
 
 
 class InClock(GameState):
@@ -277,6 +348,10 @@ class InClock(GameState):
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
             self.context.ingame.world.interactables.remove(self.context.ingame.world.player.interactables[0])
+            self.context._next_state = InDialogue(['You\'ve finished the puzzle, the clock disappears in front of your eyes.\n' +
+                                                   'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
+                                                   'It\'s a key fragment. You have no use for this yet...'],
+                                                   [get_sprite("key_appear.png")])
 
 
 class InMemory(GameState):
@@ -302,6 +377,7 @@ class InMemory(GameState):
         self.context.screen = set_resolution(800, 875)
         self.puzzle.screen = self.context.screen
         self.puzzle.enter()
+        self.puzzle.start_time      = pygame.time.get_ticks()
 
 
     def exit(self):
@@ -309,6 +385,10 @@ class InMemory(GameState):
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
             self.context.ingame.world.interactables.remove(self.context.ingame.world.player.interactables[0])
+            self.context._next_state = InDialogue(['You\'ve finished the puzzle, the cards disappears in front of your eyes.\n' +
+                                                   'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
+                                                   'It\'s a key fragment. You have no use for this yet...'],
+                                                   [get_sprite("key_appear.png")])
         if self.puzzle.lost:
             self.puzzle.reset()
 

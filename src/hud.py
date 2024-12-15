@@ -31,8 +31,9 @@ class HUD:
             label = self.SMALL_FONT.render("Press E to interact", 0, (255, 255, 255))
             screen.blit(label, (screen.get_width() / 2 - label.get_width() / 2, screen.get_height() * 0.8))
         
-        k_label = self.SMALL_FONT.render(f"Keys: {self.target.keys}", 0, (255, 255, 255))
-        screen.blit(k_label, (screen.get_width() / 2 - k_label.get_width() / 2, screen.get_height() * 0.05))
+        if self.target.keys > 0 and not self.target.key_final:
+            k_label = self.SMALL_FONT.render(f"Fragments: {self.target.keys}", 0, (255, 255, 255))
+            screen.blit(k_label, (screen.get_width() // 2 - k_label.get_width() // 2, screen.get_height() * 0.01))
         
 
         

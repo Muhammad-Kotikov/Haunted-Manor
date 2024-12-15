@@ -2,7 +2,7 @@ import pygame
 import math
 from entity import Entity
 
-MAX_DISTANCE_TO_TARGET = 24
+MAX_DISTANCE_TO_TARGET = 18
 TIME_UNTIL_RECENTER = 45
 
 vec = pygame.Vector2

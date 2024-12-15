@@ -19,7 +19,7 @@ class Door(Tile):
     def interact(self):
 
         # toggle own collision
-        if not self.rect.colliderect(self.world.player.rect):
+        if self.world.player and not self.rect.colliderect(self.world.player.rect):
             self.has_collision = not self.has_collision
         
         # toggle neighboring doors collision

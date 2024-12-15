@@ -12,6 +12,7 @@ class Dialogue:
         self.SMALL_FONT = pygame.font.Font(get_full_path("fonts/minecraft_font.ttf"), 7)
         self.phase = 0
         self.text = text
+        self.shown_text = ""
         self.text_amount = 0
         self.text_frame = 0
         self.sprites = sprites
@@ -46,11 +47,13 @@ class Dialogue:
     def render(self):
 
         self.screen.fill((0, 0, 0))
-
         if self.phase < len(self.sprites):
+            self.text_shown = self.text[self.phase][:self.text_amount]
             self.screen.blit(self.sprites[self.phase], (Resolution.WIDTH // 2 - self.sprites[self.phase].get_width() // 2, 50))
-            label = self.SMALL_FONT.render(self.text[self.phase][:self.text_amount], False, (255, 255, 255))
-            self.screen.blit(label, (50, 300))
+
+            for i, line in enumerate(self.text_shown.split('\n')):
+                label = self.SMALL_FONT.render(line, False, (255, 255, 255))
+                self.screen.blit(label, (Resolution.WIDTH // 2 - label.get_width() // 2 , 250 + i * (label.get_height() + 2)))
 
 
         

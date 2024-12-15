@@ -3,6 +3,7 @@ import input
 
 from settings import *
 from entities.creature import Creature
+from tools import get_sprite
 
 vec = pygame.Vector2
 
@@ -12,11 +13,20 @@ class Player(Creature):
 
         super().__init__(*args, **kwargs)
 
+        self.sprites = {}
+
+        for sprite in ['player_idle_0', 'player_idle_1', 'player_move_0', 'player_move_1']:
+            self.sprites[sprite] = get_sprite(sprite + ".png")
+
+        self.frame = 0
+        self.timer = 0
+
         self.input = input.InputHander(self)
         self.interactables = []
         self.tint_objects = []
         self.speed_boost_duration = 0
         self.keys = 0
+        self.key_final = True
 
     
     def control(self):
@@ -32,7 +42,7 @@ class Player(Creature):
 
         if self.speed_boost_duration > 0:
             self.acc_factor = 2
-            self.spd_fac = 3
+            self.spd_fac = 1.5
         else:
             self.acc_fac = 1
             self.spd_fac = 1
@@ -53,6 +63,15 @@ class Player(Creature):
 
 
     def render(self, screen, camera):
+
+        animation_state = 'idle' if self.velocity.length() == 0 else 'move'
+
+        self.sprite = self.sprites[f"player_{animation_state}_{self.frame}"]
+
+        self.timer = (self.timer + 1) % 30
+        if self.timer == 0:
+            self.frame = (self.frame + 1) % 2
+
         super().render(screen, camera)
         
         if options['debugging'] and options['movement_vectors']:
@@ -92,4 +111,5 @@ class Player(Creature):
                 if interactable.has_collision:
                     self.tint_objects.append(interactable)
                     interactable.tint((100, 100, 100, 255), pygame.BLEND_RGBA_MULT)
+
     

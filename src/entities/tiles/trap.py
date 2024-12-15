@@ -62,10 +62,14 @@ class Trap(Tile):
 
 
     def render(self, screen, camera):
+
+        if hasattr(self, "sprites"):
+            self.sprite = self.sprites[self.phase]
+
         super().render(screen, camera)
-        hit_surface = pygame.Surface((self.collision_box.width, self.collision_box.height))
-        hit_surface.fill((255, 255, 0))
-        screen.blit(hit_surface, (self.collision_box.x - camera.rect.x, self.collision_box.y - camera.rect.y))
+        #hit_surface = pygame.Surface((self.collision_box.width, self.collision_box.height))
+        #hit_surface.fill((120, 0, 0))
+        #screen.blit(hit_surface, (self.collision_box.x - camera.rect.x, self.collision_box.y - camera.rect.y))
 
 
     def update_hitbox(self):
@@ -80,5 +84,10 @@ class Trap(Tile):
     
     def copy(self, x, y):
 
-        return Trap(self.trap_type, self.trap_properties, self.has_collision, self.sprite, x, y, self.rect.width, self.rect.height)
+        t = Trap(self.trap_type, self.trap_properties, self.has_collision, self.sprite, x, y, self.rect.width, self.rect.height)
+
+        if hasattr(self, "sprites"):
+            t.sprites = self.sprites
+
+        return t
     

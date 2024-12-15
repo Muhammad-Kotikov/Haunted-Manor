@@ -60,6 +60,8 @@ class World:
         self.interactables = []
         self.other = []
 
+        self.spawn_queue = []
+
         self.tile_map, creatures, interactables, other = self.spawn_entities(tile_id_map, spawnsheet)
 
         for creature in creatures:
@@ -120,8 +122,8 @@ class World:
                     xx = x * TILE_SIZE
                     yy = y * TILE_SIZE
                     t = type(entity)
-                    if entity_id == 8:
-                        shader.LightSource(vec(xx, yy), vec(8, 8), 50, (125, 125, 75))
+                    if entity_id == 18:
+                        shader.LightSource(vec(xx, yy), vec(8, 8), 75, (255, 25, 25))
                     if t == Player:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
@@ -231,6 +233,15 @@ class World:
 
 
     def update(self, delta):
+
+        for index, spawn_object in enumerate(self.spawn_queue):
+            time_left, powerup = spawn_object
+            if time_left <= 0:
+                self.other.append(powerup)
+                self.spawn_queue.remove([time_left, powerup])
+            else:
+                self.spawn_queue[index][0] = time_left - 1
+
 
         for tile in self.interactables:
             tile.update()
