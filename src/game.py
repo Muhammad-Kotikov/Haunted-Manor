@@ -181,11 +181,20 @@ class InGame(GameState):
 
 
 
-        if not self.world.player or self.won:
+        if  self.won:
             m = InMenu()
             m.resetgame = True
             self.context._next_state = m
             return
+        
+        elif not self.world.player:
+            m = InMenu()
+            m.resetgame = True
+            d = InDialogue(['YOU DIED'],[get_sprite("enemy.png")], m)
+            self.context._next_state = d
+            return
+            
+
         elif self.world.player.keys >= 3 and not self.world.player.key_final:
             
             if self.timer > 0:
@@ -273,8 +282,9 @@ class InMenu(GameState):
 
 class InDialogue(GameState):
 
-    def __init__(self, txt, bgs):
+    def __init__(self, txt, bgs,next_state=None):
         _ = set_resolution(400, 400)
+        self.next_state = next_state
 
         #self.dialogue.screen = pygame.Surface((400, 400))
 
@@ -282,8 +292,13 @@ class InDialogue(GameState):
 
     def update(self):
         self.dialogue.update()
-        if self.dialogue.done:
+        if not self.dialogue.done:
+            return
+        elif self.next_state is None:
             self.context._next_state = self.context.ingame
+        else:
+            self.context._next_state = self.next_state
+        
 
 
     def render(self):
@@ -427,6 +442,7 @@ class InPiano(GameState):
 
     
     def enter(self):
+        self.context.screen = set_resolution(800, 875)
         pass
 
 
