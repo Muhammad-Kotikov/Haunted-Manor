@@ -26,7 +26,7 @@ class Player(Creature):
         self.tint_objects = []
         self.speed_boost_duration = 0
         self.keys = 0
-        self.key_final = True
+        self.key_final = False
 
     
     def control(self):

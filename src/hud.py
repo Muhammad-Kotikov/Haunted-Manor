@@ -9,6 +9,7 @@ class HUD:
         self.health_sprite = health_sprite
         self.empty_health_sprite = empty_health_sprite
         self.SMALL_FONT = pygame.font.Font(get_full_path("fonts/minecraft_font.ttf"), 7)
+        self.clock = 0
 
     
 
@@ -20,6 +21,9 @@ class HUD:
         offset_x = 2
         offset_y = 2
         distance_x = 16
+        self.clock += 1
+        if self.clock >= 120:
+            self.clock = 0
 
         for x in range(self.target.health):
             screen.blit(self.health_sprite, (offset_x + distance_x * x, offset_y))
@@ -33,7 +37,11 @@ class HUD:
         
         if self.target.keys > 0 and not self.target.key_final:
             k_label = self.SMALL_FONT.render(f"Fragments: {self.target.keys}", 0, (255, 255, 255))
-            screen.blit(k_label, (screen.get_width() // 2 - k_label.get_width() // 2, screen.get_height() * 0.01))
+            screen.blit(k_label, (screen.get_width() - k_label.get_width() - 5, screen.get_height() * 0.03))
+
+        elif self.target.key_final and self.clock < 60:
+            k_label = self.SMALL_FONT.render(f"Key aquired", 0, (255, 255, 255))
+            screen.blit(k_label, (screen.get_width() - k_label.get_width() - 5, screen.get_height() * 0.03))
         
 
         

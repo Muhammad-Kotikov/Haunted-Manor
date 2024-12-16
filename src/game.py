@@ -34,7 +34,6 @@ class Game(Context):
         self._next_state = state
         self.running = True
         self.delta = 0
-        self.won = False
 
 
     def update(self):
@@ -61,8 +60,9 @@ class InGame(GameState):
         _ = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
 
         self.paused = False
-
+        self.timer = FRAMERATE * 3
         self.final_key = False
+        self.won = False
 
         sprites = {}
         for sprite in ['brick', 'heart', 'empty_heart', 'piano', 'kryptex', 'memory', 'clock', 'powerup_heal', 'powerup_speed', 'powerup_nightvision',
@@ -71,7 +71,7 @@ class InGame(GameState):
 
         # player
         player = Player(3, get_sprite("player_idle_0.png"), width = 14, height = 14)
-        enemy = Enemy(3, get_sprite("player_idle_0.png"), width = 14, height = 14)
+        enemy = Enemy(3, get_sprite("enemy.png"), width = 14, height = 14)
 
 
         # puzzle tiles
@@ -117,7 +117,7 @@ class InGame(GameState):
         notes_clock = ITile(pygame.Rect(-8, -8, 32, 32), show_dialogue, 'clock', False, sprites['notes'])
 
         # static tiles
-        brick = Tile(False, sprites['brick'])
+        brick = Tile(True, sprites['brick'])
         bloody_brick = Tile(True, sprites['bloody_brick'])
 
         # door tiles
@@ -126,10 +126,11 @@ class InGame(GameState):
         def game_won():
 
             if self.world.player.key_final:
-                self.context.won = True
                 self.context._next_state = InDialogue(['You\'re free..........................', "..."], [get_sprite("free_0.png"), get_sprite("free_0.png")])
+                self.won = True
             else:
                 self.context._next_state = InDialogue(["You dream of freedom"], [get_sprite("closed.png")])
+
 
         # game over tile
         bloody_door = ITile(pygame.Rect(-8, -8, 32, 32), game_won, None, True, sprites['bloody_door'])
@@ -175,15 +176,22 @@ class InGame(GameState):
 
     def update(self):
 
-        if not self.world.player or self.context.won == True:
+
+
+        if not self.world.player or self.won:
             m = MainMenu()
             m.resetgame = True
             self.context._next_state = m
             return
         elif self.world.player.keys >= 3 and not self.world.player.key_final:
-            self.world.player.key_final = True
-            self.context.transition_to(InDialogue(['The key fragments violently merge into one.'], [get_sprite("key_final.png")]))
+            
+            if self.timer > 0:
+                self.timer -= 1
 
+            elif self.timer <= 0:
+                self.world.player.key_final = True
+                self.context._next_state = InDialogue(['The key fragments violently merge into one.\n\n\n\n\nYou feel a sense of relief.'], [get_sprite("key_final.png")])
+                return
 
         for event in pygame.event.get():
 

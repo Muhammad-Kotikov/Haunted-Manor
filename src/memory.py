@@ -10,8 +10,8 @@ class Memory():
     GRAY        = (128, 128, 128)
     RED         = (255, 0, 0)
 
-    ROWS        = 4
-    COLS        = 3
+    ROWS        = 2
+    COLS        = 2
 
 
     def __init__(self):
