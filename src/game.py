@@ -15,6 +15,8 @@ from tools import *
 from camera import *
 from world import *
 from hud import *
+from pausemenu import *
+from intro import *
 
 from entities.creatures.player import *
 from entities.creatures.enemy import *
@@ -413,48 +415,40 @@ class InPiano(GameState):
 
     def exit(self):
         pass
-
-class INPause(GameState):
+class InPause(GameState):
     def __init__(self):
         _ = set_resolution(400, 400)
+        self.pausemenu = PauseMenu()
 
     def update(self):
-        pass
+        if not self.pausemenu.paused:
+            self.context._next_state = self.context.ingame
+        self.pausemenu.update_pausemenu()
 
     def render(self):
-        pass
+        self.pausemenu.render_pause_screen()
+
+    def enter(self):
+        self.context.screen = set_resolution(400, 400)
+        self.pausemenu.screen = self.context.screen
+
+    def exit(self):
+        self.pausemenu.done = False
+
+class InIntro(GameState):
+    def __init__(self):
+        _ = set_resolution(400, 400)
+        self.intro = Intro()
+
+    def update(self):
+        if not self.intro.running:
+            self.context._next_state = self.context.menu
+
+    def render(self):
+        self.intro.render_intro()
 
     def enter(self):
         self.context.screen = set_resolution(400, 400)
 
     def exit(self):
-        pass
-
-class InIntro(GameState):
-    def __init__(self):
-        self.screen = pygame.display.set_mode((400, 400))
-        pygame.display.set_caption("Intro Video")
-        self.video = None
-        self.clock = pygame.time.Clock()
-
-        self.video = VideoFileClip("path_to_your_video.mp4")
-        self.video.preview()
-
-    def update(self):
-        pass
-
-    def render(self):
-        if self.video:
-            frame = self.video.get_frame(self.clock.get_time() / 1000.0)
-            frame_surface = pygame.image.frombuffer(frame.tobytes(), frame.shape[1::-1], "RGB")
-            self.screen.blit(frame_surface, (0, 0))
-            pygame.display.flip()
-            self.clock.tick(FRAMERATE) 
-
-    def enter(self):
-        # Lade das Video
-        pass
-
-    def exit(self):
-        self.video.close()
-        pygame.quit()
+        self.intro.done = True

@@ -18,6 +18,8 @@ k = InKryptex()
 o = InClock()
 m = InMemory()
 p = InPiano()
+pasue = InPause()
+intro = InIntro()
 
 game = Game(MainMenu())
 game.ingame = i
