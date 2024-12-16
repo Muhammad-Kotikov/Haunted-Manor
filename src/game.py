@@ -232,7 +232,7 @@ class InGame(GameState):
 class MainMenu(GameState):
 
     def __init__(self):
-        self.screen = set_resolution(1200, 800)
+        _ = set_resolution(1200, 800)
         self.menu = menu.Menu()
         self.resetgame = False
 

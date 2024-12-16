@@ -21,17 +21,19 @@ class Enemy(Creature):
         self.cooldown_timer = 0
         
     def update(self,dt):
+        if not self.world.player:
+            return
         dx = self.rect.centerx-self.world.player.rect.centerx
         dy = self.rect.centery-self.world.player.rect.centery
         if self.cooldown_timer > 0 :
             self.cooldown_timer -= 1                       #Logik unterstützt durch ChatGPT
             self.cooldown_timer= max(0,self.cooldown_timer)
            
-        if self.world.player and Vector2(dx,dy).length()<self.radius :
+        if Vector2(dx,dy).length()<self.radius :
             if self.cooldown_timer <= 0:
                 self.world.player.hit(1)
                 self.cooldown_timer = self.cooldown
-                print(self.cooldown)
+            
 
       #  self.path.append(self.position.copy())
         
