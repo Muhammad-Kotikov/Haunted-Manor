@@ -179,7 +179,7 @@ class InGame(GameState):
 
 
         if not self.world.player or self.won:
-            m = MainMenu()
+            m = InMenu()
             m.resetgame = True
             self.context._next_state = m
             return
@@ -229,7 +229,8 @@ class InGame(GameState):
         self.context.paused = True
 
 
-class MainMenu(GameState):
+
+class InMenu(GameState):
 
     def __init__(self):
         _ = set_resolution(1200, 800)
@@ -261,6 +262,10 @@ class MainMenu(GameState):
 
         self.menu.start = False
         self.menu.main_menu = True
+
+    def exit(self):
+        for button in self.menu.buttons:
+            button['clicked'] = False
 
 
 class InDialogue(GameState):

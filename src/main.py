@@ -13,8 +13,8 @@ Display.HEIGHT = display_info.current_h
 
 display = pygame.display.set_mode((Display.WIDTH, Display.HEIGHT), pygame.FULLSCREEN)
 
-game = Game(MainMenu())
-game.inmenu = MainMenu()
+game = Game(InMenu())
+game.inmenu = InMenu()
 game.ingame = InGame()
 game.inkryptex = InKryptex()
 game.inclock = InClock()
