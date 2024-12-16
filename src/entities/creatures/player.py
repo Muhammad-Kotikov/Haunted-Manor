@@ -4,7 +4,7 @@ import input
 from settings import *
 from entities.creature import Creature
 from tools import get_sprite
-
+from entities.creatures import enemy
 vec = pygame.Vector2
 
 class Player(Creature):
@@ -21,13 +21,16 @@ class Player(Creature):
         self.frame = 0
         self.timer = 0
 
+
         self.input = input.InputHander(self)
         self.interactables = []
         self.tint_objects = []
         self.speed_boost_duration = 0
         self.keys = 0
         self.key_final = False
-
+        self.cooldown = 0
+        self.damage_radius = 20
+    
     
     def control(self):
         """
@@ -48,7 +51,15 @@ class Player(Creature):
             self.spd_fac = 1
 
         super().update(delta)
+    
+        if self.input.just_pressed(key_map["attack"]) and self.cooldown <= 0:
+            self.cooldown = FRAMERATE *0.5
+            self.attack()
+        else:
+            self.cooldown -=1
+    
 
+        
         self.interactables.clear()
         for interactable in self.world.interactables:
             if hasattr(interactable, "range") and self.rect.colliderect(interactable.range):
@@ -67,12 +78,18 @@ class Player(Creature):
         animation_state = 'idle' if self.velocity.length() == 0 else 'move'
 
         self.sprite = self.sprites[f"player_{animation_state}_{self.frame}"]
-
+        self.original = self.sprites[f"player_{animation_state}_{self.frame}"]
         self.timer = (self.timer + 1) % 30
         if self.timer == 0:
             self.frame = (self.frame + 1) % 2
 
+     
+        if 0<self.cooldown <=15:
+            pygame.draw.circle(screen,(120,0,0),self.rect.center-camera.position,self.damage_radius)
+            pygame.draw.circle(screen,(255,255,255),self.rect.center-camera.position,self.damage_radius,width=1)
+
         super().render(screen, camera)
+
         
         if options['debugging'] and options['movement_vectors']:
 
@@ -112,4 +129,14 @@ class Player(Creature):
                     self.tint_objects.append(interactable)
                     interactable.tint((100, 100, 100, 255), pygame.BLEND_RGBA_MULT)
 
+    def attack(self):
+        damage_amount = 1
+        for enemy in self.world.creatures:
+            if enemy == self:
+                return
+            distance_to_enemy_x = (self.rect.centerx-enemy.rect.centerx)
+            distance_to_enemy_y = (self.rect.centery-enemy.rect.centery)
+            distance = vec(distance_to_enemy_x,distance_to_enemy_y).length()
+            if distance <= self.damage_radius:
+                enemy.hit(damage_amount)
     

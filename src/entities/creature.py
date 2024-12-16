@@ -68,17 +68,22 @@ class Creature(Entity):
 
         if self.i_frames_left <= 0:
             self.invunerable = False
-            self.untint()
+            
 
 
     def render(self, screen, camera):
+        if self.invunerable:
+            self.tint((255, 255, 255, 255), pygame.BLEND_RGB_ADD)
+        else:
+            self.untint()
+
         super().render(screen, camera)
 
     def hit(self, damage):
 
         if self.invunerable:
             return
-
+        
         self.health -= damage
 
         if self.health <= 0:
@@ -87,7 +92,7 @@ class Creature(Entity):
 
         self.invunerable = True
         self.i_frames_left = self.INVUNERABLE_FRAMES
-        self.tint((255, 255, 255, 80), pygame.BLEND_RGB_ADD)
+        
     
     def move(self):
 

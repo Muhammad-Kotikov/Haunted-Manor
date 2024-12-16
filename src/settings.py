@@ -29,7 +29,8 @@ key_map = {
     "up" : pygame.K_w,
     "down" : pygame.K_s,
     "interact" : pygame.K_e,
-    "dialogue_next" : pygame.K_SPACE
+    "dialogue_next" : pygame.K_SPACE,
+    "attack" : pygame.K_k
 }
 
 def set_resolution(width, height):
