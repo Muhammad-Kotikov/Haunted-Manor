@@ -66,7 +66,7 @@ class InGame(GameState):
 
         sprites = {}
         for sprite in ['brick', 'heart', 'empty_heart', 'piano', 'kryptex', 'memory', 'clock', 'powerup_heal', 'powerup_speed', 'powerup_nightvision',
-                       'notes', 'door', 'bloody_door', 'bloody_brick']:
+                       'notes', 'door', 'bloody_door', 'bloody_brick', 'floor_0', 'floor_1']:
             sprites[sprite] = get_sprite(sprite + ".png")
 
         # player
@@ -118,6 +118,9 @@ class InGame(GameState):
 
         # static tiles
         brick = Tile(True, sprites['brick'])
+        floor_0 = Tile(False, sprites['floor_0'])
+        floor_1 = Tile(False, sprites['floor_1'])
+        
         bloody_brick = Tile(True, sprites['bloody_brick'])
 
         # door tiles
@@ -165,7 +168,7 @@ class InGame(GameState):
 
         # world
         spawn_table = [None, brick, player, piano, memory, kryptex, clock, spikes, fire_trap, powerup_heal, powerup_speed, powerup_nightvision,
-                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy]
+                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy, floor_1, floor_0]
         self.world = World(get_map("maze.tmx"), spawn_table)
 
         # misc
