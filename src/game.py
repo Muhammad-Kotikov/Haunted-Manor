@@ -71,6 +71,7 @@ class InGame(GameState):
 
         # player
         player = Player(3, get_sprite("player_idle_0.png"), width = 14, height = 14)
+        enemy = Enemy(3, get_sprite("player_idle_0.png"), width = 14, height = 14)
 
 
         # puzzle tiles
@@ -163,7 +164,7 @@ class InGame(GameState):
 
         # world
         spawn_table = [None, brick, player, piano, memory, kryptex, clock, spikes, fire_trap, powerup_heal, powerup_speed, powerup_nightvision,
-                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door]
+                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy]
         self.world = World(get_map("maze.tmx"), spawn_table)
 
         # misc

@@ -34,6 +34,7 @@ class Creature(Entity):
         super().__init__(*args, **kwargs)
 
         self.velocity = vec(0, 0)
+        self.target_direction = vec(0,0)
         
         self.collider = SimpleCollider()
 
@@ -145,7 +146,7 @@ class Creature(Entity):
                 if self.world.tile_map[tile_y][tile_x] != None and self.world.tile_map[tile_y][tile_x].has_collision == True:
                     collision_objects.append(self.world.tile_map[tile_y][tile_x])
         
-        for interactable in self.interactables:
+        for interactable in self.world.interactables:
             if interactable.has_collision:
                 collision_objects.append(interactable)
 
