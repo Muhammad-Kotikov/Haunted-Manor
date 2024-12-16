@@ -4,10 +4,12 @@ import input
 from settings import *
 from entities.creature import Creature
 from tools import get_sprite
-from entities.creatures import enemy
 vec = pygame.Vector2
 
 class Player(Creature):
+
+    MAX_COOLDOWN = int(FRAMERATE * 0.75)
+    ATTACK_DURATION = int(FRAMERATE * 0.5)
 
     def __init__(self, *args, **kwargs):
 
@@ -29,7 +31,7 @@ class Player(Creature):
         self.keys = 0
         self.key_final = False
         self.cooldown = 0
-        self.damage_radius = 20
+        self.damage_radius = 25
     
     
     def control(self):
@@ -52,11 +54,13 @@ class Player(Creature):
 
         super().update(delta)
     
-        if self.input.just_pressed(key_map["attack"]) and self.cooldown <= 0:
-            self.cooldown = FRAMERATE *0.5
+        self.cooldown -= 1
+        
+        if (self.input.just_pressed(key_map["attack"]) and self.cooldown <= 0):
+            self.cooldown = FRAMERATE * 0.5
+
+        if self.cooldown >= self.MAX_COOLDOWN - self.ATTACK_DURATION:
             self.attack()
-        else:
-            self.cooldown -=1
     
 
         
@@ -84,9 +88,9 @@ class Player(Creature):
             self.frame = (self.frame + 1) % 2
 
      
-        if 0<self.cooldown <=15:
-            pygame.draw.circle(screen,(120,0,0),self.rect.center-camera.position,self.damage_radius)
-            pygame.draw.circle(screen,(255,255,255),self.rect.center-camera.position,self.damage_radius,width=1)
+        if self.cooldown >= self.MAX_COOLDOWN - self.ATTACK_DURATION:
+            pygame.draw.circle(screen,(120,0,0),self.rect.center-camera.position,self.damage_radius - 5)
+            pygame.draw.circle(screen,(255,255,255),self.rect.center-camera.position,self.damage_radius - 5,width=1)
 
         super().render(screen, camera)
 

@@ -14,7 +14,8 @@ class Door(Tile):
             self.world.player.interactables.append(self)
 
     def render(self, screen, camera):
-        super().render(screen, camera)
+        if self.has_collision:
+            super().render(screen, camera)
 
     def interact(self):
 
