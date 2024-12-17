@@ -5,6 +5,7 @@ from settings import Display, Resolution
 # einzelne funktionen müssen hier schon initialisiert werden weil sonst die Bilder nicht laden
 pygame.init()
 pygame.mixer.init()
+pygame.mixer.set_num_channels(50)
 pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
 display_info = pygame.display.Info()
@@ -19,7 +20,7 @@ game.ingame = InGame()
 game.inkryptex = InKryptex()
 game.inclock = InClock()
 game.inmemory = InMemory()
-game.inpiano = None
+game.inpiano = InPiano()
 game.inpause= InPause()
 game.inintro= InIntro()
 

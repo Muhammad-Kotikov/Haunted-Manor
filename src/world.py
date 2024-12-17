@@ -122,18 +122,22 @@ class World:
                     xx = x * TILE_SIZE
                     yy = y * TILE_SIZE
                     t = type(entity)
-                    if entity_id == 18:
+                    if entity_id == 18 or entity_id == 16:
                         shader.LightSource(vec(xx, yy), vec(8, 8), 75, (255, 25, 25))
                     if t == Player:
                         creatures.append(entity)
                         entity.position = vec(xx, yy)
                     elif t == Enemy or t == Creature:
+                        tile_map[y][x] = spawnsheet[20].copy(xx, yy)
                         creatures.append(entity.copy(xx, yy))
                         entity.position = vec(xx, yy)
+                        shader.LightSource(vec(xx, yy), vec(8, 8), 25, (255, 25, 25))
                     elif type(entity) == Trap or type(entity) == ITile or type(entity) == Door:
                         interactables.append(entity.copy(xx, yy))
                     elif type(entity) == Powerup:
+                        tile_map[y][x] = spawnsheet[21].copy(xx, yy)
                         active_tiles.append(entity.copy(xx, yy))
+                        shader.LightSource(vec(xx, yy), vec(8, 8), 25, (255, 255, 255))
                     elif type(entity) == Tile:   
                         tile_map[y][x] = entity.copy(xx, yy)
     

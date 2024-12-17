@@ -28,6 +28,7 @@ class LightSource():
         self.radius = radius
         self.color = color
         self.offset = offset
+        self.distance = 0
         light_sources.append(self)
 
 
@@ -35,6 +36,8 @@ class LightSource():
 
         self.x = round(self.position.x - camera.position.x + self.offset.x)
         self.y = round(self.position.y - camera.position.y + self.offset.y)
+
+        self.distance = Vector2(self.position.x - camera.rect.centerx + self.offset.x, self.position.y - camera.rect.centery + self.offset.y).length()
 
         if radius != None:
             self.radius = radius
@@ -90,6 +93,7 @@ def reset(ac = ambient_color):
 
 def apply_light_sources():
 
+    
     # https://stackoverflow.com/questions/61628380/calculate-distance-from-all-points-in-numpy-array-to-a-single-point-on-the-basis
     def dist_map(a, index):
         i,j = np.indices(a.shape, sparse=True)
@@ -98,6 +102,8 @@ def apply_light_sources():
     for source in light_sources:
         source.update()
         point_array = [source.x, source.y]
+        if source.distance >= 100:
+            continue
 
         # leeres array erstellen (ds = distance-shadow ...
         # because its the distance and shadow and whatever)

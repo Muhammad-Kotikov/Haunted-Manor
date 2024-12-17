@@ -6,6 +6,7 @@ import dialogue
 import kryptex
 import clock
 import memory
+import piano
 
 from patterns import State, Context
 from settings import *
@@ -66,7 +67,7 @@ class InGame(GameState):
 
         sprites = {}
         for sprite in ['brick', 'heart', 'empty_heart', 'piano', 'kryptex', 'memory', 'clock', 'powerup_heal', 'powerup_speed', 'powerup_nightvision',
-                       'notes', 'door', 'bloody_door', 'bloody_brick']:
+                       'notes', 'door', 'bloody_door', 'bloody_brick', 'penta', 'quake']:
             sprites[sprite] = get_sprite(sprite + ".png")
 
         # player
@@ -119,6 +120,8 @@ class InGame(GameState):
         # static tiles
         brick = Tile(True, sprites['brick'])
         bloody_brick = Tile(True, sprites['bloody_brick'])
+        penta = Tile(False, sprites['penta'])
+        quake = Tile(False, sprites['quake'])
 
         # door tiles
         door = Door(pygame.Rect(-TILE_SIZE, - TILE_SIZE, TILE_SIZE * 3, TILE_SIZE * 3), True, sprites['door'])
@@ -165,7 +168,7 @@ class InGame(GameState):
 
         # world
         spawn_table = [None, brick, player, piano, memory, kryptex, clock, spikes, fire_trap, powerup_heal, powerup_speed, powerup_nightvision,
-                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy]
+                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy, penta, quake]
         self.world = World(get_map("maze.tmx"), spawn_table)
 
         # misc
@@ -374,7 +377,6 @@ class InMemory(GameState):
 
     def __init__(self):
         _ = set_resolution(800, 875)
-        Resolution.SCALE = 1
         self.rewarded = False
         self.puzzle = memory.Memory()
 
@@ -412,23 +414,30 @@ class InMemory(GameState):
 class InPiano(GameState):
 
     def __init__(self):
-        pass
+        _ = set_resolution(52 * 35, 800)
+        self.puzzle = piano.Piano()
 
     
     def update(self):
-        pass
+        if self.puzzle.exit:
+            self.context._next_state = self.context.ingame
+        self.puzzle.update()
 
 
     def render(self):
-        pass
+        self.puzzle.render()
 
     
     def enter(self):
-        pass
+        self.context.screen = _ = set_resolution(52 * 35, 800)
+        self.puzzle.screen = self.context.screen
+        self.puzzle.exit = False
 
 
     def exit(self):
         pass
+
+
 class InPause(GameState):
     def __init__(self):
         _ = set_resolution(400, 400)
