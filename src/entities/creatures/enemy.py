@@ -6,7 +6,7 @@ from settings import FRAMERATE
 
 
 class Enemy(Creature):
-    MAX_SPEED = 0.3                                                                                                        #Maxspeed aus Creature wird mit diesem Wert überschrieben
+    MAX_SPEED = 0.5                                                                                                        #Maxspeed aus Creature wird mit diesem Wert überschrieben
     ACCELERATION = MAX_SPEED / 10   
     DECELERATION = MAX_SPEED / 6
     FOLLOW_RANGE = 70                                                                                                      # Legt die Sichtweite des Gegners fest

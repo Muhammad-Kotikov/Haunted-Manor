@@ -32,7 +32,7 @@ class HUD:
             screen.blit(self.empty_health_sprite, (offset_x + distance_x * x, offset_y))
 
         if len(self.target.interactables) > 0:
-            label = self.SMALL_FONT.render("Press E to interact", 0, (255, 255, 255))
+            label = self.SMALL_FONT.render("Press L to interact", 0, (255, 255, 255))
             screen.blit(label, (screen.get_width() / 2 - label.get_width() / 2, screen.get_height() * 0.8))
         
         if self.target.keys > 0 and not self.target.key_final:

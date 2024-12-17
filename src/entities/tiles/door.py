@@ -10,6 +10,8 @@ class Door(Tile):
         self.range.y += self.position.y
     
     def update(self):
+        if not self.world.player:
+            return
         if self.range.colliderect(self.world.player.rect):
             self.world.player.interactables.append(self)
 

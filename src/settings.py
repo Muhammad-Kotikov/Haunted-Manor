@@ -28,7 +28,7 @@ key_map = {
     "right" : pygame.K_d,
     "up" : pygame.K_w,
     "down" : pygame.K_s,
-    "interact" : pygame.K_e,
+    "interact" : pygame.K_l,
     "dialogue_next" : pygame.K_SPACE,
     "attack" : pygame.K_k
 }

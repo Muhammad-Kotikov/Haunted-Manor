@@ -102,7 +102,7 @@ def apply_light_sources():
     for source in light_sources:
         source.update()
         point_array = [source.x, source.y]
-        if source.distance >= 100:
+        if source.distance >= 200:
             continue
 
         # leeres array erstellen (ds = distance-shadow ...
