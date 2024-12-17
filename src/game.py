@@ -71,8 +71,8 @@ class InGame(GameState):
             sprites[sprite] = get_sprite(sprite + ".png")
 
         # player
-        player = Player(3, get_sprite("player_idle_0.png"), width = 14, height = 14)
-        enemy = Enemy(3, get_sprite("enemy.png"), width = 14, height = 14)
+        player = Player(4, get_sprite("player_idle_0.png"), width = 14, height = 14)
+        enemy = Enemy(4, get_sprite("enemy.png"), width = 14, height = 14)
 
 
         # puzzle tiles
@@ -172,7 +172,7 @@ class InGame(GameState):
         # world
         spawn_table = [None, brick, player, piano, memory, kryptex, clock, spikes, fire_trap, powerup_heal, powerup_speed, powerup_nightvision,
                        notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy, penta, quake, floor_0, floor_1]
-        self.world = World(get_map("maze.tmx"), spawn_table)
+        self.world = World(get_map("manor.tmx"), spawn_table)
 
         # misc
         self.camera = Camera(pygame.Rect(0, 0, Resolution.WIDTH, Resolution.HEIGHT), pygame.Rect(0.0, 0.0, self.world.width * TILE_SIZE, self.world.height * TILE_SIZE), player)
@@ -190,11 +190,11 @@ class InGame(GameState):
             self.context._next_state = m
             return
         
-        elif not self.world.player:
-            m = InMenu()
-            m.resetgame = True
-            d = InDialogue(['YOU DIED'],[get_sprite("enemy.png")], m)
-            self.context._next_state = d
+        elif not self.world.player:                                                              #wird ausgeführt wenn es keinen Spieler in  der Welt gibt, also gestorben ist               
+            m = InMenu()                                                                         # bringt den Spieler zurück ins Menü
+            m.resetgame = True                                                                   #resettet das Game
+            d = InDialogue(['YOU DIED'],[get_sprite("enemy.png")], m)                            #Zeigt einen Dialog an und ein Bild
+            self.context._next_state = d                                                         #Zustand vom Spiel wird geändert
             return
             
 

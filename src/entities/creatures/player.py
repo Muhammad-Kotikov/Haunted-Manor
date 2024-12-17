@@ -56,10 +56,10 @@ class Player(Creature):
     
         self.cooldown -= 1
         
-        if (self.input.just_pressed(key_map["attack"]) and self.cooldown <= 0):
+        if (self.input.just_pressed(key_map["attack"]) and self.cooldown <= 0):                             # Wenn der Cooldown 0 ist oder die Attack Taste gedrückt wird wird der Cooldown angehoben damit man den Angriff nicht spammen kann.
             self.cooldown = FRAMERATE * 0.5
 
-        if self.cooldown >= self.MAX_COOLDOWN - self.ATTACK_DURATION:
+        if self.cooldown >= self.MAX_COOLDOWN - self.ATTACK_DURATION:                                       # Muha hat hier noch eine Verzögerung eingebaut damit sich das ganze besser anfühlt ( Muha ist der beste)
             self.attack()
     
 
@@ -134,13 +134,13 @@ class Player(Creature):
                     interactable.tint((100, 100, 100, 255), pygame.BLEND_RGBA_MULT)
 
     def attack(self):
-        damage_amount = 1
-        for enemy in self.world.creatures:
-            if enemy == self:
+        damage_amount = 1                                                                                       #Legt den Damage vom Spieler fest, den der Spieler verursacht
+        for enemy in self.world.creatures:                                                                      #
+            if enemy == self:                                                                                   # Überprüft ob die Kreatur "Enemy" der Spieler selbst ist, wenn ja wird die Methode beendet. Das haben wir gemacht damit der Spieler sich nicht selbst verletzt.
                 return
-            distance_to_enemy_x = (self.rect.centerx-enemy.rect.centerx)
-            distance_to_enemy_y = (self.rect.centery-enemy.rect.centery)
-            distance = vec(distance_to_enemy_x,distance_to_enemy_y).length()
-            if distance <= self.damage_radius:
+            distance_to_enemy_x = (self.rect.centerx-enemy.rect.centerx)                                        #Berechnet die Differenz der X Koordinate zwischen Spieler und Gegner damit wir dies in den Vector einfügen können. Center ist ein Tuple und kann nicht in einen Vector eingefügt werden
+            distance_to_enemy_y = (self.rect.centery-enemy.rect.centery)                                        # Gleiche nur für die Y Koordinate
+            distance = vec(distance_to_enemy_x,distance_to_enemy_y).length()                                    #Berechnet die Distanz zwischen Kreatur und Spieler
+            if distance <= self.damage_radius:                                                                  # Wenn der Gegner im Radius ist wird die Hit funktion aus Creature ausgeführt und der Enemy nimmt schaden
                 enemy.hit(damage_amount)
     

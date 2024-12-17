@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.11.0" name="tileset" tilewidth="16" tileheight="16" tilecount="21" columns="0">
+<tileset version="1.10" tiledversion="1.11.0" name="tileset" tilewidth="16" tileheight="16" tilecount="23" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image source="sprites/brick.png" width="16" height="16"/>
@@ -59,9 +59,15 @@
   <image source="sprites/enemy.png" width="14" height="14"/>
  </tile>
  <tile id="19">
-  <image source="../../../../../../../../Downloads/floor_1.png" width="16" height="16"/>
+  <image source="../../../Prog_17_12_24/Haunted-Manor/rsc/sprites/penta.png" width="16" height="16"/>
  </tile>
  <tile id="20">
-  <image source="../../../../../../../../Downloads/floor_0.png" width="16" height="16"/>
+  <image source="../../../Prog_17_12_24/Haunted-Manor/rsc/sprites/quake.png" width="16" height="16"/>
+ </tile>
+ <tile id="21">
+  <image source="../../../Prog_17_12_24/Haunted-Manor/rsc/sprites/floor_0.png" width="16" height="16"/>
+ </tile>
+ <tile id="22">
+  <image source="../../../Prog_17_12_24/Haunted-Manor/rsc/sprites/floor_1.png" width="16" height="16"/>
  </tile>
 </tileset>
