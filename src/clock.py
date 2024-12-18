@@ -13,7 +13,7 @@ from tools import *
 
 ### Klasse Clock
 class Clock():
-    ####Klasse initialisieren
+### Klasse initialisieren
     def __init__(self):
         #   Farben definieren
         self.WHITE  = (255, 255, 255)
@@ -35,7 +35,7 @@ class Clock():
         self.ANGLE_TOLERANCE = 0.1
 
         #   Startwinkel der Zeiger
-        self.angle_hour     = math.radians(360 * (12 / 12)) 
+        self.angle_hour     = math.radians(360 * (2 / 12)) 
         self.angle_minute   = math.radians(360 * (30 / 60))  
         self.angle_second   = math.radians(360 * (15 / 60))  
 

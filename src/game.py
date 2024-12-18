@@ -210,7 +210,7 @@ class InGame(GameState):
         elif not self.world.player:                                                              #wird ausgeführt wenn es keinen Spieler in  der Welt gibt, also gestorben ist               
             m = InMenu()                                                                         # bringt den Spieler zurück ins Menü
             m.resetgame = True                                                                   #resettet das Game
-            d = InDialogue(['YOU DIED'],[get_sprite("enemy.png")], m)                            #Zeigt einen Dialog an und ein Bild
+            d = InDialogue(['YOU DIED...'],[get_sprite("enemy.png")], m)                         #Zeigt einen Dialog an und ein Bild
             play_soundeffect("rsc/sounds/game_over.mp3", 0.5)
             self.context._next_state = d                                                         #Zustand vom Spiel wird geändert
             return
