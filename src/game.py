@@ -147,7 +147,7 @@ class InGame(GameState):
         for i, sprite in enumerate([f'spike_{i}' for i in range(3)]):
             spikes.sprites[i] = get_sprite(sprite + ".png")
 
-        fire_trap = Trap(CYCLING, [(0, 0, 0, 0, 30), (0, 0, 0, 0, 15), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5), (1, 3, 14, 12, 5)], False, get_sprite("fire_trap_0.png"))
+        fire_trap = Trap(CYCLING, [(0, 0, 0, 0, 30), (0, 0, 0, 0, 15), (1, 3, 10, 12, 5), (1, 3, 10, 12, 5), (1, 3, 10, 12, 5), (1, 3, 10, 12, 5), (1, 3, 10, 12, 5)], False, get_sprite("fire_trap_0.png"))
         fire_trap.sprites = {} # quick and dirty
         for i, sprite in enumerate([f'fire_trap_{i}' for i in range(7)]):
             fire_trap.sprites[i] = get_sprite(sprite + ".png")
