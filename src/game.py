@@ -73,7 +73,7 @@ class InGame(GameState):
             sprites[sprite] = get_sprite(sprite + ".png")
 
         # player
-        player = Player(4, get_sprite("player_idle_0.png"), width = 14, height = 14)
+        player = Player(50, get_sprite("player_idle_0.png"), width = 14, height = 14)
         enemy = Enemy(4, get_sprite("enemy.png"), width = 14, height = 14)
 
 
@@ -133,7 +133,7 @@ class InGame(GameState):
         notes_clock = ITile(pygame.Rect(-8, -8, 32, 32), show_dialogue, 'clock', False, sprites['notes'])
 
         # static tiles
-        brick = Tile(True, sprites['brick'])
+        brick = Tile(False, sprites['brick'])
         floor_0 = Tile(False, sprites['floor_0'])
         floor_1 = Tile(False, sprites['floor_1'])
         

@@ -32,7 +32,7 @@ class Clock():
         self.TARGET_SECOND  = math.radians(360 * (45 / 60))  # Zielsekunde: 45 Sekunden
 
         #   Toleranzbereich für das Ziel
-        self.ANGLE_TOLERANCE = 0.2
+        self.ANGLE_TOLERANCE = 1
 
         #   Startwinkel der Zeiger
         self.angle_hour     = math.radians(360 * (2 / 12)) 
@@ -46,8 +46,6 @@ class Clock():
 
         #    Spielspezifische Variablen
         self.won            = False    
-        self.won_timer      = FRAMERATE * 1  
-        self.congrats_timer = FRAMERATE * 3  
         self.exit           = False 
         self.mouse_pos      = (0, 0) 
         self.offset_hour    = 0  
@@ -57,22 +55,16 @@ class Clock():
 ### Update-Methode
     def update(self):
         #   Gewonnen-Status überprüfen
-        if self.won and self.won_timer > 0:  
-            self.won_timer -= 1  #
-            return
-        elif self.won_timer <= 0 and self.congrats_timer > 0:  
-            self.congrats_timer -= 1 
-            return
-        elif self.congrats_timer <= 0:
-            self.exit = True 
-            return
+
 
         #   Prüfen, ob die Zielzeit erreicht wurde
         if self.check_time():  
-            self.won = True 
+            self.won = True
+            print(self.won)
 
-        if self.won == False:
-            self.exit = False
+        if self.won:
+            self.exit = True
+            return
 
         #   Ereignisse prüfen 
         for event in pygame.event.get():
@@ -114,11 +106,7 @@ class Clock():
 ### Zeichnen der Uhr
     def render(self):
         #   Hintergrund schwarz färben
-        self.screen.fill(self.BLACK)  
-        if self.won and self.won_timer <= 0:  
-            self.draw_winning_message()
-            return
-        elif self.exit:
+        if self.won:
             return
 
         #   Hintergrundbild der Uhr zeichnen
@@ -144,6 +132,7 @@ class Clock():
 
 ### Prüfen, ob die Zielzeit erreicht wurde
     def check_time(self):
+        
         if (self.TARGET_HOUR - self.ANGLE_TOLERANCE < self.angle_hour < self.TARGET_HOUR + self.ANGLE_TOLERANCE) and \
            (self.TARGET_MINUTE - self.ANGLE_TOLERANCE < self.angle_minute < self.TARGET_MINUTE + self.ANGLE_TOLERANCE) and \
            (self.TARGET_SECOND - self.ANGLE_TOLERANCE < self.angle_second < self.TARGET_SECOND + self.ANGLE_TOLERANCE):
@@ -180,9 +169,3 @@ class Clock():
 # Ende greifen, nun kann man ihn überall greifen und dann draggen. Es wird also für jeden Abschnitt der Abstand zur Maus berechnet und wenn die
 # Maus weniger als 20px entfernt ist, kann der Zeiger gegriffen werden
 #####################################################################################################################################################
-
-### Winning-Message-Methode
-    def draw_winning_message(self):
-        winning_text    = self.FONT.render("Congratulations!", True, self.WHITE)
-        text_rect       = winning_text.get_rect(center=(Resolution.WIDTH // 2, Resolution.HEIGHT // 2))
-        self.screen.blit(winning_text, text_rect)

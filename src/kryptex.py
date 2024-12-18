@@ -24,8 +24,6 @@ class Kryptex():
         self.SPACING     = 20                       # Abstand zwischen den Buchstaben 
 
         self.won                 = False            
-        self.won_timer           = FRAMERATE * 1    # Timer für den Gewinn
-        self.congrats_timer      = FRAMERATE * 3    # Timer für die Glückwunschnachricht
         self.exit                = False            
 
         self.mouse_pos           = (0, 0)           # Mausposition
@@ -51,23 +49,8 @@ class Kryptex():
 ### Update-Methode                   
     def update(self):
         #   Wenn das Spiel gewonnen wurde + der Timer noch läuft
-        if self.won and self.won_timer > 0:
-            self.won_timer -= 1
-            self.selected_letter = None
-            return
-        
-        #   Wenn der Timer für den Gewinn abgelaufen ist, startet der Timer für die Glückwunsch-Nachricht
-        elif self.won_timer <= 0 and self.congrats_timer > 0:
-            self.congrats_timer -= 1
-            return
-        
-        #   Wenn der Glückwunsch-Timer abgelaufen ist, wird das Spiel beendet 
-        elif self.congrats_timer <= 0:
+        if self.won:
             self.exit = True
-            return
-        
-        if self.won == False:
-            self.exit = False
 
         #   Aktuelle Mausposition holen (siehe def get_mp, weiter unten)
         self.mouse_pos = get_mp(self)
@@ -112,18 +95,13 @@ class Kryptex():
 ### Render-Methode
     def render(self):
         #   Hintergrund schwarz färben
-        self.screen.fill(self.BLACK) 
+        
 
         #   Wenn das Spiel gewonnen wurde und der Timer abgelaufen ist, wird die Gewinnnachricht angezeigt (siehe unten)
-        if self.won and self.won_timer <= 0:
-            self.draw_winning_message() 
+        if self.won:
             return
-        #   Wenn das Spiel beendet werden soll(siehe Game.py)
-        elif self.exit: 
-            return
-        #   Wenn noch nichts passiert ist, werden die Buchstaben dargestellt 
-        else:
-            self.draw_letters() 
+        self.screen.fill(self.BLACK) 
+        self.draw_letters() 
 
 ### Draw-Letters-Methode
     def draw_letters(self):
@@ -134,9 +112,3 @@ class Kryptex():
             letter_surface  = self.FONT.render(letter["char"], True, color) 
             letter_rect     = letter_surface.get_rect(center=letter["pos"])  
             self.screen.blit(letter_surface, letter_rect)  
-
-### Winning-Message-Methode
-    def draw_winning_message(self):
-        winning_text    = self.SMALL_FONT.render("Congratulations!", True, self.WHITE)
-        text_rect       = winning_text.get_rect(center=(Resolution.WIDTH // 2, Resolution.HEIGHT // 2))
-        self.screen.blit(winning_text, text_rect)

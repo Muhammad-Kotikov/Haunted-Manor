@@ -37,11 +37,6 @@ class Memory():
 
         #   Spielspezifische Variablen 
         self.won                 = False
-        self.won_timer           = FRAMERATE * 1  # Timer nach  Sieg
-        self.congrats_timer      = FRAMERATE * 3  # Timer für Gewinn-Bildschirm
-
-        self.lost                = False
-        self.lost_timer          = FRAMERATE * 3  # Timer nach Niederlage
 
         self.exit                = False        
 
@@ -65,25 +60,9 @@ class Memory():
 ### Update-Methode
     def update(self):
         #   Timer nach einem Sieg oder einer Niederlage
-        if self.won and self.won_timer > 0:
-            self.won_timer -= 1
+        if self.won:
+            self.exit = True
             return  
-        #   Wenn der Timer abgelaufen ist reduziert sich der Gewinn Timer um die NAchricht anzuzeigen
-        elif self.won_timer <= 0 and self.congrats_timer > 0:
-            self.congrats_timer -= 1
-            return  
-        #   Wenn auch der Timer abgelaufen ist, wird das Spiel beendet
-        elif self.congrats_timer <= 0:
-            self.exit = True  
-            return
-        #   Wenn das Spiel verloren wurde reduziert sich der Lost-Timer
-        elif self.lost and self.lost_timer > 0:
-            self.lost_timer -= 1
-            return  
-        #   Wenn der Lost-Timer abgelaufen ist, wird das Spiel beendet
-        elif self.lost_timer <= 0:
-            self.exit = True  
-            return
 
         #   Wenn zwei Karten ausgewählt wurden, startet ein Timer, bis die Karten wieder umgedreht werden 
         if self.first_guess and self.second_guess:
@@ -105,8 +84,6 @@ class Memory():
         if self.matches == self.ROWS * self.COLS // 2:
             self.won = True 
 
-        if self.won == False:
-            self.exit = False
         for event in pygame.event.get():
             #    Wenn Mousebutton gedrückt, wird die Position mithilfe von mp_get() geholt  
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -139,23 +116,14 @@ class Memory():
 
 ### Render-Methode
     def render(self):
-        #   Hintergrund schwarz füllen
+
+        if self.won:
+            return
+        
         self.screen.fill(self.BLACK)  
-            #   Verschiedene Zustände anzeigen
-        if self.won and self.won_timer <= 0:
-                #   Gewinnnachricht
-            self.draw_winning_message()  
-            return
-        elif self.lost and self.lost_timer >= 0:
-                #   Verliernachricht
-            self.draw_losing_message() 
-            return
-        elif self.exit:
-            return
-        else:
-            self.draw_background()  
-            self.draw_board()       
-            self.draw_timer()       
+        self.draw_background()  
+        self.draw_board()       
+        self.draw_timer()       
 
 ### Enter-Methode
     def enter(self):
@@ -283,15 +251,3 @@ class Memory():
         timer_text = f"{minutes:02}:{seconds:02}"
         timer_surface = self.SMALL_FONT.render(timer_text, True, self.WHITE)
         self.screen.blit(timer_surface, (Resolution.WIDTH // 2 - timer_surface.get_width() // 2, 20))
-
-### Gewinn-Methode 
-    def draw_winning_message(self):
-        winning_text = self.SMALL_FONT.render("Congratulations!", True, self.WHITE)
-        text_rect = winning_text.get_rect(center=(Resolution.WIDTH // 2, Resolution.HEIGHT // 2))
-        self.screen.blit(winning_text, text_rect)
-
-### Verlier-Methode
-    def draw_losing_message(self):
-        loosing_text = self.SMALL_FONT.render("GAME OVER!", True, self.RED)
-        text_rect = loosing_text.get_rect(center=(Resolution.WIDTH // 2, Resolution.HEIGHT // 2))
-        self.screen.blit(loosing_text, text_rect)
