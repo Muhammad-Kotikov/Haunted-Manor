@@ -94,7 +94,7 @@ class InGame(GameState):
             if puzzle == 'memory':
                 txt = ["In the Puzzle, pairs are hidden, but not every pair is immediately visible.\n" +
                        "Find the pairs that complement each other, and uncover the secret they guard."]
-                bgs = [get_sprite(f"dialogue_0.png")]
+                bgs = [get_sprite(f"memory_dialog.png")]
 
             elif puzzle == 'kryptex':
                 txt = ["A professor of codes and logic...\n"+
@@ -108,7 +108,8 @@ class InGame(GameState):
 
             elif puzzle == 'clock':
                 txt = [ "In the stillness of the night, as the clock ticks away its time, imagine three clues:\n\n",
-                        "The first hand shows the hour. It is the moment that marks the start of a new day .\n",
+                        "The first hand shows the hour.\n"
+                        "It marks the last hour of the day, just before a new day begins.",
                         "The second hand shows the minutes.\n" +
                         "It is a number that repeats itself, a pattern that echoes through the clock.\n" +
                         "It lies just past the middle.\n",
@@ -118,7 +119,7 @@ class InGame(GameState):
                         "...quietly before transitioning to the next.\n\n",
                         "Set the clock to the exact time, and you will unlock the secret."
                     ]
-                bgs = 5 * [get_sprite(f"dialogue_0.png")]
+                bgs = 5 * [get_sprite(f"clock_dialog.png")]
             else:
                 return
 
@@ -227,7 +228,7 @@ class InGame(GameState):
             elif self.timer <= 0:
                 self.world.player.key_final = True
                 play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
-                self.context._next_state = InDialogue(['The key fragments violently merge into one.\n\n\n\n\nYou feel a sense of relief.'], [get_sprite("key_final.png")])
+                self.context._next_state = InDialogue(['The key fragments violently merge into one.\n\n\n\n\nYou feel a sense of relief.'], [get_sprite("complete_key.png")])
                 return
 
         for event in pygame.event.get():
@@ -389,7 +390,7 @@ class InKryptex(GameState):
             self.context._next_state = InDialogue(['You\'ve finished the puzzle, the computer disappears in front of your eyes.\n' +
                                                    'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
                                                    'It\'s a key fragment. You have no use for this yet...'],
-                                                   [get_sprite("key_appear.png")])
+                                                   [get_sprite("key_fragement01.png")])
             play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
 
 class InClock(GameState):
@@ -424,7 +425,7 @@ class InClock(GameState):
             self.context._next_state = InDialogue(['You\'ve finished the puzzle, the clock disappears in front of your eyes.\n' +
                                                    'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
                                                    'It\'s a key fragment. You have no use for this yet...'],
-                                                   [get_sprite("key_appear.png")])
+                                                   [get_sprite("key_fragement02.png")])
             play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
 
 
@@ -463,7 +464,7 @@ class InMemory(GameState):
             self.context._next_state = InDialogue(['You\'ve finished the puzzle, the cards disappears in front of your eyes.\n' +
                                                    'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
                                                    'It\'s a key fragment. You have no use for this yet...'],
-                                                   [get_sprite("key_appear.png")])
+                                                   [get_sprite("key_fragement03.png")])
             play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
 
         if self.puzzle.lost:

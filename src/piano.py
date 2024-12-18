@@ -43,7 +43,7 @@ class Piano():
         self.black_sounds        = [mixer.Sound(get_full_path(f'sounds/piano_notes/{note}.wav')) for note in pl.black_notes]
 
         #   Image  
-        self.sheet_music_image = get_sprite("dialogue_0.png")
+        self.sheet_music_image = get_sprite("sheet_music_image.png")
 
         #   Spielspezifische Variablen
         self.active_whites       = []
