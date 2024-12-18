@@ -4,8 +4,8 @@ it's the most fun game, I promise
 
 ## Hardware Requirements
 
-- NOT Lia's shitty MacBook (shacky Tiles o.O)
-- if you do have a 
+- NOT Sidney's shitty macbook
+- however, if you DO have a low spec pc, you can turn off the lightsystem and (but this should be unnecessary) the crt shader, may not look as pretty
 
 ## Software Requirements
 - OS: any (tested with Windows, MacOS and Debian)

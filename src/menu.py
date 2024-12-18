@@ -74,7 +74,7 @@ class Menu():
 ### Update-Methode 
     def update(self):
         #   Mausposition abrufen (get_mp() siehe unten)
-        self.mouse_x, self.mouse_y = get_mp(self)
+        self.mouse_x, self.mouse_y = get_mouse_pos()
 
         #   Klickzustand checken, um Menüs zu switchen oder Buttons zu tooglen 
         self.last_clicked   = self.clicked

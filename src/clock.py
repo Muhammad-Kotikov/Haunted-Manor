@@ -74,7 +74,7 @@ class Clock():
 
             #   Linksklick prüfen
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
-                mouse_x, mouse_y = get_mp(self)  
+                mouse_x, mouse_y = get_mouse_pos()  
                 #   Stundenzeiger auswählen
                 if self.chose_clockhand(self.angle_hour, self.RADIUS * 0.5, (mouse_x, mouse_y)):
                     self.selected_clockhand = 'hour'
@@ -94,7 +94,7 @@ class Clock():
 
             #   Mausbewegung bei ausgewähltem Zeiger
             elif event.type == pygame.MOUSEMOTION and self.selected_clockhand:  
-                mouse_x, mouse_y = get_mp(self)
+                mouse_x, mouse_y = get_mouse_pos()
                 angle = math.atan2(mouse_y - self.CENTER[1], mouse_x - self.CENTER[0])
                 if self.selected_clockhand == 'hour':
                     self.angle_hour = self.normalize_angle(angle - self.offset_hour)

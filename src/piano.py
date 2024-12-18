@@ -8,7 +8,7 @@ import notes as pl
 
 from pygame import mixer
 from settings import Resolution
-from tools import get_full_path, get_sprite, get_mp
+from tools import get_full_path, get_sprite, get_mouse_pos
 
 ### Piano Klasse
 class Piano():
@@ -130,7 +130,7 @@ class Piano():
             if not event.type == pygame.MOUSEBUTTONDOWN:
                 return
 
-            pos = get_mp(self)
+            pos = get_mouse_pos()
 
             black_key = False
             for i, key in enumerate(self.black_rects):

@@ -53,7 +53,7 @@ class Kryptex():
             self.exit = True
 
         #   Aktuelle Mausposition holen (siehe def get_mp, weiter unten)
-        self.mouse_pos = get_mp(self)
+        self.mouse_pos = get_mouse_pos()
 
         for event in pygame.event.get(): 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:

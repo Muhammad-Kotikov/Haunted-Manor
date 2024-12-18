@@ -7,7 +7,7 @@ import random
 import pygame
 
 from settings import Resolution, FRAMERATE
-from tools import get_mp
+from tools import get_mouse_pos
 
 ### Klasse Memory
 class Memory():
@@ -90,7 +90,7 @@ class Memory():
                 self.exit = True
                 self.lost = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_x, mouse_y = get_mp(self)
+                mouse_x, mouse_y = get_mouse_pos()
                 #   Dann wird sowohl die Spalte als auch die Zeile basierend auf der Position gesucht 
                 col = (mouse_x - 5) // self.PIECE_WIDTH
                 row = (mouse_y - 80) // self.PIECE_HEIGHT  
