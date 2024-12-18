@@ -74,7 +74,7 @@ class InGame(GameState):
 
         # player
         player = Player(5, get_sprite("player_idle_0.png"), width = 14, height = 14)
-        enemy = Enemy(4, get_sprite("enemy.png"), width = 14, height = 14)
+        enemy = Enemy(3, get_sprite("enemy.png"), width = 14, height = 14)
 
 
         # puzzle tiles
