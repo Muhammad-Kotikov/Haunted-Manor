@@ -60,7 +60,6 @@ class Clock():
         #   Prüfen, ob die Zielzeit erreicht wurde
         if self.check_time():  
             self.won = True
-            print(self.won)
 
         if self.won:
             self.exit = True
