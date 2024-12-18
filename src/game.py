@@ -432,7 +432,7 @@ class InMemory(GameState):
 class InPiano(GameState):
 
     def __init__(self):
-        _ = set_resolution(52 * 35, 800)
+        _ = set_resolution(52 * 25, 800)
         self.puzzle = piano.Piano()
 
     
@@ -447,7 +447,7 @@ class InPiano(GameState):
 
     
     def enter(self):
-        self.context.screen = _ = set_resolution(52 * 35, 800)
+        self.context.screen = _ = set_resolution(52 * 25, 800)
         self.puzzle.screen = self.context.screen
         self.puzzle.exit = False
 

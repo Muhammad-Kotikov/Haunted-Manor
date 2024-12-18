@@ -6,10 +6,10 @@ from settings import FRAMERATE
 
 
 class Enemy(Creature):
-    MAX_SPEED = 0.5                                                                                                        #Maxspeed aus Creature wird mit diesem Wert überschrieben
+    MAX_SPEED = 0.7                                                                                                        #Maxspeed aus Creature wird mit diesem Wert überschrieben
     ACCELERATION = MAX_SPEED / 10   
     DECELERATION = MAX_SPEED / 6
-    FOLLOW_RANGE = 70                                                                                                      # Legt die Sichtweite des Gegners fest
+    FOLLOW_RANGE = 80                                                                                                      # Legt die Sichtweite des Gegners fest
     STOP_RANGE  = 6                                                                                                        # Wenn der Gegner in der Range ist hält er an
     radius = 10                                                                                                            # Bestimmt den Radius in dem der Gegner Schaden macht
     cooldown = FRAMERATE * 2                                                                                               # Setzt die Berechnung zur Abklinkzeit vom Gegner

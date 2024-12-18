@@ -53,7 +53,7 @@ class Piano():
         self.exit = False
 
         for i in range(52):
-            rect = pygame.Rect(i * 35, Resolution.HEIGHT - 300, 35, 300)
+            rect = pygame.Rect(i * 25, Resolution.HEIGHT - 300, 25, 300)
             self.white_rects.append(rect)
 
         skip_count  = 0
@@ -62,7 +62,7 @@ class Piano():
         skip_count  = 0
 
         for i in range(36):
-            rect = pygame.Rect(23 + (i * 35) + (skip_count * 35), Resolution.HEIGHT - 300, 24, 200)
+            rect = pygame.Rect(23 + (i * 25) + (skip_count * 25), Resolution.HEIGHT - 300, 24, 200)
 
             skip_track += 1
 
