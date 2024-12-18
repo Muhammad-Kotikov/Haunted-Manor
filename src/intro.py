@@ -1,48 +1,60 @@
+#   Vorbereitung
+##  Allgemeine Vorbereitung
+### Module und Abhängigkeiten importieren 
+import pygame 
+import os           #Notwendig für Dateienoperation
+
 from game import *  
-import pygame
-from settings import *
-import os
+from settings import *  
+from tools import * 
 
+##### DISCLAIMER: WIR HABEN EIN INTRO ERSTELLT UND DIESES IN 111 FRAMES UNTERTEILT, DA WIR KEIN WEITERES MODUL NUTZEN SOLLTEN,DIES
+##### IST NATÜRLICH NICHT DIE EFFIZENTESTE UND BESTE LÖSUNG, WENN MAN "NORMAL" EIN SPIEL DESIGNEN WÜRDE
+
+### Klasse Intro
 class Intro:
+    ####Initialisierung der Klasse
     def __init__(self):
-        self.intro_surface = pygame.Surface((Resolution.WIDTH * TILE_SIZE, Resolution.HEIGHT * TILE_SIZE))
-        self.frames_path = "rsc/sprites/videos/intro"
-        self.frames = sorted(
-            [
-                os.path.join(self.frames_path, f)
-                for f in os.listdir(self.frames_path)
-                if f.endswith(".png")
-            ]
-        )
+        #   Pfad zu den 111 Bildern des Intros -> nur os als Modul benutzen, kein anderes, um ein Video abzuspielen
+        self.frames_path    = "rsc/sprites/videos/intro"
+        
+        #   Funktion get_sprite (siehe Tools) Lädt alle Frames des Videos
+        self.frames         = [get_sprite(f"/videos/intro/video_frame{i:05}.png") for i in range(1,112)]
+        
+        #  Spielspezifische Variablen
+        self.exit           = False     # Indikator, ob das Intro beendet werden soll
+        self.index          = 0         # Aktueller Index der 111 Frames
+        self.counter        = 0         # Counter, um Frames in regelmäßigen Abständen zu wechseln
 
-        self.clock      = pygame.time.Clock()
-        self.running    = True
-        self.index      = 0
+    ####Render-Methode
+    def render(self):
+        #   Bildschirm schwarz 
+        self.screen.fill((0, 0, 0))
+        
+        #   Aktuellen Frame auf Grundlage des Indexes auswählen
+        frame   = self.frames[self.index]
 
-    
-    def render_intro(self):
-        while self.running:
-            if self.index < len(self.frames):
-                frame = pygame.image.load(self.frames[self.index]).convert_alpha()
+        #   Größe und Position des Frames berechnen
+        frame_rect      = frame.get_rect()
+        frame_width     = frame_rect.width
+        frame_height    = frame_rect.height
 
-                censored_frame = self.apply_censorship(frame)
+        #   Position in der Bildschirmmitte berechnen
+        x_offset = (Resolution.WIDTH - frame_width) // 2
+        y_offset = (Resolution.HEIGHT - frame_height) // 2
 
-                frame_rect = censored_frame.get_rect()
-                frame_width, frame_height = frame_rect.width, frame_rect.height
+        #   Frame in der Bildschirmmitte anzeigen
+        self.screen.blit(frame, (x_offset, y_offset))
 
-                x_offset = (Display.WIDTH - frame_width) // 2
-                y_offset = (Display.HEIGHT - frame_height) // 2
+    ####Update-Methode
+    def update(self):
+        #   Der Counter bekommt +1 und der Modulo berechnet die übrig gebliebene Zahl. Dadurch wird alle 4 "ticks" weitergeschaltet
+        self.counter = (self.counter + 1) % 4
+        
+        #   Zudem erhöhtt sich dann auch der Index um 1, um den nächsten Frame anzuzeigen
+        if self.counter == 0: 
+            self.index += 1
 
-                self.intro_surface.blit(censored_frame, (x_offset, y_offset))
-
-                self.index += 1
-                self.clock.tick(19)
-
-            else:
-                self.running = False
-
-    def apply_censorship(self, frame):
-        censored_frame = frame.copy()
-        rect = pygame.Rect(50, 50, 100, 100)
-        pygame.draw.rect(censored_frame, (0, 0, 0), rect)
-        return censored_frame
+        #   Wenn der letzte Frame gezeigt wurde, soll das Intro beendet werden 
+        if self.index == len(self.frames) - 1:
+            self.exit = True

@@ -53,7 +53,9 @@ def set_resolution(width, height):
 options = {
     'debugging' : False,
     'collision_range' : False,
-    'movement_vectors' : False 
+    'movement_vectors' : False,
+    'crt' : False,
+    'lightsystem' : False
     }
 
 def toggle(option):

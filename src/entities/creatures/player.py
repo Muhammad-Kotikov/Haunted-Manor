@@ -3,7 +3,7 @@ import input
 
 from settings import *
 from entities.creature import Creature
-from tools import get_sprite
+from tools import *
 vec = pygame.Vector2
 
 class Player(Creature):
@@ -134,7 +134,8 @@ class Player(Creature):
                     interactable.tint((100, 100, 100, 255), pygame.BLEND_RGBA_MULT)
 
     def attack(self):
-        damage_amount = 1                                                                                       #Legt den Damage vom Spieler fest, den der Spieler verursacht
+        damage_amount = 2                                                                                       #Legt den Damage vom Spieler fest, den der Spieler verursacht
+        play_soundeffect('rsc/sounds/sword.mp3', 0.5)
         for enemy in self.world.creatures:                                                                      #
             if enemy == self:                                                                                   # Überprüft ob die Kreatur "Enemy" der Spieler selbst ist, wenn ja wird die Methode beendet. Das haben wir gemacht damit der Spieler sich nicht selbst verletzt.
                 return

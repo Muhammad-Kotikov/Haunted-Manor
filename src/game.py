@@ -58,6 +58,7 @@ class GameState(State):
 class InGame(GameState):
 
     def __init__(self):
+        play_music('rsc/sounds/wind_rain.wav', 0.5, -1)
         _ = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
 
         self.paused = False
@@ -91,17 +92,37 @@ class InGame(GameState):
         def show_dialogue(puzzle):
 
             if puzzle == 'piano':
-                txt = ["pi" * 4, "pa" * 5]
-                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+                txt = ["To claim the key, you must summon the timeless melody that begins with a gentle touch.\n" + 
+                       "The notes flow like a river, soft and familiar, starting with the simplest of steps.\n" +
+                        "Let the music of a famous soul guide your fingers to the very start, where the melody of 'Für Elise' whispers its secret."]
+                bgs = 1 * [get_sprite(f"dialogue_0.png")]
+
             elif puzzle == 'memory':
-                txt = ["me" * 4, "mo" * 5]
-                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+                txt = ["In the room, pairs are hidden, but not every pair is immediately visible.\n" +
+                       "Two things that belong together are like day and night...\n",
+                       "They cannot exist without each other...\n" +
+                       "Find the pairs that complement each other, and uncover the secret they guard."]
+                bgs = 2 * [get_sprite(f"dialogue_0.png")]
+
             elif puzzle == 'kryptex':
-                txt = ["kry" * 4, "tex" * 5]
-                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+                txt = ["A professor of codes and logic, once the master of this house, left behind more than just books and machines.\n" +
+                       "His love for technology and puzzles remains. To unlock the secret, think of his name.\n",
+                       "The first letter of his first name, followed by his surname, is the key to what you seek."]
+                bgs = 2* [get_sprite(f"dialogue_0.png")]
+
             elif puzzle == 'clock':
-                txt = ["clo" * 4, "ock" * 5]
-                bgs = [get_sprite(f"dialogue_{i}.png") for i in range(2)]
+                txt = [ "In the stillness of the night, as the clock ticks away its time, imagine three clues:\n\n",
+                        "The first hand shows the hour. It is the moment when the day has not yet begun, but darkness still reigns.\n" +
+                        "The hand points to the place that marks the start of the night.\n",
+                        "The second hand shows the minutes.\n" +
+                        "It is a number that repeats itself in time, a pattern that echoes through the clock.\n" +
+                        "It is a cursed number, known to few, and lies just past the middle.\n",
+                        "The third hand shows the seconds. It moves in the last quarter of the minute, just before it ends.\n" +
+                        "In the final seconds of a quarter, it waits quietly before transitioning to the next.\n" +
+                        "A hint of what is to come, as time briefly seems to stand still.\n\n",
+                        "Set the clock to the exact time, and you will unlock the secret."
+                    ]
+                bgs = 5 * [get_sprite(f"dialogue_0.png")]
             else:
                 return
 
@@ -155,12 +176,15 @@ class InGame(GameState):
         # powerups
         def heal():
             self.world.player.health = min(self.world.player.health + 1, self.world.player.hitpoints)
+            play_soundeffect("rsc/sounds/pickup.mp3", 0.4)
         
         def speed():
             self.world.player.speed_boost_duration = FRAMERATE * 5
+            play_soundeffect("rsc/sounds/pickup.mp3", 0.4)
 
         def night_vision():
             shader.nv_duration = FRAMERATE * 5
+            play_soundeffect("rsc/sounds/pickup.mp3", 0.4)
         
         powerup_heal = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), heal, FRAMERATE * 2, sprite=sprites["powerup_heal"])
         powerup_speed = Powerup(Rect(0, 0, TILE_SIZE, TILE_SIZE), speed, FRAMERATE * 2, sprite=sprites["powerup_speed"])
@@ -194,6 +218,7 @@ class InGame(GameState):
             m = InMenu()                                                                         # bringt den Spieler zurück ins Menü
             m.resetgame = True                                                                   #resettet das Game
             d = InDialogue(['YOU DIED'],[get_sprite("enemy.png")], m)                            #Zeigt einen Dialog an und ein Bild
+            play_soundeffect("rsc/sounds/game_over.mp3", 0.5)
             self.context._next_state = d                                                         #Zustand vom Spiel wird geändert
             return
             
@@ -205,6 +230,7 @@ class InGame(GameState):
 
             elif self.timer <= 0:
                 self.world.player.key_final = True
+                play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
                 self.context._next_state = InDialogue(['The key fragments violently merge into one.\n\n\n\n\nYou feel a sense of relief.'], [get_sprite("key_final.png")])
                 return
 
@@ -216,10 +242,7 @@ class InGame(GameState):
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 self.context._next_state = self.context.inmenu
             elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE):
-                self.paused = not self.paused
-
-        if self.paused == True:
-            return
+                self.context._next_state = self.context.inpause   
         
         self.world.update(self.context.delta)
         self.camera.update()
@@ -302,13 +325,13 @@ class InDialogue(GameState):
         else:
             self.context._next_state = self.next_state
         
-
-
     def render(self):
         self.dialogue.render()
 
 
     def enter(self):
+        play_music('rsc/sounds/wind_rain.wav', 0.2, -1)
+
         self.context.screen = set_resolution(400, 400)
         self.dialogue.screen = self.context.screen
 
@@ -321,6 +344,7 @@ class InDialogue(GameState):
         self.dialogue.text_amount = 0
         self.dialogue.text_frame = 0
         self.dialogue.done = False
+        play_music('rsc/sounds/wind_rain.wav', 0.5 , -1)
 
 class InKryptex(GameState):
 
@@ -342,6 +366,7 @@ class InKryptex(GameState):
 
     
     def enter(self):
+        play_music('rsc/sounds/wind_rain.wav', 0.2, -1)
         self.context.screen = set_resolution(1000, 800)
         self.puzzle.screen = self.context.screen
 
@@ -355,7 +380,7 @@ class InKryptex(GameState):
                                                    'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
                                                    'It\'s a key fragment. You have no use for this yet...'],
                                                    [get_sprite("key_appear.png")])
-
+            play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
 
 class InClock(GameState):
 
@@ -376,6 +401,7 @@ class InClock(GameState):
 
     
     def enter(self):
+        play_music('rsc/sounds/wind_rain.wav', 0.2, -1)
         self.context.screen = set_resolution(800, 800)
         self.puzzle.screen = self.context.screen
 
@@ -389,12 +415,14 @@ class InClock(GameState):
                                                    'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
                                                    'It\'s a key fragment. You have no use for this yet...'],
                                                    [get_sprite("key_appear.png")])
+            play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
 
 
 class InMemory(GameState):
 
     def __init__(self):
         _ = set_resolution(800, 875)
+        Resolution.SCALE = 1
         self.rewarded = False
         self.puzzle = memory.Memory()
 
@@ -410,6 +438,7 @@ class InMemory(GameState):
 
     
     def enter(self):
+        play_music('rsc/sounds/wind_rain.wav', 0.2, -1)
         self.context.screen = set_resolution(800, 875)
         self.puzzle.screen = self.context.screen
         self.puzzle.enter()
@@ -425,6 +454,8 @@ class InMemory(GameState):
                                                    'After a blinding blood red flash a sharp object materializes in front of you.\n\n' +
                                                    'It\'s a key fragment. You have no use for this yet...'],
                                                    [get_sprite("key_appear.png")])
+            play_soundeffect('rsc/sounds/get_key.mp3', 0.5)
+
         if self.puzzle.lost:
             self.puzzle.reset()
 
@@ -458,38 +489,59 @@ class InPiano(GameState):
 
 class InPause(GameState):
     def __init__(self):
-        _ = set_resolution(400, 400)
-        self.pausemenu = PauseMenu()
+        _ = set_resolution(1200, 400)
+       
+        self.pausemenu = PauseMenu(
+            "Game Paused\n\nPress SPACE to Continue the Game\n\nPress ESC to Enter the Main Menu" , 
+            [get_sprite("instructions_small.png")])
+        
 
     def update(self):
-        if not self.pausemenu.paused:
-            self.context._next_state = self.context.ingame
-        self.pausemenu.update_pausemenu()
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                self.context.running = False
+            elif (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                self.context._next_state = self.context.inmenu 
+            elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE):
+                self.context._next_state = self.context.ingame               
+
+        self.pausemenu.update()
 
     def render(self):
-        self.pausemenu.render_pause_screen()
+        self.pausemenu.render()
+        self.pausemenu.phase = 0
 
     def enter(self):
-        self.context.screen = set_resolution(400, 400)
+        self.sound = pygame.mixer.Sound('rsc/sounds/background_music.mp3')
+        self.sound.set_volume(0.3)
+        self.sound.play()
+
+        self.context.screen = set_resolution(1200, 400)
         self.pausemenu.screen = self.context.screen
 
     def exit(self):
-        self.pausemenu.done = False
+        self.sound.stop()
+        play_music('rsc/sounds/wind_rain.wav', 0.5, -1)
+
 
 class InIntro(GameState):
     def __init__(self):
-        _ = set_resolution(400, 400)
+        play_music('rsc/sounds/wind_rain.wav', 0.5, -1)
+        _ = set_resolution(1280, 768)
         self.intro = Intro()
 
     def update(self):
-        if not self.intro.running:
-            self.context._next_state = self.context.menu
+        self.intro.update()
+        if self.intro.exit:
+            self.context._next_state = self.context.inmenu
 
     def render(self):
-        self.intro.render_intro()
+        self.intro.render()
 
     def enter(self):
-        self.context.screen = set_resolution(400, 400)
+        self.context.screen = set_resolution(1280, 768)
+        self.intro.screen = self.context.screen
 
     def exit(self):
-        self.intro.done = True
+        pass

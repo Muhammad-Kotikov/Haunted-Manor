@@ -2,7 +2,7 @@ from entities.creature import Creature
 from entities.creature import CommandDirection
 from pygame import Vector2
 from settings import FRAMERATE
-
+from tools import * 
 
 
 class Enemy(Creature):
@@ -32,6 +32,7 @@ class Enemy(Creature):
         if Vector2(dx,dy).length()<self.radius :                                                                           #prüft ob sich ein Spieler im Radius befindet
             if self.cooldown_timer <= 0:                                                                                   #prüft ob der Cooldown 0 damit ein Angriff ausgeführt werden kann
                 self.world.player.hit(1)                                                                                   #führt angriff auf den Spieler aus
+                play_soundeffect('rsc/sounds/player_hit.mp3', 0.5)
                 self.cooldown_timer = self.cooldown                                                                        #Setzt den Cooldown hoch nach dem Angriff
             
 

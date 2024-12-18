@@ -14,7 +14,7 @@ Display.HEIGHT = display_info.current_h
 
 display = pygame.display.set_mode((Display.WIDTH, Display.HEIGHT), pygame.FULLSCREEN)
 
-game = Game(InMenu())
+game = Game(InIntro())
 game.inmenu = InMenu()
 game.ingame = InGame()
 game.inkryptex = InKryptex()
@@ -24,7 +24,7 @@ game.inpiano = InPiano()
 game.inpause= InPause()
 game.inintro= InIntro()
 
-game.transition_to(game.inmenu)
+game.transition_to(game.inintro)
 
 while game.running:
 
