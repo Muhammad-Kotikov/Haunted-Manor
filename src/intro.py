@@ -15,9 +15,6 @@ from tools import *
 class Intro:
     ####Initialisierung der Klasse
     def __init__(self):
-        #   Pfad zu den 111 Bildern des Intros -> nur os als Modul benutzen, kein anderes, um ein Video abzuspielen
-        self.frames_path    = "rsc/sprites/videos/intro"
-        
         #   Funktion get_sprite (siehe Tools) Lädt alle Frames des Videos
         self.frames         = [get_sprite(f"/videos/intro/video_frame{i:05}.png") for i in range(1,112)]
         

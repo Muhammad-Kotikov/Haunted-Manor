@@ -31,8 +31,8 @@ class Door(Tile):
            if type(tile) == Door:
                 if self.range.colliderect(tile.rect):
                     tile.has_collision = self.has_collision
-                    play_soundeffect('rsc/sounds/open_door.mp3', 0.5)
+                    play_soundeffect('rsc/sounds/open_door.mp3', 0.3)
                 else:
-                    play_soundeffect('rsc/sounds/close_door.mp3', 0.5)    
+                    play_soundeffect('rsc/sounds/close_door.mp3', 0.3)    
     def copy(self, x, y):
         return Door(self.range, self.has_collision, self.sprite, x, y, self.rect.width, self.rect.height)

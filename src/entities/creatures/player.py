@@ -135,7 +135,7 @@ class Player(Creature):
 
     def attack(self):
         damage_amount = 1                                                                                      #Legt den Damage vom Spieler fest, den der Spieler verursacht
-        play_soundeffect('rsc/sounds/sword.mp3', 0.5)
+        play_soundeffect('rsc/sounds/sword.mp3', 0.3)
         for enemy in self.world.creatures:                                                                      #
             if enemy == self:                                                                                   # Überprüft ob die Kreatur "Enemy" der Spieler selbst ist, wenn ja wird die Methode beendet. Das haben wir gemacht damit der Spieler sich nicht selbst verletzt.
                 return
