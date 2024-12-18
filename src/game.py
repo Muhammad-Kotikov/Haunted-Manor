@@ -109,7 +109,7 @@ class InGame(GameState):
             elif puzzle == 'clock':
                 txt = [ "In the stillness of the night, as the clock ticks away its time, imagine three clues:\n",
                         "The first hand shows the hour.\n"+
-                        "It marks the last hour of the day, just before a new day begins.",
+                        "It marks the last whole hour of the day, just before a new one begins.",
                         "The second hand shows the minutes.\n" +
                         "It is a number that repeats itself, a pattern that echoes through the clock.\n" +
                         "It lies just past the middle.\n",
