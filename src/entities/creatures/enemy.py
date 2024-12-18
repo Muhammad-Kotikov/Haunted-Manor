@@ -29,11 +29,11 @@ class Enemy(Creature):
             self.cooldown_timer -= 1                                                                                       #Logik unterstützt durch ChatGPT / Setzt den Cooldown um 1 runter
             self.cooldown_timer= max(0,self.cooldown_timer)                                                                
            
-        if Vector2(dx,dy).length()<self.radius :                                                                           
-            if self.cooldown_timer <= 0:                                                                                   #Führt Angriff aus und setzt den Cooldown hoch
-                self.world.player.hit(1)                                                                                   
-                play_soundeffect('rsc/sounds/player_hit.mp3', 0.5)
-                self.cooldown_timer = self.cooldown                                                                        
+        if Vector2(dx,dy).length()<self.radius :                                                                           #prüft ob sich ein Spieler im Radius befindet
+            if self.cooldown_timer <= 0:                                                                                   #prüft ob der Cooldown 0 damit ein Angriff ausgeführt werden kann
+                self.world.player.hit(1)                                                                                   #führt angriff auf den Spieler aus
+                play_soundeffect('rsc/sounds/player_hit.mp3', 0.3)
+                self.cooldown_timer = self.cooldown                                                                        #Setzt den Cooldown hoch nach dem Angriff
             
 
       #  self.path.append(self.position.copy())                                                                            #sollte eine Funktion werden, dass der Gegner sich seinen gelaufenen Weg merkt

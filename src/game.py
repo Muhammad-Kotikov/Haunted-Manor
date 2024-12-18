@@ -58,7 +58,7 @@ class GameState(State):
 class InGame(GameState):
 
     def __init__(self):
-        play_music('rsc/sounds/wind_rain.wav', 0.5, -1)
+        play_music('rsc/sounds/wind_rain.wav', 0.3, -1)
         _ = set_resolution(16 * TILE_SIZE, 9 * TILE_SIZE)
 
         self.paused = False
@@ -97,12 +97,14 @@ class InGame(GameState):
                 bgs = [get_sprite(f"dialogue_0.png")]
 
             elif puzzle == 'kryptex':
-                txt = ["A professor of codes and logic, once the owner of this house..." +
+                txt = ["A professor of codes and logic...\n"+
+                       "...once the owner of this house...\n" +
                        "...left behind more than just books and machines.\n",
-                       "His love for technology and games remains." +  
+                       "His love for technology and games remains.\n" +  
                        "To unlock the secret, think of his name.\n",
-                       "The first letter of his first name, followed by his surname, is the key to what you seek."]
-                bgs = 3* [get_sprite(f"dialogue_0.png")]
+                       "The key to what you seek:\n" +
+                       "The first letter of his first name, followed by his surname"]
+                bgs = 3* [get_sprite(f"Krauss.jpeg")]
 
             elif puzzle == 'clock':
                 txt = [ "In the stillness of the night, as the clock ticks away its time, imagine three clues:\n\n",
@@ -352,7 +354,7 @@ class InDialogue(GameState):
         self.dialogue.text_amount = 0
         self.dialogue.text_frame = 0
         self.dialogue.done = False
-        play_music('rsc/sounds/wind_rain.wav', 0.5 , -1)
+        play_music('rsc/sounds/wind_rain.wav', 0.3 , -1)
 
 class InKryptex(GameState):
 
@@ -530,12 +532,12 @@ class InPause(GameState):
 
     def exit(self):
         self.sound.stop()
-        play_music('rsc/sounds/wind_rain.wav', 0.5, -1)
+        play_music('rsc/sounds/wind_rain.wav', 0.3, -1)
 
 
 class InIntro(GameState):
     def __init__(self):
-        play_music('rsc/sounds/wind_rain.wav', 0.5, -1)
+        play_music('rsc/sounds/wind_rain.wav', 0.3, -1)
         _ = set_resolution(1280, 768)
         self.intro = Intro()
 
