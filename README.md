@@ -1,4 +1,5 @@
 # Haunted-Manor
+- to start the game, just start the main.py
 
 ## Hardware Requirements
 
