@@ -383,6 +383,7 @@ class InKryptex(GameState):
 
 
     def exit(self):
+        self.puzzle.exit = False
         if self.puzzle.won and not self.rewarded:
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
@@ -418,6 +419,7 @@ class InClock(GameState):
 
 
     def exit(self):
+        self.puzzle.exit = False
         if self.puzzle.won and not self.rewarded:
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
@@ -457,6 +459,7 @@ class InMemory(GameState):
 
 
     def exit(self):
+        self.puzzle.exit = False
         if self.puzzle.won and not self.rewarded:
             self.context.ingame.world.player.keys += 1
             self.rewarded = True
