@@ -91,28 +91,28 @@ class InGame(GameState):
 
         def show_dialogue(puzzle):
             if puzzle == 'memory':
-                txt = ["In the room, pairs are hidden, but not every pair is immediately visible.\n" +
-                       "Two things that belong together are like day and night...\n",
+                txt = ["In the Puzzle, pairs are hidden, but not every pair is immediately visible.\n" +
                        "They cannot exist without each other...\n" +
                        "Find the pairs that complement each other, and uncover the secret they guard."]
                 bgs = 2 * [get_sprite(f"dialogue_0.png")]
 
             elif puzzle == 'kryptex':
-                txt = ["A professor of codes and logic, once the master of this house, left behind more than just books and machines.\n" +
-                       "His love for technology and puzzles remains. To unlock the secret, think of his name.\n",
+                txt = ["A professor of codes and logic, once the owner of this house..." +
+                       "...left behind more than just books and machines.\n",
+                       "His love for technology and puzzles remains." +  
+                       "To unlock the secret, think of his name.\n",
                        "The first letter of his first name, followed by his surname, is the key to what you seek."]
-                bgs = 2* [get_sprite(f"dialogue_0.png")]
+                bgs = 3* [get_sprite(f"dialogue_0.png")]
 
             elif puzzle == 'clock':
                 txt = [ "In the stillness of the night, as the clock ticks away its time, imagine three clues:\n\n",
-                        "The first hand shows the hour. It is the moment when the day has not yet begun, but darkness still reigns.\n" +
+                        "The first hand shows the hour. It is the moment when the day has not yet begun...\n" +
                         "The hand points to the place that marks the start of the night.\n",
                         "The second hand shows the minutes.\n" +
-                        "It is a number that repeats itself in time, a pattern that echoes through the clock.\n" +
-                        "It is a cursed number, known to few, and lies just past the middle.\n",
-                        "The third hand shows the seconds. It moves in the last quarter of the minute, just before it ends.\n" +
-                        "In the final seconds of a quarter, it waits quietly before transitioning to the next.\n" +
-                        "A hint of what is to come, as time briefly seems to stand still.\n\n",
+                        "It is a number that repeats itself, a pattern that echoes through the clock.\n" +
+                        "It lies just past the middle.\n",
+                        "The third hand shows the seconds. It moves in the last quarter of the minute..." +
+                        "In the final seconds of a quarter, it waits quietly before transitioning to the next.\n\n",
                         "Set the clock to the exact time, and you will unlock the secret."
                     ]
                 bgs = 5 * [get_sprite(f"dialogue_0.png")]
