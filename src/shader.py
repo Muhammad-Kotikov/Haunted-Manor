@@ -91,35 +91,41 @@ def reset(ac = ambient_color):
         light_map[:, :, channel] = ac[channel]
 
 
+# https://stackoverflow.com/questions/61628380/calculate-distance-from-all-points-in-numpy-array-to-a-single-point-on-the-basis
+def dist_map(a, index, radius):
+        i,j = np.indices(a.shape, sparse=True)
+        return np.sqrt((i-index[0])**2 + (j-index[1])**2) / radius
+
+
 def apply_light_sources():
 
-    
-    # https://stackoverflow.com/questions/61628380/calculate-distance-from-all-points-in-numpy-array-to-a-single-point-on-the-basis
-    def dist_map(a, index):
-        i,j = np.indices(a.shape, sparse=True)
-        return np.sqrt((i-index[0])**2 + (j-index[1])**2)
-
     for source in light_sources:
+
         source.update()
-        point_array = [source.x, source.y]
+
         if source.distance >= 200:
             continue
 
-        # leeres array erstellen (ds = distance-shadow ...
-        # because its the distance and shadow and whatever)
-        ds = np.zeros(light_map[:, :, 0].shape)
-        # distanzen berechnen (danke stack overflow)
-        ds = dist_map(ds, point_array)
-        # (relevanten) werte auf 0.0 - 1.0 skalieren
-        # (manche sind über 1.0, werden nächste zeile gefiltert)
-        ds[:, :] = ds[:, :] / source.radius
-        # licht beschränken
-        ds = np.clip(ds, a_min=0, a_max=1)
-        # invertieren (kleinere distanz = hellere farbe)
-        ds = 1 - ds
+        #ds = np.zeros((w, h))
+
+        start_x = max(source.x - source.radius, 0)
+        start_y = max(source.y - source.radius, 0)
+
+        end_x = min(source.x + source.radius, w)
+        end_y = min(source.y + source.radius, h)
+
+        if start_x > end_x or start_y > end_y:
+            continue
+
+        #sub_ds = ds[start_x:end_x, start_y:end_y]
+        #sub_ds = np.zeros((end_x - start_x, end_y - start_y))
+        sub_ds = dist_map(np.zeros((end_x - start_x, end_y - start_y)), (source.x - start_x, source.y - start_y), source.radius)
+
+        sub_ds = 1 - np.clip(sub_ds, a_min=0, a_max=1)
+        sub_lm = light_map[start_x:end_x, start_y:end_y]
 
         for color_channel in COLOR_CHANNELS:
-            light_map[:, :, color_channel] = np.maximum(light_map[:, :, color_channel], np.astype(source.color[color_channel] * ds, np.uint8))
+            sub_lm[:,:,color_channel] = np.maximum(sub_lm[:,:,color_channel], np.astype(source.color[color_channel] * sub_ds, np.uint8))
 
 
 def apply_light_map(p):
