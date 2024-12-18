@@ -27,7 +27,7 @@ class Clock():
         self.RADIUS     = 250       # Ausprobieren, damit es mit dem Bild passt 
 
         #   Zielwinkel der Zeiger 
-        self.TARGET_HOUR    = math.radians(360 * (12 / 12))  # Zielstunde: 12 Uhr
+        self.TARGET_HOUR    = math.radians(360 * (11 / 12))  # Zielstunde: 12 Uhr
         self.TARGET_MINUTE  = math.radians(360 * (33 / 60))  # Zielminute: 33 Minuten
         self.TARGET_SECOND  = math.radians(360 * (45 / 60))  # Zielsekunde: 45 Sekunden
 
@@ -97,12 +97,12 @@ class Clock():
                 mouse_x, mouse_y = get_mp(self)
                 angle = math.atan2(mouse_y - self.CENTER[1], mouse_x - self.CENTER[0])
                 if self.selected_clockhand == 'hour':
-                    self.angle_hour = angle - self.offset_hour
+                    self.angle_hour = self.normalize_angle(angle - self.offset_hour)
                 elif self.selected_clockhand == 'minute':
-                    self.angle_minute = angle - self.offset_minute
+                    self.angle_minute = self.normalize_angle(angle - self.offset_minute)
                 elif self.selected_clockhand == 'second':
-                    self.angle_second = angle - self.offset_second
-
+                    self.angle_second = self.normalize_angle(angle - self.offset_second)
+        
 ### Zeichnen der Uhr
     def render(self):
         #   Hintergrund schwarz färben
@@ -130,20 +130,24 @@ class Clock():
         #   Mittelpunkt der Uhr zeichnen
         pygame.draw.circle(self.screen, self.BLACK, self.CENTER, 20)
 
+
+### CHATGPT GENERATED METHOD
+    def normalize_angle(self, angle):
+        while angle < 0:
+            angle += 2 * math.pi
+        while angle >= 2 * math.pi:
+            angle -= 2 * math.pi
+        return angle
+
 ### Prüfen, ob die Zielzeit erreicht wurde
     def check_time(self):
         
-        if (self.TARGET_HOUR - self.ANGLE_TOLERANCE < self.angle_hour < self.TARGET_HOUR + self.ANGLE_TOLERANCE) and \
+        if ((self.TARGET_HOUR - self.ANGLE_TOLERANCE < self.angle_hour < self.TARGET_HOUR + self.ANGLE_TOLERANCE)) and \
            (self.TARGET_MINUTE - self.ANGLE_TOLERANCE < self.angle_minute < self.TARGET_MINUTE + self.ANGLE_TOLERANCE) and \
            (self.TARGET_SECOND - self.ANGLE_TOLERANCE < self.angle_second < self.TARGET_SECOND + self.ANGLE_TOLERANCE):
             return True
         return False
     
-    def enter(self):
-        pass
-
-    def exit(self):
-        pass
 
 #                                           DER FOLGENDE ABSCHNITT WURDE DURCH *CHATGPT* ANGEPASST
 #####################################################################################################################################################
