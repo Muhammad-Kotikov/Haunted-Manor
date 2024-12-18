@@ -50,14 +50,15 @@ class Enemy(Creature):
     
     def control(self):                                                                                                      #Hier wird das Verhalten des Enemys festgelegt
         
-        if not self.world.player:                                                                                           
+        if not self.world.player:                                                                                           # Wenn kein Spieler existiert, passiert nichts
             return
-                                                                                                                            #Gegner Verhalten unterstützt von: https://www.makeuseof.com/pygame-move-enemies-different-ways/                                                           
+        
+        # Weg zum Spieler und alte Position berechnen                                                                       #Gegner Verhalten unterstützt von: https://www.makeuseof.com/pygame-move-enemies-different-ways/                                                           
         way = self.world.player.position - self.position                                                                         
         direction = Vector2(0,0)                                                                                            #Standard Richtung (Keine Bewegung)
-        distance_to_player= way.length()                                                                                    
-        way_to_old =  self.old_position - self.position                                                                     
-        if distance_to_player < self.FOLLOW_RANGE and distance_to_player > self.STOP_RANGE and self.cooldown_timer<=0:      
+        distance_to_player= way.length()                                                                                    # Abstand zum Spieler
+        way_to_old =  self.old_position - self.position                                                                     # Weg zur alten Position
+        if distance_to_player < self.FOLLOW_RANGE and distance_to_player > self.STOP_RANGE and self.cooldown_timer<=0:      # Bewegung zum Spieler
             direction = way                                                                                                 #Gegner bewegt sich zum Spieler hier reicht der Wert "way", da die Berechnung in Commanddirection passiert
         elif distance_to_player < self.STOP_RANGE or way_to_old.length()<0.5:                                               # Wenn der Spieler sich innerhalb der Stop Range befindet oder der Weg zum Startpunkt geringer als 0.5 ist Stoppt der Gegner. Den Wert 0.5 Haben wir gesetzt weil der Gegner sonst auf einer Stelle gezittert hat.
             direction = Vector2(0,0)                                                                                        
