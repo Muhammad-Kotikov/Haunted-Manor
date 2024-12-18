@@ -274,13 +274,22 @@ class InMenu(GameState):
         _ = set_resolution(1200, 800)
         self.menu = menu.Menu()
         self.resetgame = False
+        self.tutorial_shown = False
 
     
     def update(self):
 
         self.menu.update()
 
-        if self.menu.start:
+        if self.menu.start and not self.tutorial_shown:
+            self.tutorial_shown = True
+            self.menu.buttons[0]['text'] = 'Continue'
+            self.context._next_state = InDialogue(
+                ["A strange but familier voice whispers to you:\n"+
+                 "Find and complete all 3 puzzles in order to open the door to freedom..."],
+                [get_sprite("instructions.png")]
+            )
+        elif self.menu.start:
             self.context._next_state = self.context.ingame
         elif self.menu.exit:
             self.context.running = False

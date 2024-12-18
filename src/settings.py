@@ -54,8 +54,8 @@ options = {
     'debugging' : False,
     'collision_range' : False,
     'movement_vectors' : False,
-    'crt' : False,
-    'lightsystem' : False
+    'crt' : True,
+    'lightsystem' : True
     }
 
 def toggle(option):

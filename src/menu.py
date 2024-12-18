@@ -96,16 +96,16 @@ class Menu():
                             #   Überprüfen, welcher Button geklickt wurde und dann in den entsprechende state wechseln
                             if button["rect"].collidepoint(self.mouse_x, self.mouse_y):
                                 button["clicked"] = True
-                                if button["text"] == "Start Game":
+                                if button["text"] == self.buttons[0]['text']:
                                     self.main_menu = False
                                     self.start = True
-                                elif button["text"] == "Options":
+                                elif button["text"] == self.buttons[1]['text']:
                                     self.main_menu = False
                                     self.options_menu = True
-                                elif button["text"] == "Credits":
+                                elif button["text"] == self.buttons[2]['text']:
                                     self.main_menu = False
                                     self.credits_menu = True
-                                elif button["text"] == "Exit":
+                                elif button["text"] == self.buttons[3]['text']:
                                     self.exit = True
                     #   Wenn wir in einem Untermenü sind, wechseln wir beim drücken des Zurückbuttons wieder in das Hauptmenü
                     elif self.credits_menu or self.options_menu:

@@ -1,5 +1,6 @@
 from pygame import Surface, surfarray, Vector2
 import numpy as np
+from settings import options
 
 s = None
 r = None
@@ -66,6 +67,9 @@ def init(screen : Surface, c, a = (25, 10, 10)):
 
 
 def lightning():
+
+    if not options['lightsystem']:
+        return
 
     global nv_duration
 
@@ -134,6 +138,9 @@ def apply_light_map(p):
 
 
 def crt(f=0.96):
+
+    if not options['crt']:
+        return
 
     p = surfarray.pixels3d(s)
 
