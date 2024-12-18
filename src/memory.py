@@ -29,7 +29,7 @@ class Memory():
         self.lost                = False
         self.lost_timer          = FRAMERATE * 3
 
-        self.exit                = False
+        self.exit             = False
 
         self.correct_matrix  = [[0] * self.COLS for _ in range(self.ROWS)]
 
@@ -79,8 +79,14 @@ class Memory():
         if self.matches == self.ROWS * self.COLS // 2:
             self.won = True
 
+        if self.won == False:
+            self.exit = False
+
         # Pygame quitten
         for event in pygame.event.get():
+            
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.exit = True
 
             # Auswahl des Kärtchens 
             if event.type == pygame.MOUSEBUTTONDOWN:

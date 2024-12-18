@@ -52,11 +52,16 @@ class Kryptex():
         elif self.congrats_timer <= 0:
             self.exit = True
             return
+        
+        if self.won == False:
+            self.exit = False
     
         self.mouse_pos = self.get_mp()
 
         for event in pygame.event.get():         
 
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.exit = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for p, letter in enumerate(self.letters):
                     letter_surface = self.FONT.render(letter["char"], True, self.GRAY if self.selected_letter == p else self.WHITE)
