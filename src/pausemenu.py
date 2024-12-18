@@ -9,7 +9,7 @@ from tools import *
 
 ### Klasse PauseMenu
 class PauseMenu:
-    #### Initialisierung der Klasse
+### Initialisierung der Klasse
     def __init__(self, text = [], sprites = []):
         #   Screen-Objekt besorgen, um aufm Bildschirm zeichnen zu können
         self.screen = pygame.display.get_surface()
@@ -23,7 +23,7 @@ class PauseMenu:
         self.running    = True          
         self.phase      = 0             # Statusphase für das Menü
 
-    ####Render-Methode
+### Render-Methode
     def render(self):
         #   Bildschirm schwarz färben
         self.screen.fill((0, 0, 0))
@@ -38,7 +38,7 @@ class PauseMenu:
             label = self.font.render(line, False, (255, 255, 255))
             self.screen.blit(label, (Resolution.WIDTH // 2 - label.get_width() // 2 , 250 + i * (label.get_height() + 2)))
 
-    ####Update-Methode
+### Update-Methode
     def update(self):
         for event in pygame.event.get():
             #   Fenster schließen ermöglichen

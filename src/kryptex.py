@@ -8,7 +8,7 @@ from tools import *
 
 ### Klasse Kryptex
 class Kryptex():                 
-    #### Initialisierung der Klasse
+### Initialisierung der Klasse
     def __init__(self): 
         #   Farben
         self.WHITE       = (255, 255, 255)      

@@ -11,7 +11,7 @@ from tools import get_mp
 
 ### Klasse Memory
 class Memory():
-    #### Initialisierung der Klasse
+### Initialisierung der Klasse
     def __init__(self):
         #   Farben
         self.WHITE       = (255, 255, 255)

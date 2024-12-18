@@ -32,7 +32,7 @@ class Clock():
         self.TARGET_SECOND  = math.radians(360 * (45 / 60))  # Zielsekunde: 45 Sekunden
 
         #   Toleranzbereich für das Ziel
-        self.ANGLE_TOLERANCE = 0.1
+        self.ANGLE_TOLERANCE = 0.2
 
         #   Startwinkel der Zeiger
         self.angle_hour     = math.radians(360 * (2 / 12)) 
