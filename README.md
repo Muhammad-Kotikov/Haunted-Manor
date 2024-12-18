@@ -1,7 +1,5 @@
 # Haunted-Manor
 
-it's the most fun game, I promise
-
 ## Hardware Requirements
 
 - NOT Sidney's shitty macbook
@@ -15,10 +13,13 @@ it's the most fun game, I promise
 
 ## Credits
 - Tiles: [1-Bit-Patterns and Tiles](https://piiixl.itch.io/1-bit-patterns-and-tiles) from [PiiXL](https://piiixl.itch.io/) under [Attribution 4.0 International (CC BY 4.0) License](https://creativecommons.org/licenses/by/4.0/)
+
 - Background_music: [Rain on Bricks](https://www.youtube.com/watch?v=-9s63ZNKSzg) by [Bill Killey](https://www.youtube.com/channel/UCnTS-RHp6HyMyNdM84NMLyA)
 - Piano sounds: All credit goes to [LeMaster Tech](https://www.youtube.com/@lemastertech)
-- All other sounds: dowloaded from (https://pixabay.com/de/)
-- Clock Image: (https://www.flume.de/media/52/5e/de/1613441264/0000026358.jpg)
+
+- All other sounds: dowloaded from [Pixabay](https://pixabay.com/de/)
+- Clock Image: downloaded fron [Flume.de](https://www.flume.de/media/52/5e/de/1613441264/0000026358.jpg)
+- Images: Created with [Canva](https://www.canva.com) or by [Muha](https://github.com/Muhammad-Kotikov) 
 
 
 

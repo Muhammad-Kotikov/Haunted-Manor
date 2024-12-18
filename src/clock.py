@@ -27,12 +27,12 @@ class Clock():
         self.RADIUS     = 250       # Ausprobieren, damit es mit dem Bild passt 
 
         #   Zielwinkel der Zeiger 
-        self.TARGET_HOUR    = math.radians(360 * (11 / 12))  # Zielstunde: 12 Uhr
+        self.TARGET_HOUR    = math.radians(360 * (11 / 12))  # Zielstunde: 11 Uhr
         self.TARGET_MINUTE  = math.radians(360 * (33 / 60))  # Zielminute: 33 Minuten
         self.TARGET_SECOND  = math.radians(360 * (45 / 60))  # Zielsekunde: 45 Sekunden
 
         #   Toleranzbereich für das Ziel
-        self.ANGLE_TOLERANCE = 1
+        self.ANGLE_TOLERANCE = 0.1
 
         #   Startwinkel der Zeiger
         self.angle_hour     = math.radians(360 * (2 / 12)) 

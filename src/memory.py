@@ -17,7 +17,6 @@ class Memory():
         self.WHITE       = (255, 255, 255)
         self.BLACK       = (0, 0, 0)
         self.GRAY        = (128, 128, 128)
-        self.RED         = (255, 0, 0)
 
         #   Anzahl der Reihen und Spalten des Spielfelds (Achtung muss immer eine gerade summe sein)
         self.ROWS        = 6
@@ -37,7 +36,6 @@ class Memory():
 
         #   Spielspezifische Variablen 
         self.won                 = False
-
         self.exit                = False        
 
         #   Es wird eine Matrix, um alle korrekte Matches zu speichern
@@ -78,7 +76,7 @@ class Memory():
             self.second_guess   = False
             self.first_guess_number     = 0
             self.second_guess_number    = 0
-            self.reveal_timer   = 0 
+            self.reveal_timer           = 0 
 
         #   Hier wird überprüft, ob alle Paare gefunden wurden, dafür können wir die Ganzzahldivision nehmen
         if self.matches == self.ROWS * self.COLS // 2:
@@ -131,7 +129,7 @@ class Memory():
         #   Timer für das Aufdecken von Karten
         self.reveal_timer = 0  
         #   Spielzeit
-        self.game_timer = 180 * 1000
+        self.game_timer = 150 * 1000
         self.spaces_list = []
         self.generate_board()
 

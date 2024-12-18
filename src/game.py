@@ -107,16 +107,15 @@ class InGame(GameState):
                 bgs = 3* [get_sprite(f"Krauss.jpeg")]
 
             elif puzzle == 'clock':
-                txt = [ "In the stillness of the night, as the clock ticks away its time, imagine three clues:\n\n",
-                        "The first hand shows the hour.\n"
+                txt = [ "In the stillness of the night, as the clock ticks away its time, imagine three clues:\n",
+                        "The first hand shows the hour.\n"+
                         "It marks the last hour of the day, just before a new day begins.",
                         "The second hand shows the minutes.\n" +
                         "It is a number that repeats itself, a pattern that echoes through the clock.\n" +
                         "It lies just past the middle.\n",
                         "The third hand shows the seconds.\n" + 
-                        "It moves in the last quarter of the minute..." +
-                        "At the beginning of the last quarter it waits..." +
-                        "...quietly before transitioning to the next.\n\n",
+                        "At the beginning of the last quarter it waits...\n" +
+                        "...quietly before transitioning to the next.\n",
                         "Set the clock to the exact time, and you will unlock the secret."
                     ]
                 bgs = 5 * [get_sprite(f"clock_dialog.png")]
@@ -226,7 +225,7 @@ class InGame(GameState):
         elif not self.world.player:                                                              #wird ausgeführt wenn es keinen Spieler in  der Welt gibt, also gestorben ist               
             m = InMenu()                                                                         # bringt den Spieler zurück ins Menü
             m.resetgame = True                                                                   #resettet das Game
-            d = InDialogue(['YOU DIED...'],[get_sprite("enemy.png")], m)                         #Zeigt einen Dialog an und ein Bild
+            d = InDialogue(['YOU DIED...'],[get_sprite("death.png")], m)                         #Zeigt einen Dialog an und ein Bild
             play_soundeffect("rsc/sounds/game_over.mp3", 0.5)
             self.context._next_state = d                                                         #Zustand vom Spiel wird geändert
             return
