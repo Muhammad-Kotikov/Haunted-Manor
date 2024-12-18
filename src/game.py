@@ -65,6 +65,7 @@ class InGame(GameState):
         self.timer = FRAMERATE * 3
         self.final_key = False
         self.won = False
+  
 
         sprites = {}
         for sprite in ['brick', 'heart', 'empty_heart', 'piano', 'kryptex', 'memory', 'clock', 'powerup_heal', 'powerup_speed', 'powerup_nightvision',
@@ -297,7 +298,11 @@ class InMenu(GameState):
 
         if self.resetgame:
             self.context.ingame = InGame()
-
+            self.context.inkryptex = InKryptex()
+            self.context.inclock = InClock()
+            self.context.inmemory = InMemory()
+            self.context.inpiano = InPiano()
+            
         self.context.screen = set_resolution(1200, 800)
         self.menu.screen = self.context.screen
 

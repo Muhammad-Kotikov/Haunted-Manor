@@ -11,7 +11,10 @@ from patterns import Command
 
 class CommandDirection(Command):
 
-    def execute(self, direction : vec):
+    def execute(self, velocity : vec):
+        direction = velocity.copy()
+        if direction.length() > 0:
+            direction.normalize_ip()
         self.receiver.target_direction = direction
 
 class Creature(Entity):

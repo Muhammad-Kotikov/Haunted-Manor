@@ -86,7 +86,5 @@ class InputHander():
         pressed_direction.x = get_target_direction_for_axis(key_map["left"], key_map["right"], self.last_left, self.last_right)
         pressed_direction.y = get_target_direction_for_axis(key_map["up"], key_map["down"], self.last_left, self.last_right)
 
-        if pressed_direction.length() != 0:
-            pressed_direction.normalize()
         
         self.cmd.execute(pressed_direction)

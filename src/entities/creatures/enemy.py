@@ -6,16 +6,16 @@ from tools import *
 
 
 class Enemy(Creature):
-    MAX_SPEED = 0.7                                                                                                        #Maxspeed aus Creature wird mit diesem Wert überschrieben
+    MAX_SPEED = 0.8                                                                                                        #Maxspeed aus Creature wird mit diesem Wert überschrieben
     ACCELERATION = MAX_SPEED / 10   
-    DECELERATION = MAX_SPEED / 6
-    FOLLOW_RANGE = 80                                                                                                      # Legt die Sichtweite des Gegners fest
-    STOP_RANGE  = 6                                                                                                        # Wenn der Gegner in der Range ist hält er an
-    radius = 10                                                                                                            # Bestimmt den Radius in dem der Gegner Schaden macht
-    cooldown = FRAMERATE * 2                                                                                               # Setzt die Berechnung zur Abklinkzeit vom Gegner
+    DECELERATION = MAX_SPEED / 6                                                                                           #Setzt Standardwerte der Klasse Enemy
+    FOLLOW_RANGE = 80                                                                                                      
+    STOP_RANGE  = 6                                                                                                       
+    radius = 10                                                                                                            
+    cooldown = FRAMERATE * 2                                                                                               
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.move_towards = CommandDirection(self)                                                                         #Zieht sich die Klasse
+        self.move_towards = CommandDirection(self)                                                                         #Zieht sich di
         self.old_position = self.position.__copy__()                                                                           # ChatGPT hat mir gezeigt wie ich den Anfangspunkt Kopieren kann und speichern kann/Speichert den Startpunkt des Gegners in einer Variable
         self.path = []                                                                                                     # Sollte eigentlich den Pfad des Gegners in einer Liste speichern, damit dieser genau den weg wieder zurückläuft den er zurückgelegt hat
         self.cooldown_timer = 0                                                                                            #Abklinkzeit vom Angriff
@@ -38,34 +38,31 @@ class Enemy(Creature):
 
       #  self.path.append(self.position.copy())                                                                            #sollte eine Funktion werden, dass der Gegner sich seinen gelaufenen Weg merkt
         
-        super().update(dt)                                                                                                 #Aktualisiert den aktuellen Zustand
+        super().update(dt)                                                                                                
     def render(self, screen, camera):                                                                                      #Rendert das Objekt auf dem Bildschirm
        
         super().render(screen, camera)
 
     def copy(self, x, y):
        
-       return Enemy(self.hitpoints, self.sprite, x, y, self.rect.width, self.rect.height)       #
+       return Enemy(self.hitpoints, self.sprite, x, y, self.rect.width, self.rect.height)       
 
     
     def control(self):                                                                                                      #Hier wird das Verhalten des Enemys festgelegt
         
-        if not self.world.player:                                                                                           #Wenn kein Spieler in der Welt gibt wird das folgende garnicht erst ausgeführt
+        if not self.world.player:                                                                                           
             return
-        
-        #distance_x = self.world.player.position.x - self.position.x
-        #distance_y = self.world.player.position.y - self.position.y                                                        # War zuerst die Logik wurde aber durch Muha`s Lösung ausgetauscht wurde unterstützt von https://www.makeuseof.com/pygame-move-enemies-different-ways/
-        #distance = (distance_x ** 2 + distance_y ** 2) ** 0.5                                                              
+                                                                                                                                #Gegner Verhalten unterstützt von: https://www.makeuseof.com/pygame-move-enemies-different-ways/                                                           
         way = self.world.player.position - self.position                                                                    # berechnet den Vektor des Gegners zum Spieler             
-        direction = Vector2(0,0)                                                                                            # Setzt den Vektor auf 0,0
-        distance_to_player= way.length()                                                                                    #Berechnet aus der Position vom Gegner und die Position vom Spieler die Entfernung(Muha einfach eine Maschine)
-        way_to_old =  self.old_position - self.position                                                                     #Nimmt den Gespeicherten Anfangswert und berechnet den weg zum aktuellen 
-        if distance_to_player < self.FOLLOW_RANGE and distance_to_player > self.STOP_RANGE and self.cooldown_timer<=0:      #Wenn die Entfernung zum Spieler im Sichtbereich des Gegners ist und außerhalb der Stop range und der Cooldown = 0 ist fängt der Gegner an den Spieler zu verfolgen
-            direction = way.normalize()                                                                                      #Verringert den Abstand zum Spieler
+        direction = Vector2(0,0)                                                                                            
+        distance_to_player= way.length()                                                                                    
+        way_to_old =  self.old_position - self.position                                                                     
+        if distance_to_player < self.FOLLOW_RANGE and distance_to_player > self.STOP_RANGE and self.cooldown_timer<=0:      
+            direction = way                                                                                      #Verringert den Abstand zum Spieler
         elif distance_to_player < self.STOP_RANGE or way_to_old.length()<0.5:                                               # Wenn der Spieler sich innerhalb der Stop Range befindet oder der Weg zum Startpunkt geringer als 0.5 ist Stoppt der Gegner. Den Wert 0.5 Haben wir gesetzt weil der Gegner sonst auf einer Stelle gezittert hat.
-            direction = Vector2(0,0)                                                                                        #Stoppt den Gegner und setzt den Gegner den Vector 0,0
+            direction = Vector2(0,0)                                                                                        
         else:
-            direction = way_to_old.normalize()                                                                              #Wenn nichts davon zutrifft geht der Gegner zu seinem Ursprung zurück
+            direction = way_to_old                                                                            #Wenn nichts davon zutrifft geht der Gegner zu seinem Ursprung zurück
         
-        self.move_towards.execute(direction)                                                                                #Führt die Bewegung aus 
+        self.move_towards.execute(direction)                                                                                
         

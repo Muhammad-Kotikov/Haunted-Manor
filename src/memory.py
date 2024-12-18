@@ -163,7 +163,7 @@ class Memory():
         #   Timer für das Aufdecken von Karten
         self.reveal_timer = 0  
         #   Spielzeit
-        self.game_timer = 90 * 1000
+        self.game_timer = 180 * 1000
         self.spaces_list = []
         self.generate_board()
 
