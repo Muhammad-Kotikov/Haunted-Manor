@@ -41,7 +41,7 @@ class Clock():
 
         #   Spielspezifische Variablen
         self.FONT = pygame.font.Font('rsc/fonts/SpecialElite-Regular.ttf', 80) 
-        self.BACKGROUND_IMAGE = get_sprite('minigames/minigame_clock.png')  
+        self.BACKGROUND_IMAGE = get_sprite('minigame_clock_image.png')  
         self.selected_clockhand = None 
 
         #    Spielspezifische Variablen
