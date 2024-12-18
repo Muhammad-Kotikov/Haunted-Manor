@@ -75,6 +75,7 @@ class Kryptex():
         for event in pygame.event.get(): 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.exit = True
+                self.lost = True
 
             #   Auf Mausdrücken überprüfen 
             elif event.type == pygame.MOUSEBUTTONDOWN:

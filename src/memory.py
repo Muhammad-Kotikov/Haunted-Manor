@@ -111,6 +111,7 @@ class Memory():
             #    Wenn Mousebutton gedrückt, wird die Position mithilfe von mp_get() geholt  
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.exit = True
+                self.lost = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = get_mp(self)
                 #   Dann wird sowohl die Spalte als auch die Zeile basierend auf der Position gesucht 

@@ -78,6 +78,7 @@ class Clock():
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.exit = True
+                self.lost = True
 
             #   Linksklick prüfen
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  
