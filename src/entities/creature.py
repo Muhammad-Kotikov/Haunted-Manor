@@ -177,6 +177,7 @@ class Creature(Entity):
         
 
     def die(self):
+        play_soundeffect(f'rsc/sounds/explosion_{randint(self.hit_sound_range[0], self.hit_sound_range[1])}.wav', 0.3)
         self.world.unregister_creature(self)
 
 

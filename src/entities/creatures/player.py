@@ -31,7 +31,7 @@ class Player(Creature):
         self.keys = 0
         self.key_final = False
         self.cooldown = 0
-        self.damage_radius = 25
+        self.damage_radius = 30
     
     
     def control(self):
