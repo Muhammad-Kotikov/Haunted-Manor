@@ -4,6 +4,8 @@ from abc import abstractmethod
 
 from entity import Entity
 from collider import * 
+from tools import play_soundeffect
+from random import randint
 
 vec = pygame.math.Vector2
 
@@ -51,6 +53,8 @@ class Creature(Entity):
         self.acc_fac = 1
         self.spd_fac = 1
 
+        self.hit_sound_range = [0, 3]
+
     @abstractmethod
     def control(self):
         pass
@@ -88,6 +92,7 @@ class Creature(Entity):
             return
         
         self.health -= damage
+        play_soundeffect(f'rsc/sounds/hit_{randint(self.hit_sound_range[0], self.hit_sound_range[1])}.wav', 0.3)
 
         if self.health <= 0:
             self.die()
