@@ -1,6 +1,7 @@
 import pygame
 from entities.tile import Tile
 from entities.creatures.player import Player
+from tools import *
 
 # Traptypes:
 CYCLING = 1     # this kind of traps just repeats one action over and over again
@@ -44,8 +45,12 @@ class Trap(Tile):
 
         if self.collision_box.colliderect(self.world.player.rect):
             self.world.player.hit(1)
+            
             if self.world.player == None:
                 return
+            
+            elif self.world.player.invunerable:
+                play_soundeffect('rsc/sounds/player_hit.mp3', 0.1)
 
         if self.trap_type == CYCLING or (self.trap_type == DETECTING and self.trap_detection_box.colliderect(self.world.player.rect)):
             self.frame += 1

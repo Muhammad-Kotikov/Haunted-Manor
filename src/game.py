@@ -90,14 +90,7 @@ class InGame(GameState):
             self.context._next_state = self.context.inpiano
 
         def show_dialogue(puzzle):
-
-            if puzzle == 'piano':
-                txt = ["To claim the key, you must summon the timeless melody that begins with a gentle touch.\n" + 
-                       "The notes flow like a river, soft and familiar, starting with the simplest of steps.\n" +
-                        "Let the music of a famous soul guide your fingers to the very start, where the melody of 'Für Elise' whispers its secret."]
-                bgs = 1 * [get_sprite(f"dialogue_0.png")]
-
-            elif puzzle == 'memory':
+            if puzzle == 'memory':
                 txt = ["In the room, pairs are hidden, but not every pair is immediately visible.\n" +
                        "Two things that belong together are like day and night...\n",
                        "They cannot exist without each other...\n" +
@@ -287,8 +280,8 @@ class InMenu(GameState):
             self.context._next_state = InDialogue(
                 ["A strange yet familiar voice whispers to you:\n\n" +
                  "Find and solve all three puzzles to unlock the door to freedom.",
-                 "The clues you discover along the way will guide your escape.'"],
-                [get_sprite("instructions.png")]
+                 "The clues you discover along the way will guide your escape."],
+                2 * [get_sprite("instructions.png")]
             )
         elif self.menu.start:
             self.context._next_state = self.context.ingame
@@ -499,11 +492,11 @@ class InPiano(GameState):
 
 class InPause(GameState):
     def __init__(self):
-        _ = set_resolution(1200, 400)
+        _ = set_resolution(400, 500)
        
         self.pausemenu = PauseMenu(
             "Game Paused\n\nPress SPACE to Continue the Game\n\nPress ESC to Enter the Main Menu" , 
-            [get_sprite("instructions_small.png")])
+            [get_sprite("instructions.png")])
         
 
     def update(self):
@@ -527,7 +520,7 @@ class InPause(GameState):
         self.sound.set_volume(0.3)
         self.sound.play()
 
-        self.context.screen = set_resolution(1200, 400)
+        self.context.screen = set_resolution(400, 500)
         self.pausemenu.screen = self.context.screen
 
     def exit(self):

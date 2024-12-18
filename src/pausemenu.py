@@ -15,7 +15,7 @@ class PauseMenu:
         self.screen = pygame.display.get_surface()
 
         #   Schriftart festlegen 
-        self.font   = pygame.font.Font('rsc/fonts/SpecialElite-Regular.ttf', 30)
+        self.font   = pygame.font.Font('rsc/fonts/minecraft_font.ttf', 15)
         
         #   Spielspezifische Variablen
         self.text       = text          # Text der im Menü angezeigt wird
