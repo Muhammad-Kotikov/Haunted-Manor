@@ -285,8 +285,9 @@ class InMenu(GameState):
             self.tutorial_shown = True
             self.menu.buttons[0]['text'] = 'Continue'
             self.context._next_state = InDialogue(
-                ["A strange but familier voice whispers to you:\n"+
-                 "Find and complete all 3 puzzles in order to open the door to freedom..."],
+                ["A strange yet familiar voice whispers to you:\n\n" +
+                 "Find and solve all three puzzles to unlock the door to freedom.",
+                 "The clues you discover along the way will guide your escape.'"],
                 [get_sprite("instructions.png")]
             )
         elif self.menu.start:
