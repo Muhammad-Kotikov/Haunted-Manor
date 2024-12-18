@@ -73,7 +73,7 @@ class InGame(GameState):
             sprites[sprite] = get_sprite(sprite + ".png")
 
         # player
-        player = Player(50, get_sprite("player_idle_0.png"), width = 14, height = 14)
+        player = Player(5, get_sprite("player_idle_0.png"), width = 14, height = 14)
         enemy = Enemy(4, get_sprite("enemy.png"), width = 14, height = 14)
 
 
