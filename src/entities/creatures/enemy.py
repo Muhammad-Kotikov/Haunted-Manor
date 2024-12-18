@@ -16,14 +16,14 @@ class Enemy(Creature):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.move_towards = CommandDirection(self)                                                                         #Zieht sich die Klasse
-        self.old_position = self.position.copy()                                                                           # Speichert den Startpunkt des Gegners in einer Variable
+        self.old_position = self.position.__copy__()                                                                           # ChatGPT hat mir gezeigt wie ich den Anfangspunkt Kopieren kann und speichern kann/Speichert den Startpunkt des Gegners in einer Variable
         self.path = []                                                                                                     # Sollte eigentlich den Pfad des Gegners in einer Liste speichern, damit dieser genau den weg wieder zurückläuft den er zurückgelegt hat
         self.cooldown_timer = 0                                                                                            #Abklinkzeit vom Angriff
         
     def update(self,dt):
         if not self.world.player:               
             return
-        dx = self.rect.centerx-self.world.player.rect.centerx                                                              #Differenz der X Koordinate
+        dx = self.rect.centerx-self.world.player.rect.centerx                                                              #Differenz der X Koordinate Die X und Y Werte haben wir genommen damit der die Mitte vom Spieler & Gegner nimmt
         dy = self.rect.centery-self.world.player.rect.centery                                                              # Differenz der Y Koordinate
         if self.cooldown_timer > 0 :                                                                                       #wenn der Cooldown über 0 ist wird die if ausgeführt
             self.cooldown_timer -= 1                                                                                       #Logik unterstützt durch ChatGPT / Setzt den Cooldown um 1 runter
@@ -54,10 +54,10 @@ class Enemy(Creature):
         
         #distance_x = self.world.player.position.x - self.position.x
         #distance_y = self.world.player.position.y - self.position.y                                                        # War zuerst die Logik wurde aber durch Muha`s Lösung ausgetauscht wurde unterstützt von https://www.makeuseof.com/pygame-move-enemies-different-ways/
-        #distance = (distance_x ** 2 + distance_y ** 2) ** 0.5
+        #distance = (distance_x ** 2 + distance_y ** 2) ** 0.5                                                              
         way = self.world.player.position - self.position                                                                    # berechnet den Vektor des Gegners zum Spieler             
         direction = Vector2(0,0)                                                                                            # Setzt den Vektor auf 0,0
-        distance_to_player= way.length()                                                                                    #Berechnet aus dem Vektor die Entfernung vom Gegner zum Spieler (Muha einfach eine Maschine)
+        distance_to_player= way.length()                                                                                    #Berechnet aus der Position vom Gegner und die Position vom Spieler die Entfernung(Muha einfach eine Maschine)
         way_to_old =  self.old_position - self.position                                                                     #Nimmt den Gespeicherten Anfangswert und berechnet den weg zum aktuellen 
         if distance_to_player < self.FOLLOW_RANGE and distance_to_player > self.STOP_RANGE and self.cooldown_timer<=0:      #Wenn die Entfernung zum Spieler im Sichtbereich des Gegners ist und außerhalb der Stop range und der Cooldown = 0 ist fängt der Gegner an den Spieler zu verfolgen
             direction = way.normalize()                                                                                      #Verringert den Abstand zum Spieler
