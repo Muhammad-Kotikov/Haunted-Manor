@@ -68,12 +68,12 @@ class InGame(GameState):
   
 
         sprites = {}
-        for sprite in ['brick', 'heart', 'empty_heart', 'piano', 'kryptex', 'memory', 'clock', 'powerup_heal', 'powerup_speed', 'powerup_nightvision',
-                       'notes', 'door', 'bloody_door', 'bloody_brick', 'penta', 'quake', 'floor_0', 'floor_1']:
+        for sprite in ['brick_0', 'heart', 'empty_heart', 'piano', 'kryptex', 'memory', 'clock', 'powerup_heal', 'powerup_speed', 'powerup_nightvision',
+                       'notes', 'door', 'bloody_door', 'bloody_brick', 'penta', 'quake', 'grass_2', 'grass_0','brick_2','brick_3','brick_4','brick_5','brick_6','brick_7','brick_8','brick_9','brick_10','brick_11','brick_12']:
             sprites[sprite] = get_sprite(sprite + ".png")
 
         # player
-        player = Player(50, get_sprite("player_idle_0.png"), width = 14, height = 14)
+        player = Player(5, get_sprite("player_idle_0.png"), width = 14, height = 14)
         enemy = Enemy(4, get_sprite("enemy.png"), width = 14, height = 14)
 
 
@@ -136,9 +136,20 @@ class InGame(GameState):
         notes_clock = ITile(pygame.Rect(-8, -8, 32, 32), show_dialogue, 'clock', False, sprites['notes'])
 
         # static tiles
-        brick = Tile(False, sprites['brick'])
-        floor_0 = Tile(False, sprites['floor_0'])
-        floor_1 = Tile(False, sprites['floor_1'])
+        brick = Tile(True, sprites['brick_0'])
+        brick2 = Tile(True, sprites['brick_2'])
+        brick3 = Tile(True, sprites['brick_3'])
+        brick4 = Tile(True, sprites['brick_4'])
+        brick5 = Tile(True, sprites['brick_5'])
+        brick6 = Tile(True, sprites['brick_6'])
+        brick7 = Tile(True, sprites['brick_7'])
+        brick8 = Tile(True, sprites['brick_8'])
+        brick9 = Tile(True, sprites['brick_9'])
+        brick10 = Tile(True, sprites['brick_10'])
+        brick11 = Tile(True, sprites['brick_11'])
+        brick12= Tile(True, sprites['brick_12'])
+        floor_0 = Tile(False, sprites['grass_2'])
+        floor_1 = Tile(False, sprites['grass_0'])
         
         bloody_brick = Tile(True, sprites['bloody_brick'])
         penta = Tile(False, sprites['penta'])
@@ -192,7 +203,8 @@ class InGame(GameState):
 
         # world
         spawn_table = [None, brick, player, piano, memory, kryptex, clock, spikes, fire_trap, powerup_heal, powerup_speed, powerup_nightvision,
-                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy, penta, quake, floor_0, floor_1]
+                       notes_piano, notes_memory, notes_kryptex, notes_clock, bloody_brick, door, bloody_door, enemy, penta, quake, floor_0, floor_1,brick2,brick3,brick4,
+                       brick5,brick6,brick7,brick8,brick9,brick10,brick11,brick12]
         self.world = World(get_map("manor.tmx"), spawn_table)
 
         # misc
